@@ -5,13 +5,13 @@
   },
   "metadata": {
     "description": "Skills de JayKA para Claude Code: comunicación, reglas de trabajo, Git, seguridad, estructura de proyectos y estilo visual. Genéricas, para cualquier proyecto.",
-    "version": "0.5.0"
+    "version": "0.6.0"
   },
   "plugins": [
     {
       "name": "jay-ka",
       "description": "Skills jay-k-a-*: forma de trabajar, Git, seguridad, nuevo proyecto y aprendizaje/construcción de estilo.",
-      "version": "0.5.0",
+      "version": "0.6.0",
       "author": {
         "name": "Jpineda27-VL"
       },

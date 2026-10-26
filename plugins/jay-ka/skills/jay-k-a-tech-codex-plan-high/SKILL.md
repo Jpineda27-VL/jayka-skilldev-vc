@@ -24,6 +24,7 @@ Codex solo se usa **si el usuario lo pide**. Esta skill prepara todo; el usuario
 1. Usa `jay-k-a-plan-builder`. Si Superpowers no está instalado, Plan Builder lo dirá y el usuario elegirá; respeta esa elección y anótala en el plan.
 2. Del plan aprobado, toma **un bloque a la vez**. Si el plan no existe todavía, créalo antes; no escribas tareas sueltas para trabajo grande.
 3. **Estado limpio:** revisa `git status`; si hay cambios sin commitear, propón un commit local previo (con `jay-k-a-git-rules`) para poder revisar después solo lo de Codex. Pide aprobación.
+4. **Entorno de Codex:** igual que en `jay-k-a-tech-codex-plan-low` (Paso 1, punto 4): averigua si tiene Playwright y puede levantar la app, y anótalo en el campo de la tarea.
 
 ## Paso 2 · Diseñar la tarea grande
 Una tarea grande = **un bloque del plan** con un esquema completo. Sigue `reference/task-template.md`, que añade a lo básico:
@@ -35,7 +36,7 @@ Una tarea grande = **un bloque del plan** con un esquema completo. Sigue `refere
 - **Estilo:** usar los tokens y componentes existentes (o el briefing de `jay-k-a-style-build`); sin colores ni tamaños sueltos.
 - **Alcance:** lista de archivos a crear y a tocar; nada fuera de la lista sin pedir permiso en el informe.
 - **Pruebas:** una prueba por regla importante, más las del área; resultado real en el informe.
-- **Playwright obligatorio:** revisar cada pantalla nueva a 375 px y 1280 px, recorrer el flujo (incluidos errores de validación y estados vacíos), capturas en `docs/codex/capturas/NNN/`. Si no está disponible, decirlo; no omitirlo.
+- **Revisión visual obligatoria:** cada pantalla nueva a 375 px y 1280 px, recorriendo el flujo (incluidos errores de validación y estados vacíos), con capturas en `docs/codex/capturas/NNN/`. Sin Playwright, Codex **no lo instala ni describe lo que no vio**: la declara «NO HECHA» y deja la lista exacta de lo que hay que mirar (la plantilla trae las tres situaciones).
 - **Prohibiciones fijas:** no instalar dependencias, no tocar secretos ni variables de entorno, no push, no PR, no cambiar de rama, no cambiar reglas de negocio ni el estilo aprobado.
 - **Puntos de parada:** si algo es ambiguo, Codex **se detiene en esa parte**, lo anota en «Dudas» y avanza con lo demás.
 - **Qué debe devolver:** el informe en `docs/codex/resultados/NNN-<slug>.md` (`reference/report-template.md`).
@@ -50,9 +51,9 @@ No confíes en el informe. Por cada tarea:
 1. Lee el informe.
 2. Revisa el **diff real**: ¿solo archivos permitidos? ¿dependencias, secretos, migraciones editadas, reglas inventadas?
 3. Corre las pruebas tú mismo.
-4. Mira las pantallas en navegador a 375 px y 1280 px y recorre el flujo (incluidos errores).
+4. **Revisión visual, siempre:** mira las pantallas a 375 px y 1280 px y recorre el flujo (éxito, errores de validación, estado vacío) con la herramienta de navegador disponible. Si el informe dice «NO HECHA», recorre además su lista punto por punto. Para capturas de carga a los dos tamaños, sirve `node "<SKILL_DIR>/../jay-k-a-tech-reverse/scripts/capture-live.mjs" <url> --out docs/codex/capturas/NNN/revision --steps 0 --hover 0 --no-reduced`; los estados del flujo (errores, vacío) se revisan a mano, porque el script no envía formularios. Si un informe describe pantallas pero dice que no tenía Playwright, trátalo como **no cumple**.
 5. Compara con los criterios de aceptación y con el plan.
-6. Entrega al usuario: **cumple / cumple con observaciones / no cumple**, lista de lo que falta y de lo que decidió Codex por su cuenta.
+6. Entrega al usuario: **cumple / cumple con observaciones / no cumple**, lista de lo que falta y de lo que decidió Codex por su cuenta. **Sin revisión visual hecha por alguien, el veredicto no puede ser «cumple».**
 7. Marca las casillas del plan, y haz commit local de lo aprobado (ver `jay-k-a-git-rules`).
 
 ## Paso 5 · Revisión final del usuario

@@ -10,6 +10,7 @@
 - Documentos que debes leer primero: {{CLAUDE.md, estado, reglas de negocio, plan}}
 - Decisiones ya tomadas (no las cambies): {{lista}}
 - Estilo: usar los tokens y componentes existentes ({{ruta del briefing o del sistema de diseño}}). **Sin colores, tamaños ni radios sueltos.**
+- Playwright en tu entorno: {{sí | no | no se sabe}}. Cómo levantar la app: `{{comando}}` en {{http://localhost:…}}.
 
 ## 3. Especificación
 ### Pantalla / vista
@@ -60,7 +61,10 @@ Instalar o actualizar dependencias · tocar secretos, `.env` o variables de ento
 
 ## 9. Verificación obligatoria
 1. **Pruebas:** `{{comando}}`. Anota el resultado real, aunque falle.
-2. **Playwright:** abre cada pantalla nueva a **375 px** y **1280 px**. Recorre el flujo completo: éxito, errores de validación, estado vacío. Guarda capturas en `docs/codex/capturas/{{NNN}}/`. Si no puedes usar Playwright, dilo; **no lo omitas en silencio**.
+2. **Revisión visual** de cada pantalla nueva a **375 px** y **1280 px**, recorriendo el flujo completo: éxito, errores de validación y estado vacío.
+   - **Si tienes Playwright:** hazla y guarda capturas en `docs/codex/capturas/{{NNN}}/`, una por pantalla, tamaño y estado.
+   - **Si no tienes Playwright:** **no lo instales** (instalar está prohibido) y **no describas pantallas que no viste**. En el informe escribe «Revisión visual: NO HECHA», el motivo, y la lista exacta de lo que hay que mirar: pantalla, tamaño, estado y qué revisar. Quien pidió la tarea hará esa revisión.
+   - **Si no puedes levantar la app** (falta base de datos, variables o un servicio): escribe «No pude levantar la app» con las líneas clave del error. No intentes arreglarlo fuera de los archivos permitidos.
 3. Revisa el diff antes de terminar.
 
 ## 10. Qué debes devolver
@@ -73,7 +77,7 @@ El informe en `docs/codex/resultados/{{NNN}}-{{slug}}.md`, con el formato de aba
 ## Qué construí (archivo por archivo, una línea cada uno)
 ## Decisiones que tomé por mi cuenta (cada una, con motivo)
 ## Pruebas (comando y resultado real)
-## Revisión con Playwright (375 y 1280, flujo recorrido, capturas, qué vi)
+## Revisión visual: hecha con Playwright (375 y 1280, flujo recorrido, capturas, qué vi) | NO HECHA (motivo y lista de lo que hay que mirar)
 ## Dudas y decisiones que necesito del usuario
 ## Pendiente y lo que NO hice (con motivo)
 ## Cómo probarlo (rutas y datos de ejemplo; sin claves reales)

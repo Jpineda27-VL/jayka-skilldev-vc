@@ -11,10 +11,14 @@
 - Comando: `{{comando}}`
 - Resultado real: {{pasaron X de Y | fallaron: …}}
 
-## Revisión con Playwright
-- 375 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
-- 1280 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
-- Si no se pudo usar Playwright: {{motivo}}
+## Revisión visual
+- Estado: {{hecha con Playwright | NO HECHA}}
+- Si se hizo:
+  - 375 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
+  - 1280 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
+- Si NO se hizo: motivo ({{sin Playwright | no pude levantar la app: error}}) y lo que falta mirar:
+  - [ ] {{ruta}} a 375 px: {{qué revisar}}
+  - [ ] {{ruta}} a 1280 px: {{qué revisar}}
 
 ## Dudas o decisiones que necesito
 - …
@@ -26,4 +30,5 @@
 *Revisión de quien pidió la tarea (se llena después):*
 - Diff revisado: sí / no
 - Pruebas corridas de nuevo: sí / no
+- Revisión visual hecha por quien revisa (si Codex no la hizo): sí / no
 - Veredicto: cumple / cumple con observaciones / no cumple

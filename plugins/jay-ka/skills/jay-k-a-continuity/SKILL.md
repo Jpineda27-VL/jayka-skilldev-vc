@@ -21,14 +21,15 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 ## Modo cerrar
 
 1. **Reúne lo que pasó** con estos comandos, sin modificar nada: `git status --short`, `git log --oneline -15`, `git diff --stat` y `git stash list`. Súmale lo hablado en la sesión. Distingue lo hecho y verificado, lo hecho sin verificar y lo que quedó a medias.
-2. **Escribe el estado** en `.claude/estado/CONTINUAR.md` (si no existe, la carpeta se crea según las convenciones; si existe, actualízalo sin borrar lo vigente). Arriba de todo, la fecha de hoy:
+2. **Escribe el estado** en `.claude/estado/CONTINUAR.md` con la plantilla `reference/continuar-template.md`. Si no existe, la carpeta se crea según las convenciones. Si existe, actualízalo: conserva las decisiones tomadas y lo pendiente que siga vigente, y borra lo que ya no aplica. Las ocho secciones son:
+   - **Encabezado:** fecha de hoy, rama y último commit.
    - **Dónde quedamos:** 3 a 6 líneas.
-   - **Hecho:** lista corta, con lo verificado marcado.
-   - **Pendiente:** ordenado por prioridad, cada punto con su siguiente paso.
+   - **Hecho:** cada punto dice si está verificado y cómo, o «sin verificar».
+   - **Pendiente:** tabla ordenada por prioridad, cada punto con su siguiente paso concreto y lo que lo bloquea.
    - **Decisiones tomadas:** con fecha, para no volver a preguntarlas.
    - **Decisiones por tomar:** las preguntas abiertas para el usuario.
-   - **Cómo arrancar y probar:** comandos, direcciones y datos de prueba (nunca claves reales).
-   - **Archivos clave:** los que se tocaron o importan.
+   - **Cómo arrancar y probar:** comandos y direcciones (nunca claves reales).
+   - **Archivos clave** y **cambios sin commitear al cerrar**.
 3. **Memoria.** Si el entorno tiene memoria persistente, guarda ahí lo que sirva para otras sesiones (decisiones, preferencias, pendientes) y avisa con una línea corta y 👍. No repitas lo que ya está en el repositorio.
 4. **Grafo o índice del código.** Si el proyecto usa una herramienta que lo mantiene (por ejemplo `graphify`), actualízalo. Si no existe, no lo inventes.
 5. **Commit local** de los documentos de estado, siguiendo `jay-k-a-git-rules`. Sin push.
@@ -51,7 +52,7 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 - Un documento de estado corto y vigente vale más que uno largo y viejo: si una sección ya no aplica, bórrala.
 
 ## Terminado cuando
-- **Cerrar:** `CONTINUAR.md` tiene la fecha de hoy y las siete secciones; lo no comprobado dice «sin verificar»; hay commit local de los documentos de estado (o se dijo por qué no); se cerró con tres líneas.
+- **Cerrar:** `CONTINUAR.md` sigue la plantilla, tiene la fecha de hoy y sus secciones completas; lo no comprobado dice «sin verificar»; hay commit local de los documentos de estado (o se dijo por qué no); se cerró con tres líneas.
 - **Abrir:** la respuesta tiene 8 líneas o menos, señala cualquier diferencia entre el documento y el repositorio, termina con la pregunta y no se modificó nada.
 
 ## Mis ajustes

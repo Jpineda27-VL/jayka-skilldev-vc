@@ -26,12 +26,17 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 
 ## Paso 0 · Reunir entradas
 Busca, en este orden, y di qué encontraste y qué no:
-1. `docs/proyecto/informe-inicial.md` y `docs/proyecto/entrevista.md` (de `jay-k-a-new-project`): respuestas 18 a 21 (tecnología y plataforma), 30 a 38 (identidad), 40 (dispositivos), 39 (datos sensibles).
+1. `docs/proyecto/informe-inicial.md` y `docs/proyecto/entrevista.md` (de `jay-k-a-new-project`). Lee la entrevista **por clave**, nunca por número:
+   - Tecnología y plataforma: `tecnologia.frontend`, `tecnologia.backend`, `tecnologia.base-de-datos`, `tecnologia.plataforma`.
+   - Identidad: todas las claves `identidad.*` (sensación, tonos, evitar, tipografía, imágenes, marca, referencias, modo, densidad).
+   - Datos sensibles: `calidad.sensibilidad`. Dispositivos: `calidad.dispositivos`.
+   - Solo cuentan las entradas con estado `respondida`. Las `no-sé` activan el Paso 2 para ese rasgo; las `saltada` y las que no existan se tratan como «sin dato» y se dice cuáles faltaron.
+   - Si la entrevista no tiene claves (formato anterior a la v0.6), dilo y pide correr `/jay-k-a-new-project retomar` para convertirla, o sigue con el mini-cuestionario.
 2. La biblioteca personal: `~/.claude/jay-k-a/estilos/<slug>/ficha.md`, `tokens.json` y `estilo-base.md`.
 3. Un estilo ya definido en el proyecto (`docs/proyecto/estilo.md`, tokens existentes).
 4. Lo que el usuario pida ahora: **qué se va a construir** (pantallas o flujo del prototipo).
 
-Si **faltan** la entrevista y las fichas: recomienda correr `jay-k-a-new-project` (identidad) y/o `jay-k-a-style-self-learning` (fichas). Si el usuario prefiere seguir, haz un **mini-cuestionario** de 6 preguntas (sensación, tonos de color, tipo de letra, densidad, modo claro u oscuro, referencias). Cada una se responde o se salta a mano, igual que en `new-project`. «No sé» es válido y activa el paso 2.
+Si **faltan** la entrevista y las fichas: recomienda correr `jay-k-a-new-project` (identidad) y/o `jay-k-a-style-self-learning` (fichas). Si el usuario prefiere seguir, haz un **mini-cuestionario** de 6 preguntas (sensación, tonos de color, tipo de letra, densidad, modo claro u oscuro, referencias). Cada una se responde o se salta a mano, igual que en `new-project`. «No sé» es válido y activa el paso 2. Las seis usan las claves de la entrevista (`identidad.sensacion`, `identidad.tonos`, `identidad.tipografia`, `identidad.densidad`, `identidad.modo`, `identidad.referencias`) y se guardan en `docs/proyecto/entrevista.md` con el formato de `jay-k-a-new-project` (si el archivo no existe, se crea solo con esas entradas).
 
 ## Paso 1 · Emparejar con las fichas
 Sigue `reference/matching.md`. Entrega **hasta 3 candidatas** (o ninguna, y lo dices):
@@ -64,7 +69,7 @@ Con lo elegido, escribe el **briefing** (`reference/style-brief-template.md`) en
    - Contraste AA como mínimo; foco visible; áreas táctiles de 44 px o más.
    - `prefers-reduced-motion` respetado.
    - Estados reales: vacío, cargando, error, desactivado.
-   - Celular primero si el usuario lo usa más (pregunta 40).
+   - Celular primero si el usuario lo usa más (`calidad.dispositivos`).
 
 ## Paso 5 · Verificar (una sola ronda acotada)
 No entres en un ciclo de pulido infinito: **una ronda completa y, si hace falta, una de confirmación.**

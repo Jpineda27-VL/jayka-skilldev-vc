@@ -57,7 +57,11 @@ Mejora de las demás skills a este estándar, por grupos:
   - `tech-real-data`: `find-demo-data.mjs`, más comprobación medida de seeders repetibles y del candado de entorno.
   - `tech-views-parity`: `capture-pair.mjs` (capturas lado a lado, diferencias de títulos, acciones y campos, similitud de texto, `paridad.html`).
   - `capture-live.mjs` ganó `--eval` y `--sin-capturas` para que otras skills lo reusen.
-- 🔲 **C · Plantillas:** `CONTINUAR.md`, `entrevista.md` con claves estables (y `style-build` leyendo claves en vez de números), `CLAUDE.md` inicial, Codex sin Playwright.
+- ✅ **C · Plantillas (2026-10-26):**
+  - `continuity/reference/continuar-template.md` (encabezado con rama y commit, hecho con verificación, pendientes con siguiente paso y bloqueo, decisiones con fecha).
+  - `new-project`: las 42 preguntas tienen **clave estable** (`proyecto.nombre` … `calidad.forma-de-trabajo`); plantillas de `entrevista.md` (formato fijo por entrada con estado), `informe-inicial.md` (cada dato cita su clave) y `CLAUDE.md` (menos de 40 líneas). `retomar` convierte entrevistas del formato anterior.
+  - `style-build` lee la entrevista por clave, y su mini-cuestionario guarda con las mismas claves.
+  - Codex: la tarea dice si su entorno tiene Playwright; sin él, Codex no lo instala ni describe lo que no vio y declara la revisión «NO HECHA» con la lista de lo que hay que mirar. Quien revisa la hace siempre, y sin revisión visual no hay «cumple».
 - 🔲 **D · Recortar las tres automáticas** (sin repetir reglas entre ellas).
 - 🔲 **E · Pruebas de las skills** (escenarios por skill; confirmar el formato de evaluación de plugins).
 
