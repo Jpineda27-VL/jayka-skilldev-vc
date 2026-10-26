@@ -1,4 +1,4 @@
-# Plan and decisions of the `jay-ka-skilldev-vc` repository
+# Plan and decisions of the `jayka-skilldev-vc` repository
 
 This document is the continuity point: whoever opens the project in a new session reads it first.
 

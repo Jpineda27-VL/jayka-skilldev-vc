@@ -1,4 +1,4 @@
-# jay-ka-skilldev-vc
+# jayka-skilldev-vc
 
 *Español: [README.es.md](README.es.md)*
 
@@ -13,8 +13,8 @@ You describe what you want; the skills take care of the order around it: a plan 
 **Option A: as a plugin (recommended).** Inside Claude Code:
 
 ```text
-/plugin marketplace add Jpineda27-VL/jay-ka-skilldev-vc
-/plugin install jay-ka@jay-ka-skilldev-vc
+/plugin marketplace add Jpineda27-VL/jayka-skilldev-vc
+/plugin install jay-ka@jayka-skilldev-vc
 ```
 
 Skills of a plugin carry the plugin name first: `/jay-ka:jayka-menu`, `/jay-ka:jayka-continuity close`…
