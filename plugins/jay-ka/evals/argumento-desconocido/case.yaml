@@ -1,0 +1,19 @@
+schema_version: "1.0"
+name: argumento-desconocido
+description: Un argumento que la skill no acepta se rechaza mostrando las opciones válidas, sin hacer nada más (convenciones §1). Sin herramientas de escritura, así que solo puede responder.
+tags: [convenciones, rapido, sin-shell]
+execution:
+  prompt: "/jay-ka:jay-k-a-continuity bailar"
+  max_turns: 4
+  timeout_seconds: 120
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: dice-que-no-reconoce
+    pattern: "no reconozco"
+    flags: i
+  - type: regex
+    name: muestra-cerrar-y-abrir
+    pattern: "cerrar[\\s\\S]*abrir|abrir[\\s\\S]*cerrar"
+    flags: i

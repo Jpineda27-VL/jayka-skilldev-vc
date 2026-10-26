@@ -4,7 +4,7 @@ Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicac
 
 *English: a personal skill pack for Claude Code covering working rules, Git, security, project structure and design-style learning. Generic, editable, opt-in.*
 
-> Estado: v0.7.0, catálogo de 21 skills (sin probar todavía instaladas dentro de Claude Code). Mira `docs/PLAN.md`.
+> Estado: v0.8.0, catálogo de 21 skills (sin probar todavía instaladas dentro de Claude Code). Mira `docs/PLAN.md`.
 
 ## Instalar
 
@@ -39,6 +39,24 @@ Mira `docs/PLAN.md`. Resumen:
 - Escribe `/jay-k-a-init` para ver el catálogo completo en una línea por skill.
 
 `jay-k-a-tech-reverse` usa Node 18 o más y, para medir sitios, Playwright con Chromium. La skill pide permiso antes de instalarlo en `~/.claude/jay-k-a/tools/`, fuera de tus proyectos.
+
+## Pruebas
+Dos capas:
+
+```bash
+# 1. Deterministas: estructura de las 21 skills y comportamiento de cada script (no gastan tokens)
+node tests/run.mjs
+```
+
+Las 3 pruebas con navegador corren solo si Playwright está en `~/.claude/jay-k-a/tools/` (o en la carpeta que indique la variable `JAYKA_TOOLS`); si no, se omiten.
+
+```bash
+# 2. Comportamiento con Claude: escenarios en plugins/jay-ka/evals/ (usan tu cuenta)
+cd plugins/jay-ka
+claude plugin eval . --tag sin-shell --scaffold --allow-tools Write Edit --trust-plugin --runs 1
+```
+
+Detalles, casos y limitaciones en `plugins/jay-ka/evals/README.md`.
 
 ## Hazlas tuyas
 Cada skill termina con una sección **Mis ajustes**. Ahí cambias o agregas reglas a tu estilo; esa sección manda sobre el resto. Si una skill no va con tu forma de trabajar, simplemente no la uses.

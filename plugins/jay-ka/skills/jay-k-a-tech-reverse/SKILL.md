@@ -12,6 +12,7 @@ Estudia **algo ajeno** (un sitio publicado, un repositorio o un template) para e
 Esta skill es un **contrato de ejecución**: cada paso dice qué entra, qué comando se corre, qué debe salir y qué hacer si falla. Si un paso no se puede cumplir, se dice en el informe; no se rellena con suposiciones.
 
 Argumentos recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
 
 ## 1. Cómo leer los argumentos
 

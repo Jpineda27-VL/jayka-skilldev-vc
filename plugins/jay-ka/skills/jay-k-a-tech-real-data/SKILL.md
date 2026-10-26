@@ -11,6 +11,7 @@ Para pasar de «pantallas que parecen funcionar» a **datos reales de ejemplo** 
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
 
 | Argumento | Paso |
 |---|---|

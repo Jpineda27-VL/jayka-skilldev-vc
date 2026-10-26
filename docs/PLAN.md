@@ -63,7 +63,14 @@ Mejora de las demás skills a este estándar, por grupos:
   - `style-build` lee la entrevista por clave, y su mini-cuestionario guarda con las mismas claves.
   - Codex: la tarea dice si su entorno tiene Playwright; sin él, Codex no lo instala ni describe lo que no vio y declara la revisión «NO HECHA» con la lista de lo que hay que mirar. Quien revisa la hace siempre, y sin revisión visual no hay «cumple».
 - ✅ **D · Las tres automáticas sin repeticiones (2026-10-26):** cada regla vive en un solo lugar (`communication`: cómo se habla y se cierra; `working-rules`: permisos, secretos, verificación, negocio, datos y convenciones; `git-rules`: Git) y las demás apuntan a ella. `git-rules` cede ante las reglas de Git del `CLAUDE.md` del usuario. Nuevo bloque `working-rules/reference/bloque-claude-md.md` con las 5 reglas que no pueden fallar, instalable con `/jay-k-a-init instalar-reglas [global|proyecto]` (con permiso, solo entre sus marcas). No se quitó ninguna regla. Las manuales conservan sus recordatorios de secretos porque son específicos de su contexto.
-- 🔲 **E · Pruebas de las skills** (escenarios por skill; confirmar el formato de evaluación de plugins).
+- ✅ **E · Pruebas (2026-10-26):**
+  - `tests/run.mjs`: 15 pruebas deterministas, de estructura (frontmatter, argumentos, «Terminado cuando», referencias y scripts citados que existan, versiones) y de cada script con fixtures temporales. Los secretos falsos se arman en tiempo de ejecución. Las 3 con navegador se omiten sin Playwright. Resultado: 15/15.
+  - `plugins/jay-ka/evals/`: 12 escenarios para `claude plugin eval`. Los 6 `sin-shell` pasaron 6/6 en Windows (1 corrida, Sonnet, 0.38 USD). Los 6 `requiere-shell` **no se pudieron correr aquí**: Claude Code no aísla la terminal en Windows. Hay que correrlos en macOS, Linux o WSL.
+  - Lo que salió al probar: cada skill manual dice ahora la respuesta exacta ante un argumento desconocido (antes estaba solo en las convenciones y el modelo no la usaba).
+
+## Pendiente
+- Correr los escenarios `requiere-shell` en macOS, Linux o WSL.
+- Probar el plugin instalado de verdad (`/plugin marketplace add` + `/plugin install`) y el script de copia.
 
 ## Cómo trabajamos
 1. Construir las skills por grupos, mostrando cada una antes de darla por buena.

@@ -1,0 +1,33 @@
+schema_version: "1.0"
+name: real-data-inventario
+description: El inventario corre find-demo-data, encuentra los datos escritos a mano en pantallas, deja fuera los seeders y no modifica pantallas.
+tags: [real-data, requiere-shell]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    /jay-ka:jay-k-a-tech-real-data inventario
+
+    Tienes permiso para crear docs/proyecto y para correr los scripts de la skill.
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Bash, Write]
+runs: 1
+graders:
+  - type: tool_used
+    name: corre-find-demo-data
+    tool: Bash
+    input_match: "find-demo-data"
+    min: 1
+    arm: with-only
+  - type: regex
+    name: encuentra-pedidos
+    pattern: "Pedidos\\.jsx"
+  - type: tool_used
+    name: no-edita-pantallas
+    tool: Edit
+    min: 0
+    max: 0
+  - type: llm
+    name: seeders-fuera-del-inventario
+    criteria: "El inventario lista Pedidos.jsx (arreglo de pedidos escrito a mano) y Perfil.vue (lorem ipsum, correo de ejemplo) como pantallas con datos de demostración, con prioridad. No presenta database/seeders/DemoSeeder.php como algo a corregir, y termina pidiendo acordar el orden."

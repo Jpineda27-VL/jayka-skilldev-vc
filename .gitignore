@@ -3,3 +3,6 @@ Thumbs.db
 node_modules/
 *.local.*
 .env
+
+# Resultados de claude plugin eval
+plugins/jay-ka/evals/results/

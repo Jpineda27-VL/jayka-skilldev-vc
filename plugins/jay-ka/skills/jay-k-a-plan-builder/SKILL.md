@@ -11,6 +11,7 @@ Para trabajo **grande**: una funcionalidad nueva, una vista completa, una migrac
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
 
 | Argumento | Alias | Qué hace |
 |---|---|---|

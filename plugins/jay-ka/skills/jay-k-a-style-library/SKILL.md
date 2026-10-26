@@ -18,6 +18,7 @@ Si la carpeta no existe o está vacía, dilo y explica cómo crear la primera fi
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
 
 Sin argumentos se ejecuta **`lista`**. Alias: `list`, `show` = `ver`, `compare` = `comparar`, `search` = `buscar`, `summary` = `resumen`, `gaps` = `huecos`, `log` = `registro`. Un slug que no existe → «No hay una ficha `<slug>`. Fichas: …».
 

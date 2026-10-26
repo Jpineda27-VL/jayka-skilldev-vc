@@ -1,0 +1,24 @@
+schema_version: "1.0"
+name: init-catalogo
+description: init muestra las skills con cómo se invocan y su estado de instalación, y termina preguntando cuál usar.
+tags: [init, rapido, sin-shell]
+execution:
+  prompt: "/jay-ka:jay-k-a-init"
+  max_turns: 6
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: lista-tech-reverse
+    pattern: "jay-k-a-tech-reverse"
+  - type: regex
+    name: lista-continuity-con-argumentos
+    pattern: "jay-k-a-continuity[^\\n]{0,20}cerrar"
+  - type: regex
+    name: dice-estado-de-instalacion
+    pattern: "instalad[ao]"
+    flags: i
+  - type: regex
+    name: termina-preguntando
+    pattern: "¿Cuál quieres usar\\?"

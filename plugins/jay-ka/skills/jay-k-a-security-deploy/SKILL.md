@@ -11,6 +11,7 @@ Revisión de seguridad **antes de publicar**. Funciona en modo auditoría: revis
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
 
 | Argumento | Qué hace |
 |---|---|
