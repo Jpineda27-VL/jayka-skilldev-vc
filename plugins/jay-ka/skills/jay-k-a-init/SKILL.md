@@ -1,7 +1,7 @@
 ---
 name: jay-k-a-init
-description: "Muestra el catálogo de skills jay-k-a-* con una línea por skill, cómo se invoca y si está instalada. Con un nombre, explica esa skill; con «buscar», sugiere cuál usar. Invócala con /jay-k-a-init."
-argument-hint: "[<skill> | buscar <lo que necesitas>]"
+description: "Muestra el catálogo de skills jay-k-a-* con una línea por skill, cómo se invoca y si está instalada. Con un nombre, explica esa skill; con «buscar», sugiere cuál usar; con «instalar-reglas», pone las reglas base en CLAUDE.md. Invócala con /jay-k-a-init."
+argument-hint: "[<skill> | buscar <lo que necesitas> | instalar-reglas [global | proyecto]]"
 disable-model-invocation: true
 ---
 
@@ -17,11 +17,25 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 | *(vacío)* | `lista`, `list` | **Por defecto.** Catálogo completo |
 | `<skill>` | con o sin el prefijo `jay-k-a-` | Lee su `SKILL.md` y la resume en 3 líneas: para qué sirve, cómo se invoca (sus argumentos) y qué entrega |
 | `buscar <texto>` | `search`, `cuál` | Sugiere la skill que mejor encaja con lo que describe el usuario, y una alternativa si la hay, con el motivo en una línea |
+| `instalar-reglas [global \| proyecto]` | `reglas` | Pone en un `CLAUDE.md` el bloque corto de reglas que deben valer siempre. Ver «Instalar las reglas base». Por defecto: `proyecto` |
+
+## Instalar las reglas base
+Las skills automáticas se cargan cuando Claude las cree útiles; `CLAUDE.md` se lee **siempre**. Por eso las cinco reglas que no pueden fallar (no editar al conversar, secretos solo del usuario, permisos, no inventar negocio, verificar antes de «listo») también pueden ir en `CLAUDE.md`.
+1. Destino: `proyecto` → `CLAUDE.md` en la raíz del proyecto actual; `global` → `~/.claude/CLAUDE.md` (vale para todos los proyectos).
+2. Lee el bloque de `../jay-k-a-working-rules/reference/bloque-claude-md.md` (ruta relativa a esta skill) y el archivo de destino, si existe.
+3. Muestra el bloque tal cual y dónde irá. Si el destino ya tiene reglas que se parecen (por ejemplo, de Git o de secretos), dilo: el bloque no las reemplaza ni las borra.
+4. Pregunta: «¿Agrego este bloque al final de `<destino>`?». Sin un «sí», no se toca nada.
+5. Con el sí:
+   - Si el archivo ya tiene las marcas `jay-k-a:reglas-base:inicio` y `…:fin`, reemplaza **solo** lo que está entre ellas.
+   - Si no las tiene, agrega el bloque al final, separado por una línea en blanco.
+   - Si el archivo no existe, créalo solo con el bloque.
+   - Nunca cambies nada fuera de las marcas.
+6. Muestra las líneas que cambiaron.
 
 ## Catálogo
 Formato de salida: grupo, y debajo `nombre <argumentos>: descripción corta [instalada / no instalada]`.
 
-### Siempre activas (cortas)
+### Automáticas (Claude las carga cuando aplican; las reglas que deben valer siempre van con `instalar-reglas`)
 - `jay-k-a-communication`: cómo conversar (español claro, resumen primero, sin editar al conversar).
 - `jay-k-a-working-rules`: reglas de trabajo y convenciones comunes de las skills.
 - `jay-k-a-git-rules`: commits locales, push y PR solo con tu orden.
@@ -60,6 +74,7 @@ Pregunta una sola cosa: «¿Cuál quieres usar?».
 - Catálogo: aparecen todas las skills de la lista, cada una con su estado de instalación **comprobado** en la lista de la sesión (no supuesto).
 - `<skill>`: el resumen sale de su `SKILL.md` leído en este momento. Si no está instalada, se dice y se resume desde este catálogo.
 - `buscar`: una sugerencia con motivo, o «ninguna encaja» y por qué.
+- `instalar-reglas`: el destino tiene el bloque una sola vez, entre sus marcas; nada fuera de ellas cambió; o, si el usuario no aprobó, nada cambió.
 
 ## Mis ajustes
 <!-- Agrega aquí tus propias skills o quita las que no uses. -->

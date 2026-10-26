@@ -14,7 +14,7 @@ Este documento es el punto de continuidad: quien abra el proyecto en una sesión
 - No se reemplaza nada de otras herramientas (Impeccable, Superpowers, etc.): solo se **sugieren** (`jay-k-a-companion-tools`).
 
 ## Catálogo
-Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripción corta); manual = solo con `/nombre`.
+Estado: ✅ escrita · 🔲 pendiente. Automática = Claude la carga cuando aplica (su descripción está siempre a la vista, el texto completo entra al usarla); manual = solo con `/nombre`. Lo que debe valer siempre va además en `CLAUDE.md` con `/jay-k-a-init instalar-reglas`.
 
 | # | Skill | Tipo | Estado |
 |---|---|---|---|
@@ -62,7 +62,7 @@ Mejora de las demás skills a este estándar, por grupos:
   - `new-project`: las 42 preguntas tienen **clave estable** (`proyecto.nombre` … `calidad.forma-de-trabajo`); plantillas de `entrevista.md` (formato fijo por entrada con estado), `informe-inicial.md` (cada dato cita su clave) y `CLAUDE.md` (menos de 40 líneas). `retomar` convierte entrevistas del formato anterior.
   - `style-build` lee la entrevista por clave, y su mini-cuestionario guarda con las mismas claves.
   - Codex: la tarea dice si su entorno tiene Playwright; sin él, Codex no lo instala ni describe lo que no vio y declara la revisión «NO HECHA» con la lista de lo que hay que mirar. Quien revisa la hace siempre, y sin revisión visual no hay «cumple».
-- 🔲 **D · Recortar las tres automáticas** (sin repetir reglas entre ellas).
+- ✅ **D · Las tres automáticas sin repeticiones (2026-10-26):** cada regla vive en un solo lugar (`communication`: cómo se habla y se cierra; `working-rules`: permisos, secretos, verificación, negocio, datos y convenciones; `git-rules`: Git) y las demás apuntan a ella. `git-rules` cede ante las reglas de Git del `CLAUDE.md` del usuario. Nuevo bloque `working-rules/reference/bloque-claude-md.md` con las 5 reglas que no pueden fallar, instalable con `/jay-k-a-init instalar-reglas [global|proyecto]` (con permiso, solo entre sus marcas). No se quitó ninguna regla. Las manuales conservan sus recordatorios de secretos porque son específicos de su contexto.
 - 🔲 **E · Pruebas de las skills** (escenarios por skill; confirmar el formato de evaluación de plugins).
 
 ## Cómo trabajamos

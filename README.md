@@ -4,7 +4,7 @@ Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicac
 
 *English: a personal skill pack for Claude Code covering working rules, Git, security, project structure and design-style learning. Generic, editable, opt-in.*
 
-> Estado: v0.6.0, catálogo de 21 skills (sin probar todavía instaladas dentro de Claude Code). Mira `docs/PLAN.md`.
+> Estado: v0.7.0, catálogo de 21 skills (sin probar todavía instaladas dentro de Claude Code). Mira `docs/PLAN.md`.
 
 ## Instalar
 
@@ -34,7 +34,7 @@ El script no pisa skills que ya existan; agrega `--force` (bash) o `-Force` (Pow
 ## Qué trae
 Mira `docs/PLAN.md`. Resumen:
 
-- **Siempre activas (cortas):** `jay-k-a-communication`, `jay-k-a-working-rules`, `jay-k-a-git-rules`.
+- **Automáticas:** `jay-k-a-communication`, `jay-k-a-working-rules`, `jay-k-a-git-rules`. Claude las carga cuando aplican. Para que las reglas que no pueden fallar valgan **siempre**, `/jay-k-a-init instalar-reglas` pone un bloque corto en tu `CLAUDE.md` (pide permiso y solo toca lo que está entre sus marcas). Si ya tienes reglas de Git en tu `CLAUDE.md`, mandan las tuyas.
 - **Manuales (solo cuando las escribes):** seguridad y publicación, estructura de proyectos, nuevo proyecto con entrevista, continuidad entre sesiones, aprendizaje y construcción de estilo, técnicas, planes para Codex y herramientas recomendadas.
 - Escribe `/jay-k-a-init` para ver el catálogo completo en una línea por skill.
 

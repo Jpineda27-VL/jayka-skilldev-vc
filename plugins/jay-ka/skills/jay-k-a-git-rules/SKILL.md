@@ -7,6 +7,8 @@ description: "Reglas de Git y GitHub para cualquier proyecto: commits locales li
 
 Principio: nada sale del equipo sin que el usuario lo pida en el chat. Aprobar un cambio en local no autoriza subirlo.
 
+**Precedencia:** si el usuario tiene reglas de Git en su `CLAUDE.md` (global `~/.claude/CLAUDE.md` o del proyecto), **mandan esas**. Esta skill solo cubre lo que ellas no digan. Si alguna regla de aquí choca con las suyas, sigue las suyas y no repitas la de aquí.
+
 ## Primero: ¿hay remoto?
 Revisa `git remote -v`.
 - **Sin remoto (repo solo local):** commitea en la rama actual sin preguntar por ramas, push ni PR.
@@ -42,7 +44,7 @@ Revisa `git remote -v`.
 - Si una operación puede perder datos, haz un respaldo o pregunta antes.
 
 ## Reporte al cerrar
-Qué quedó hecho, qué quedó sin subir y qué decisión falta.
+El cierre de `jay-k-a-communication`, más qué quedó sin subir (rama y número de commits).
 
 ## Mis ajustes
 <!-- Cambia lo que no sea tu estilo. Ejemplo: «trabajo directo en main», «los PR sí los abre el asistente». -->

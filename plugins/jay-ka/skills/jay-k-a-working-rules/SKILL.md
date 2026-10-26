@@ -7,6 +7,8 @@ description: "Reglas de trabajo del autor para cualquier proyecto: plan antes de
 
 Reglas de trabajo del autor, válidas para cualquier proyecto. Si una regla no es tu estilo, bórrala o cámbiala en **Mis ajustes** (esa sección manda sobre el resto).
 
+Cada regla vive en un solo lugar. Aquí: el orden de trabajo, permisos, secretos, reglas de negocio, verificación, datos y convenciones. Las demás skills apuntan aquí en vez de repetirlas. Cómo se habla y se cierra está en `jay-k-a-communication`; Git, en `jay-k-a-git-rules`. Las reglas que deben valer siempre también se pueden poner en `CLAUDE.md` con `/jay-k-a-init instalar-reglas`.
+
 ## 1. No es «vibe coding»
 No se trata de pedir «una página que funcione», copiar lo que sirva y subirlo. El orden es:
 1. **Entender** qué se quiere y qué ya existe.

@@ -100,7 +100,7 @@ Escribe `docs/proyecto/informe-inicial.md` con `reference/informe-inicial-templa
 
 ### 2. Archivos base (solo con aprobación)
 Pregunta antes de crear cualquiera. Crea lo que apruebe:
-- `CLAUDE.md` en la raíz, con `reference/claude-md-template.md` (menos de 40 líneas; lo no definido dice «por definir»).
+- `CLAUDE.md` en la raíz, con `reference/claude-md-template.md` (menos de 40 líneas; lo no definido dice «por definir»). Pregunta aparte si agregar el bloque de reglas base; si dice que sí, se agrega siguiendo «Instalar las reglas base» de `jay-k-a-init`.
 - `.claude/estado/CONTINUAR.md` con el estado inicial y los pendientes, usando la plantilla de `jay-k-a-continuity` (`../jay-k-a-continuity/reference/continuar-template.md`, ruta relativa a esta skill). Los pendientes son los de «Falta para arrancar bien».
 - La estructura de carpetas, con `jay-k-a-project-structure`.
 - `git init` y primer commit, con `jay-k-a-git-rules`.

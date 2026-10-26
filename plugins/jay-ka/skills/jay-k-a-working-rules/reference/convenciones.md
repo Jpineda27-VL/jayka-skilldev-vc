@@ -61,4 +61,4 @@ Si el proyecto ya usa otra ruta para lo mismo, se respeta la del proyecto y se a
 Cada skill trae esa sección con condiciones comprobables. Si una no se cumple, se dice cuál y por qué; no se da por terminado.
 
 ## 8. Cierre
-Tres líneas: qué quedó hecho, qué falta y qué decisión necesita el usuario (si hay alguna).
+Como dice «Al cerrar un bloque de trabajo» en `jay-k-a-communication`.

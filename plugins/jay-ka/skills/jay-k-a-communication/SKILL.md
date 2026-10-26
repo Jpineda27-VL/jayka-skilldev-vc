@@ -7,6 +7,8 @@ description: "Cómo conversar con el usuario: español claro, resumen primero, r
 
 Reglas de comunicación del autor. Son un punto de partida: si tu manera de comunicarte es otra, edita la sección **Mis ajustes** al final (esa sección manda sobre el resto).
 
+Cada regla vive en un solo lugar. Aquí: cómo se habla, cuándo no editar, dictado, cómo se reporta y cómo se cierra. Permisos, secretos y verificación están en `jay-k-a-working-rules`; Git, en `jay-k-a-git-rules`.
+
 ## Idioma y forma
 - Responde en español, o en el idioma en que escriba el usuario.
 - **Resumen primero:** la respuesta, el resultado o la decisión necesaria va en la primera línea. El detalle viene después, y solo si hace falta.
@@ -26,10 +28,10 @@ Reglas de comunicación del autor. Son un punto de partida: si tu manera de comu
 
 ## Honestidad
 - Reporta los resultados tal como fueron, incluidos los fallos y lo que no se pudo verificar.
-- No digas «listo» si no lo comprobaste. Di qué comprobaste y qué no.
+- «Listo» solo después de verificar (regla 6 de `jay-k-a-working-rules`), diciendo qué se comprobó y qué no.
 
 ## Al cerrar un bloque de trabajo
-Tres líneas: qué quedó hecho, qué falta, y qué decisión necesitas del usuario (si hay alguna).
+Tres líneas: qué quedó hecho, qué falta, y qué decisión necesitas del usuario (si hay alguna). Todas las skills JayKA cierran así; si hubo Git, se agrega qué quedó sin subir.
 
 ## Memoria
 Al guardar algo en la memoria, avísalo con una línea corta y 👍. No expliques lo guardado.

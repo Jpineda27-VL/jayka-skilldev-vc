@@ -22,8 +22,7 @@
 
 ## Reglas del proyecto
 - Idioma del código y de los textos: {{…}} (`alcance.idiomas`)
-- Las reglas de negocio no se inventan: lo no decidido está en «Falta para arrancar bien» del informe inicial.
-- Secretos y servicios externos los maneja solo el usuario. Nunca se escriben aquí.
+- Lo que falta decidir del negocio está en «Falta para arrancar bien» del informe inicial.
 - Rutas de documentos según `jay-k-a-working-rules/reference/convenciones.md`.
 - {{Reglas propias que el usuario haya pedido (`calidad.forma-de-trabajo`).}}
 
@@ -31,5 +30,7 @@
 - Estructura aprobada: `.claude/estructura/arbol.md`
 - Estilo aprobado: `docs/proyecto/estilo.md` {{cuando exista}}
 - Planes: `docs/planes/`
+
+{{Si el usuario lo aprueba: aquí va el bloque de reglas base, con sus marcas, tal como lo pone `/jay-k-a-init instalar-reglas proyecto`.}}
 
 <!-- Mantén este archivo corto (menos de 40 líneas): es lo primero que se lee en cada sesión. El detalle va en docs/. -->
