@@ -1,0 +1,63 @@
+{
+  "$comment": "Formato de tokens.json de una ficha de estilo. Todos los campos son opcionales: si no se encontró, se omite o va null. Cada grupo puede traer 'fuente' (archivo:línea o 'medido').",
+  "proyecto": "slug-del-proyecto",
+  "fecha": "AAAA-MM-DD",
+  "sensacion": ["cálida", "festiva"],
+  "color": {
+    "roles": {
+      "fondo": "#FFF8EF",
+      "superficie": "#FFFFFF",
+      "texto": "#26264F",
+      "textoSuave": "#4A4A73",
+      "primario": "#0F48A8",
+      "acento": "#FF1A6E",
+      "exito": "#1B6B42",
+      "aviso": "#A84A00",
+      "peligro": "#B3123F",
+      "borde": "#D9C9B3",
+      "enfoque": "rgba(15,72,168,.28)"
+    },
+    "oscuro": null,
+    "otros": [{ "valor": "#FFC93C", "uso": "subrayado y detalles", "frecuencia": 12 }],
+    "contraste": [
+      { "par": "texto/fondo", "ratio": 12.4, "cumple": "AAA" },
+      { "par": "textoSuave/fondo", "ratio": 7.1, "cumple": "AAA" }
+    ],
+    "fuente": "src/styles/tokens.css:1-40"
+  },
+  "tipografia": {
+    "familias": [{ "rol": "base", "familia": "Nunito Sans", "origen": "autoalojada", "pesos": [400, 600, 700, 800] }],
+    "escala": [{ "nombre": "h1", "tamano": "1.625rem", "peso": 800, "interlineado": 1.15, "espaciadoLetras": "-0.03em" }],
+    "unidades": "rem",
+    "fuente": "medido"
+  },
+  "espaciado": {
+    "escala": ["4px", "8px", "12px", "16px", "22px", "28px", "40px", "64px"],
+    "contenedorMax": "1200px",
+    "fuente": "src/styles/tokens.css"
+  },
+  "forma": {
+    "radios": { "sm": "10px", "md": "16px", "lg": "22px", "xl": "32px", "pildora": "999px" },
+    "bordes": ["1px solid #EBDDCB"],
+    "sombras": ["0 2px 14px rgba(38,38,79,.08)"],
+    "degradados": []
+  },
+  "movimiento": {
+    "duraciones": ["100ms", "240ms"],
+    "curvas": ["cubic-bezier(0.23, 1, 0.32, 1)"],
+    "librerias": [],
+    "scroll": null,
+    "movimientoReducido": true
+  },
+  "puntosDeCorte": ["600px", "960px", "1100px"],
+  "tecnologia": {
+    "framework": "Blade + Expo",
+    "estilos": "CSS plano con variables",
+    "animacion": [],
+    "iconos": "SVG propio",
+    "graficas": null
+  },
+  "componentes": ["boton", "tarjeta", "campo", "barra-inferior", "hoja", "insignia"],
+  "motivosDistintivos": ["subrayado amarillo en títulos", "franja de bordado", "fotos en arco"],
+  "evitar": ["texto gris claro sobre crema"]
+}
