@@ -48,7 +48,12 @@ Las skills se escriben como **contrato de ejecución**, no como instrucciones su
 - Compuertas de permiso con el texto exacto de la pregunta.
 - Tabla «Si algo falla».
 - Scripts propios cuando una tarea se puede medir en vez de describir.
-Pendiente: revisar las demás skills con este estándar (después de la revisión con otro modelo).
+Mejora de las demás skills a este estándar, por grupos:
+- ✅ **A · Base común (2026-10-26):** `jay-k-a-working-rules/reference/convenciones.md` (argumentos, rutas, slug/fecha/NNN, permisos de carpetas, compuertas, origen de afirmaciones). Las 18 manuales tienen `argument-hint`, tabla de argumentos con `$ARGUMENTS` y «Terminado cuando». Rutas unificadas (`.claude/estructura/arbol.md` y `pantallas.md`, `docs/seguridad/`, `docs/proyecto/datos-de-prueba.md`). Descripciones entre comillas (antes había 12 con «: », que rompe el YAML estricto).
+- 🔲 **B · Scripts que miden:** `security-deploy` (rutas 404, encabezados, HTTPS, claves en historial), `security-web` (patrones de riesgo), `style-self-learning` (captura de `tech-reverse`, contraste, validar tokens), `tech-real-data` (datos de demostración), `tech-views-parity` (capturas lado a lado).
+- 🔲 **C · Plantillas:** `CONTINUAR.md`, `entrevista.md` con claves estables (y `style-build` leyendo claves en vez de números), `CLAUDE.md` inicial, Codex sin Playwright.
+- 🔲 **D · Recortar las tres automáticas** (sin repetir reglas entre ellas).
+- 🔲 **E · Pruebas de las skills** (escenarios por skill; confirmar el formato de evaluación de plugins).
 
 ## Cómo trabajamos
 1. Construir las skills por grupos, mostrando cada una antes de darla por buena.

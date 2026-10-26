@@ -1,12 +1,27 @@
 ---
 name: jay-k-a-tech-laravel-backend
-description: Patrón de backend Laravel probado en producción: controladores delgados, reglas de negocio en servicios, errores de negocio con código estable, una acción por POST, bitácora de cambios, varias cuentas con guards separados, pruebas por regla y seeders locales. Invócala con /jay-k-a-tech-laravel-backend al crear o ampliar un backend Laravel.
+description: "Patrón de backend Laravel probado en producción: controladores delgados, reglas de negocio en servicios, errores de negocio con código estable, una acción por POST, bitácora de cambios, varias cuentas con guards separados, pruebas por regla y seeders locales. Invócala con /jay-k-a-tech-laravel-backend nuevo, modulo <nombre> o revisar."
+argument-hint: "nuevo | modulo <nombre> | revisar [<sección>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Laravel Backend
 
 Orden para construir un backend Laravel que **crece sin enredarse**: dónde vive cada cosa, cómo se nombran los errores, cómo se prueba. Los ejemplos de código están en `reference/patterns.md`. Los nombres de ejemplo están en español; usa el idioma del proyecto.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `nuevo` | `new` | Arranque de un backend nuevo: sección 10 |
+| `modulo <nombre>` | `module` | Módulo nuevo en un backend existente: sección 9 |
+| `revisar [<sección>]` | `audit` | Revisa el backend actual contra las secciones 1 a 8 (o solo la indicada, por número) y entrega **Bien / Falta / No aplica** con origen. No cambia código |
+| *(vacío)* | | Si existe `artisan` en la carpeta: pregunta «¿Módulo nuevo o revisar?». Si no: `nuevo` |
+
+## Preparación (siempre)
+- Versión: lee `laravel/framework` en `composer.json` y `php --version`. Si el proyecto no es Laravel, dilo y detente.
+- Comando de pruebas: `php artisan test` (o el script `test` de `composer.json` si existe). Córrelo una vez al empezar para conocer el punto de partida y anota el resultado.
 
 ## Reglas de esta skill
 - Cumple `jay-k-a-working-rules`: plan antes de construir y un módulo a la vez.
@@ -83,6 +98,11 @@ Para paneles con muchas operaciones, en lugar de una ruta por cada una:
 - [ ] Middleware de encabezados de seguridad y límites de peticiones (`jay-k-a-security-web`).
 - [ ] Trait de pruebas con el «mundo» base y la primera prueba verde.
 - [ ] `docs/` con reglas de negocio y estado (`jay-k-a-continuity`).
+
+## Terminado cuando
+- **`nuevo`:** cada casilla de la sección 10 está marcada o anotada como pendiente con su motivo, y `php artisan test` pasa (salida real en el resumen).
+- **`modulo`:** existen migración, servicio, controlador y rutas, lecturas JSON y una prueba por regla (incluidas las negativas de la sección 8); la suite completa pasa; el resumen lista las reglas implementadas, los códigos de error y las decisiones pendientes.
+- **`revisar`:** cada punto revisado tiene clasificación y origen (`Código` con `archivo:línea` o `Medido`), y no se cambió código.
 
 ## Mis ajustes
 <!-- Nombres de carpetas y clases, versión de Laravel, base de datos, estilo de pruebas. -->

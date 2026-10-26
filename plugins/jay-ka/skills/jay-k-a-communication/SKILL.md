@@ -1,6 +1,6 @@
 ---
 name: jay-k-a-communication
-description: Cómo conversar con el usuario: español claro, resumen primero, respuestas cortas, un tema a la vez, y no editar nada cuando solo se está conversando. Aplica a toda la conversación.
+description: "Cómo conversar con el usuario: español claro, resumen primero, respuestas cortas, un tema a la vez, y no editar nada cuando solo se está conversando. Aplica a toda la conversación."
 ---
 
 # JayKA · Communication

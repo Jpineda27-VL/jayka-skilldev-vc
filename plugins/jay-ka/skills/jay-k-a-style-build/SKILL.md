@@ -1,12 +1,21 @@
 ---
 name: jay-k-a-style-build
-description: Construye prototipos con tu propio estilo: toma la identidad de la entrevista de new-project y las fichas de style-self-learning, propone una base con razones (o tres direcciones nuevas si no hay nada), la aprueba contigo, la convierte en tokens y construye pantallas verificadas en celular y escritorio. Invócala con /jay-k-a-style-build.
+description: "Construye prototipos con tu propio estilo: toma la identidad de la entrevista de new-project y las fichas de style-self-learning, propone una base con razones (o tres direcciones nuevas si no hay nada), la aprueba contigo, la convierte en tokens y construye pantallas verificadas en celular y escritorio. Invócala con /jay-k-a-style-build, opcionalmente diciendo qué construir."
+argument-hint: "[<qué construir>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Style Build
 
 Modo **construcción** de la pareja de estilo. Usa lo aprendido por `jay-k-a-style-self-learning` (fichas) y lo definido en `jay-k-a-new-project` (identidad y tecnología) para que los prototipos nuevos salgan **coherentes con tu estilo y sin cara de «hecho por IA»**.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Qué hace |
+|---|---|
+| *(vacío)* | **Por defecto.** Empieza en el Paso 0 y pregunta qué se va a construir |
+| `<qué construir>` | Texto libre (por ejemplo «inicio del cliente y panel de pedidos»). Se usa como alcance propuesto del Paso 4, que igual se confirma |
 
 ## Reglas que no se rompen
 1. **El usuario decide el estilo.** Propones con razones; nada se aplica sin su aprobación.
@@ -68,6 +77,12 @@ No entres en un ciclo de pulido infinito: **una ronda completa y, si hace falta,
 Resume: estilo aplicado (de qué ficha o dirección), archivos creados, tokens, y qué no se hizo. Cierra sugiriendo, sin ejecutarlas:
 - `jay-k-a-companion-tools`: auditoría y pulido (por ejemplo `impeccable audit` y `polish`) y las herramientas contra el «aspecto de IA».
 - `jay-k-a-style-self-learning`, **cuando el proyecto esté terminado**, para guardar su ficha y enriquecer la biblioteca.
+
+## Terminado cuando
+- `docs/proyecto/estilo.md` existe y el usuario lo aprobó en la compuerta del Paso 3.
+- Las pantallas del alcance confirmado están construidas, y fuera del archivo de tokens no hay colores sueltos: una búsqueda de `#[0-9a-fA-F]{3,8}\b`, `rgb(` y `hsl(` en los archivos del prototipo no encuentra ninguno (o cada uno está justificado).
+- Se revisaron todas las pantallas a 1280 px y 375 px, con una ronda de correcciones y una de confirmación como máximo.
+- La entrega dice qué quedó sin verificar.
 
 ## Mis ajustes
 <!-- Cambia bases (por ejemplo «texto en px», «siempre modo oscuro»), pesos de tus preferencias o qué pantallas se construyen por defecto. -->

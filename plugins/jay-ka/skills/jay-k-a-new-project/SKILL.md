@@ -1,6 +1,7 @@
 ---
 name: jay-k-a-new-project
-description: Arranca un proyecto nuevo con una entrevista guiada de unas 42 preguntas (objetivo, usuarios, tecnología, datos, identidad visual, seguridad y publicación), cada una respondida o saltada a mano, y entrega un informe de lo definido y lo que falta. Invócala con /jay-k-a-new-project.
+description: "Arranca un proyecto nuevo con una entrevista guiada de 42 preguntas (objetivo, usuarios, tecnología, datos, identidad visual, seguridad y publicación), cada una respondida o saltada a mano, y entrega un informe de lo definido y lo que falta. Invócala con /jay-k-a-new-project (o con «retomar» para seguir una entrevista guardada)."
+argument-hint: "[retomar | informe]"
 disable-model-invocation: true
 ---
 
@@ -8,13 +9,22 @@ disable-model-invocation: true
 
 Orquesta el arranque de un proyecto: entrevista, informe y archivos base. Trabaja **sin inventar**: todo lo que no responda el usuario queda como pendiente.
 
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| *(vacío)* | `nuevo`, `new` | **Por defecto.** Entrevista desde la pregunta 1. Si ya existe `docs/proyecto/entrevista.md`, pregunta antes: «Ya hay una entrevista guardada. ¿La retomo o empiezo una nueva (la anterior se guarda con fecha)?» |
+| `retomar` | `continuar`, `resume` | Lee `docs/proyecto/entrevista.md` y sigue desde el primer bloque con preguntas sin resolver. Si no existe, lo dice y ofrece empezar |
+| `informe` | `report` | No pregunta nada: vuelve a escribir `docs/proyecto/informe-inicial.md` desde la entrevista guardada |
+
 ## Reglas de la entrevista (obligatorias)
 1. **Cada pregunta se resuelve a mano.** El usuario la responde escribiendo, o escribe él mismo `saltar`. Ninguna se salta sola, ninguna se rellena por tu cuenta y ninguna queda en blanco sin que él lo diga.
 2. Responder y saltar son igual de válidos. No presiones ni insistas en las saltadas.
 3. «No sé» es una respuesta escrita y válida: se anota como duda. En la parte de identidad significa que después se le sugerirán opciones.
 4. Haz las preguntas en **bloques de 4 a 6**, numeradas, con el nombre del bloque. El usuario contesta por número (`7: ...`, `8: saltar`). Si faltan números por resolver, vuelve a mostrarlos (solo esos) antes de pasar al siguiente bloque.
 5. No saltes de bloque con preguntas sin resolver. Si el usuario quiere dejar un bloque entero para después, que lo escriba (`saltar bloque`), y se anotan todas como saltadas.
-6. Guarda las respuestas a medida que llegan en `docs/proyecto/entrevista.md` (crea la carpeta con permiso). Si la conversación se corta, se retoma desde ahí.
+6. Guarda las respuestas a medida que llegan en `docs/proyecto/entrevista.md` (la carpeta se crea según las convenciones). Si la conversación se corta, se retoma con `retomar`.
 7. No pidas claves, tokens ni datos de cuentas. Si el usuario menciona servicios externos (pagos, correo, mapas), solo anota cuáles son. Las claves las maneja él (ver `jay-k-a-working-rules`).
 8. Colores: **no se piden códigos exactos**. Basta con tonos («rojo, azul y verde», «cálido», «sobrio»). Es solo para sondear; las paletas concretas se sugieren o se integran después. Si ya tiene una paleta exacta, la anotas, pero no la pidas.
 
@@ -101,6 +111,12 @@ Pregunta antes de crear cualquiera. Crea lo que apruebe:
 - `jay-k-a-security-web`, si hay login, formularios o subidas.
 - `jay-k-a-companion-tools`, para auditorías y pulido.
 Solo menciona las que estén instaladas; si no lo están, dilo.
+
+## Terminado cuando
+- Las 42 preguntas tienen un estado escrito en `docs/proyecto/entrevista.md`: respondida, saltada o «no sé». Ninguna sin estado.
+- `docs/proyecto/informe-inicial.md` existe con sus seis secciones y se mostró resumido.
+- Los archivos base creados son **solo** los que el usuario aprobó, y se dijo cuáles no se crearon.
+- Los siguientes pasos se sugirieron sin ejecutarlos.
 
 ## Mis ajustes
 <!-- Agrega, quita o cambia preguntas aquí. Ejemplo: «agrega una pregunta sobre accesibilidad», «quita las de identidad». Mantén la regla: responder o saltar, siempre a mano. -->

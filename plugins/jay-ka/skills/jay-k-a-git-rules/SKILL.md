@@ -1,6 +1,6 @@
 ---
 name: jay-k-a-git-rules
-description: Reglas de Git y GitHub para cualquier proyecto: commits locales libres, push solo cuando el usuario lo avise, PR y merge nunca sin petición, rama de trabajo en lugar de main y deploy solo con orden. Úsala al hacer commits, ramas, push, PR o deploy.
+description: "Reglas de Git y GitHub para cualquier proyecto: commits locales libres, push solo cuando el usuario lo avise, PR y merge nunca sin petición, rama de trabajo en lugar de main y deploy solo con orden. Úsala al hacer commits, ramas, push, PR o deploy."
 ---
 
 # JayKA · Git Rules

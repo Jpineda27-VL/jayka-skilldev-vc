@@ -1,12 +1,21 @@
 ---
 name: jay-k-a-security-deploy
-description: Checklist de seguridad antes de publicar un sitio o app (secretos, entorno, HTTPS, respaldos, cron, rutas que deben dar 404, prueba final). Invócala con /jay-k-a-security-deploy antes de subir a producción.
+description: "Checklist de seguridad antes de publicar un sitio o app (secretos, entorno, HTTPS, respaldos, cron, rutas que deben dar 404, prueba final). Invócala con /jay-k-a-security-deploy antes de subir a producción, opcionalmente con tu dominio."
+argument-hint: "[<dominio>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Security Deploy
 
 Revisión de seguridad **antes de publicar**. Funciona en modo auditoría: revisas, reportas y propones. **No cambias nada ni tocas secretos sin permiso** (ver `jay-k-a-working-rules`).
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Qué hace |
+|---|---|
+| *(vacío)* | **Por defecto.** Auditoría de las secciones 1 a 8 contra el código y la configuración. La sección 9 se entrega como comandos con `TU-DOMINIO` para que los corra el usuario |
+| `<dominio>` | Igual, y además la sección 9 con ese dominio. Antes de correrla pregunta: «¿Corro yo las pruebas de la sección 9 contra `<dominio>`? Solo son peticiones de lectura». Si dice que no, se entregan los comandos ya rellenos. Se acepta con o sin `https://` |
 
 ## Reglas de esta skill
 - Las claves, tokens, contraseñas y variables de producción los maneja **solo el usuario**. Tú nunca las lees, creas, copias ni escribes. Dices qué falta y dónde va.
@@ -65,7 +74,12 @@ Pásale estas pruebas al usuario, con su dominio:
 - Revisar que HTTP redirige a HTTPS.
 
 ## Informe final
-Termina con: qué quedó listo, qué falta, qué necesita hacer el usuario, y un veredicto claro: **listo para publicar** o **no publicar todavía** y por qué.
+Guárdalo en `docs/seguridad/AAAA-MM-DD-deploy.md` y muéstralo resumido. Termina con: qué quedó listo, qué falta, qué necesita hacer el usuario, y un veredicto claro: **listo para publicar** o **no publicar todavía** y por qué.
+
+## Terminado cuando
+- Cada punto de las secciones 1 a 9 está como **Bien**, **Falta**, **No aplica** o **Necesita al usuario**, con su origen (`Medido`, `Código` o `Inferido`, según las convenciones).
+- Ningún archivo de secretos real fue abierto.
+- El informe está guardado y tiene veredicto. Si hay algún **Falta** de las secciones 1, 2 o 4, el veredicto es «no publicar todavía».
 
 ## Mis ajustes
 <!-- Agrega o quita puntos según tu hosting y tu stack. -->

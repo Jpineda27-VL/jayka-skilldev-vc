@@ -1,12 +1,22 @@
 ---
 name: jay-k-a-tech-codex-plan-high
-description: Para trabajo GRANDE que se le pide a Codex (una vista completa, un formulario, un flujo): pasa por Plan Builder, divide el plan en tareas .md ordenadas con criterios, pruebas y revisión con Playwright, y define el informe .md que Codex devuelve. El usuario revisa al final. Invócala con /jay-k-a-tech-codex-plan-high.
+description: "Para trabajo GRANDE que se le pide a Codex (una vista completa, un formulario, un flujo): pasa por Plan Builder, divide el plan en tareas .md ordenadas con criterios, pruebas y revisión con Playwright, y define el informe .md que Codex devuelve. El usuario revisa al final. Invócala con /jay-k-a-tech-codex-plan-high <plan> <bloque>, o «revisar NNN» cuando Codex devuelva el resultado."
+argument-hint: "[<ruta-del-plan> <bloque>] | revisar <NNN>"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Codex Plan High
 
 Para pedirle a Codex **un bloque grande**: «crea una vista completa con un formulario», «arma el flujo de pedidos». Codex construye el **esquema base completo**; el usuario **revisa y termina** al final. Para cambios pequeños usa `jay-k-a-tech-codex-plan-low`.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `<ruta-del-plan> <bloque>` | | Usa ese bloque (número o título) de ese plan aprobado y va al Paso 2 |
+| `revisar <NNN>` | `review` | Paso 4 para la tarea `NNN` |
+| *(vacío)* | | Busca en `docs/planes/` planes aprobados con bloques sin marcar. Si hay, los lista y pregunta cuál bloque. Si no hay, va al Paso 1 (plan primero) |
 
 Codex solo se usa **si el usuario lo pide**. Esta skill prepara todo; el usuario decide cuándo y cómo pasárselo.
 
@@ -52,6 +62,11 @@ Al terminar todas las tareas, prepara un **resumen de revisión** para el usuari
 - No ejecuta Codex por su cuenta.
 - No escribe tareas grandes sin plan aprobado.
 - No amplía el alcance ni decide reglas de negocio.
+
+## Terminado cuando
+- **Preparar:** cada tarea `docs/codex/tareas/NNN-<slug>.md` (numeración según las convenciones) sale de un bloque de un plan aprobado y tiene especificación de la vista, alcance de archivos, pruebas, Playwright, prohibiciones, puntos de parada y formato de respuesta; si se dividió, el orden y las dependencias están escritos.
+- **Revisar:** cada tarea tiene veredicto basado en tu propia revisión del diff, las pruebas y el navegador; las casillas del plan están marcadas y lo aprobado tiene commit local.
+- **Final:** el resumen de revisión del Paso 5 se entregó.
 
 ## Mis ajustes
 <!-- Cambia carpetas, límite de archivos por tarea, comando de pruebas o tamaños de Playwright. -->

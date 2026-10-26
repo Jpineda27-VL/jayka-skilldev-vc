@@ -1,14 +1,41 @@
 ---
 name: jay-k-a-security-web
-description: Revisión y reglas de seguridad web para cualquier app: encabezados y CSP, cookies, CSRF, límites de peticiones y login, validación, permisos entre usuarios (IDOR), subida de archivos, contraseñas y privacidad. Invócala con /jay-k-a-security-web al construir o revisar login, formularios, API o subidas.
+description: "Revisión y reglas de seguridad web para cualquier app: encabezados y CSP, cookies, CSRF, límites de peticiones y login, validación, permisos entre usuarios (IDOR), subida de archivos, contraseñas y privacidad. Invócala con /jay-k-a-security-web construir o /jay-k-a-security-web auditar, opcionalmente con un área."
+argument-hint: "construir | auditar [encabezados | sesion | csrf | limites | validacion | permisos | subidas | cuentas | privacidad]"
 disable-model-invocation: true
 ---
 
 # JayKA · Security Web
 
-Dos modos. Pregunta cuál quiere el usuario si no queda claro:
+Dos modos:
 - **Construir:** al crear login, formularios, API o subidas, aplica estas reglas desde el primer día.
 - **Auditar:** revisa el código existente contra la lista y entrega un informe (**Bien**, **Falta**, **No aplica**). No corrijas sin permiso.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `construir [<área>]` | `build`, `crear` | Aplica las reglas mientras se construye |
+| `auditar [<área>]` | `audit`, `revisar` | Revisa lo existente y entrega informe |
+| *(vacío)* | | Pregunta: «¿Construir o auditar?» |
+
+Áreas (opcionales, una o varias separadas por coma; sin área se cubren todas):
+
+| Área | Secciones |
+|---|---|
+| `encabezados` | 1 |
+| `sesion` | 2 |
+| `csrf` | 3 |
+| `limites` | 4 |
+| `validacion` | 5 |
+| `permisos` | 6 |
+| `subidas` | 7 |
+| `cuentas` | 8 |
+| `privacidad` | 9 |
+| `login` (atajo) | 2, 4, 8 |
+| `formularios` (atajo) | 3, 4, 5 |
+| `api` (atajo) | 1, 3, 4, 5, 6 |
 
 Los secretos, claves y servicios externos los maneja solo el usuario (ver `jay-k-a-working-rules`).
 
@@ -76,7 +103,11 @@ Los secretos, claves y servicios externos los maneja solo el usuario (ver `jay-k
 - Provoca un error: no debe mostrar trazas.
 
 ## Informe
-Lista corta: **Bien**, **Falta** (con la corrección propuesta) y **No aplica**. Pregunta antes de corregir.
+Lista corta: **Bien**, **Falta** (con la corrección propuesta) y **No aplica**, cada punto con su origen (`Medido`, `Código` o `Inferido`). En modo auditar se guarda en `docs/seguridad/AAAA-MM-DD-web.md`. Pregunta antes de corregir.
+
+## Terminado cuando
+- **Auditar:** cada punto de las secciones del área está clasificado y con origen; el informe está guardado; no se cambió código.
+- **Construir:** cada regla de las secciones del área está implementada o anotada como pendiente con su motivo, y las pruebas de la sección 10 que aplican se corrieron, con su resultado real.
 
 ## Mis ajustes
 <!-- Cambia los números (intentos por minuto, peso máximo) o agrega reglas de tu stack. -->

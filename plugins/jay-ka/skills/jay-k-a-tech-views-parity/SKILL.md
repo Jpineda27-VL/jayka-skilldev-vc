@@ -1,12 +1,25 @@
 ---
 name: jay-k-a-tech-views-parity
-description: Mantiene la paridad cuando un producto tiene dos frontends que deben mostrar las mismas pantallas (por ejemplo web renderizada en el servidor y app móvil, o web y app nativa): inventario de pantallas, fuente única de datos, checklist de paridad y verificación en ambos. Invócala con /jay-k-a-tech-views-parity al cambiar o crear una pantalla.
+description: "Mantiene la paridad cuando un producto tiene dos frontends que deben mostrar las mismas pantallas (por ejemplo web renderizada en el servidor y app móvil, o web y app nativa): inventario de pantallas, fuente única de datos, checklist de paridad y verificación en ambos. Invócala con /jay-k-a-tech-views-parity inventario, cambio <pantalla> o verificar."
+argument-hint: "inventario | cambio <pantalla> | verificar [<pantalla> | todo]"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Views Parity
 
 Cuando el mismo producto se ve en **dos frontends** (por ejemplo vistas del servidor para escritorio y una app para el celular), cada cambio de una pantalla debe llegar **a los dos**. Esta skill evita que se desfasen.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `inventario` | `inventory` | Paso 0: crea o actualiza el inventario |
+| `cambio <pantalla>` | `change` | Pasos 1 a 4 para esa pantalla (por id o ruta del inventario) |
+| `verificar [<pantalla> \| todo]` | `check` | Solo los pasos 3 y 4. Sin pantalla: las que el inventario no marca como `igual` |
+| *(vacío)* | | Si no existe `.claude/estructura/pantallas.md` → `inventario`. Si existe → pregunta: «¿Cambio en una pantalla, o verificar?» |
+
+Una pantalla que no está en el inventario → «`<pantalla>` no está en el inventario. ¿La agrego?».
 
 ## Regla central
 **Cambiar una pantalla = cambiar las dos versiones en el mismo trabajo**, o dejar anotado explícitamente cuál queda pendiente y por qué. Nunca «después lo igualamos» sin registro.
@@ -20,7 +33,7 @@ Cuando el mismo producto se ve en **dos frontends** (por ejemplo vistas del serv
 6. **Lo que sí puede diferir:** la distribución (columnas vs una columna), los gestos del celular y las pantallas que solo tienen sentido en un dispositivo (se anotan como «solo web» o «solo app» en el inventario, con motivo).
 
 ## Paso 0 · Inventario de pantallas
-Mantén un archivo (por ejemplo `.claude/estructura/pantallas.md` o `docs/pantallas.md`) con una fila por pantalla. Plantilla en `reference/screen-inventory.md`. Si no existe, **créalo** con permiso, recorriendo rutas y vistas.
+Mantén `.claude/estructura/pantallas.md` con una fila por pantalla. Plantilla en `reference/screen-inventory.md`. Si no existe, **créalo** (según las convenciones), recorriendo rutas y vistas.
 Columnas mínimas: **id** · **ruta** · **frontend A (archivo)** · **frontend B (archivo)** · **datos (servicio o API)** · **estado de paridad** (`igual`, `A adelantado`, `B adelantado`, `solo A`, `solo B`) · **notas**.
 
 ## Paso 1 · Antes de tocar una pantalla
@@ -54,6 +67,11 @@ Marca el estado de paridad, la fecha y el commit. Si algo quedó pendiente, anó
 - No duplicar lógica de negocio en el frontend para «ir más rápido».
 - No dar por buena una pantalla porque se ve bien en un solo frontend.
 - No cambiar el diseño de una versión sin avisar y registrar.
+
+## Terminado cuando
+- **`inventario`:** cada ruta y vista de los dos frontends tiene su fila, con estado de paridad.
+- **`cambio`:** la pantalla quedó cambiada en los dos frontends (o lo pendiente está anotado con motivo), el checklist de paridad está recorrido, las pruebas del servidor pasan si se tocó, y el inventario tiene estado, fecha y commit.
+- **`verificar`:** cada pantalla revisada se vio en los dos frontends, en escritorio y celular, y su estado en el inventario refleja lo que se vio.
 
 ## Mis ajustes
 <!-- Nombra tus dos frontends (por ejemplo «Blade» y «app Expo»), la ubicación del inventario y las diferencias permitidas. -->

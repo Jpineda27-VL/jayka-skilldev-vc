@@ -1,12 +1,22 @@
 ---
 name: jay-k-a-tech-codex-plan-low
-description: Prepara una tarea SIMPLE para Codex como archivo .md (alcance cerrado, criterios, pruebas básicas y revisión con Playwright) y define el informe .md que debe devolver. Para cambios pequeños y manuales, sin plan grande. Invócala con /jay-k-a-tech-codex-plan-low.
+description: "Prepara una tarea SIMPLE para Codex como archivo .md (alcance cerrado, criterios, pruebas básicas y revisión con Playwright) y define el informe .md que debe devolver. Para cambios pequeños y manuales, sin plan grande. Invócala con /jay-k-a-tech-codex-plan-low <tarea>, o «revisar NNN» cuando Codex devuelva el resultado."
+argument-hint: "<tarea en una frase> | revisar <NNN>"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Codex Plan Low
 
 Para **tareas simples** que se le piden a Codex: cambiar tarjetas, ajustar una pantalla, corregir un detalle, mover un componente. **Sin plan grande**: una instrucción corta en `.md`, y Codex devuelve un informe corto en `.md`. Para una vista o flujo completo usa `jay-k-a-tech-codex-plan-high`.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `<tarea en una frase>` | | Pasos 1 a 3: prepara la tarea |
+| `revisar <NNN>` | `review` | Paso 4: revisa lo que devolvió Codex para la tarea `NNN`. Si no existe `docs/codex/resultados/NNN-*.md`, lo dice y se detiene |
+| *(vacío)* | | Pregunta: «¿Qué tarea le pasamos a Codex? (una frase)» |
 
 ## Cuándo sí y cuándo no
 - **Sí:** el cambio cabe en pocos archivos, el resultado es fácil de comprobar, no hay decisiones de negocio nuevas.
@@ -19,7 +29,7 @@ Para **tareas simples** que se le piden a Codex: cambiar tarjetas, ajustar una p
 3. **Una tarea a la vez.** Si el usuario pide varias, haz varias tareas separadas y en orden.
 
 ## Paso 2 · Escribir la tarea
-Archivo: `docs/codex/tareas/NNN-<slug>.md` (NNN consecutivo; pide permiso para crear la carpeta). Usa `reference/task-template.md`. Reglas de contenido:
+Archivo: `docs/codex/tareas/NNN-<slug>.md` (NNN, slug y carpeta según las convenciones). Usa `reference/task-template.md`. Reglas de contenido:
 - **Corta:** una página como máximo.
 - **Alcance cerrado:** lista de archivos que puede tocar y la orden «no toques nada fuera de esa lista; si hace falta, detente y pregunta en el informe».
 - **Criterios de aceptación** comprobables.
@@ -45,6 +55,10 @@ No confíes en el informe: **revísalo**.
 - No ejecuta Codex por su cuenta.
 - No amplía el alcance.
 - No escribe planes grandes (eso es `plan-high`).
+
+## Terminado cuando
+- **Preparar:** `docs/codex/tareas/NNN-<slug>.md` existe, ocupa una página o menos y tiene lista de archivos permitidos, criterios de aceptación, verificación, prohibiciones y formato de respuesta; el usuario sabe dónde está y cómo pasarlo.
+- **Revisar:** el veredicto (cumple / cumple con observaciones / no cumple) se basa en el diff, las pruebas y el navegador revisados por ti, no en el informe de Codex; lo aprobado tiene commit local.
 
 ## Mis ajustes
 <!-- Cambia la carpeta de tareas, las pruebas por defecto, el tamaño de pantalla de Playwright o las prohibiciones. -->

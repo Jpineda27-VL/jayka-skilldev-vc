@@ -1,12 +1,21 @@
 ---
 name: jay-k-a-tech-photos
-description: Subida de fotos completa y segura: límite de peso, tipo real por contenido, corrección de orientación, reducción a un máximo de píxeles, compresión a WebP, nombres claros por dueño y rol, ruta relativa en la base, versión para evitar caché, reemplazo sin archivos huérfanos, subida desde el panel y límites de PHP. Invócala con /jay-k-a-tech-photos.
+description: "Subida de fotos completa y segura: límite de peso, tipo real por contenido, corrección de orientación, reducción a un máximo de píxeles, compresión a WebP, nombres claros por dueño y rol, ruta relativa en la base, versión para evitar caché, reemplazo sin archivos huérfanos, subida desde el panel y límites de PHP. Invócala con /jay-k-a-tech-photos, opcionalmente diciendo qué fotos se suben."
+argument-hint: "[<qué fotos>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Photos
 
 Receta para que las fotos que suben los usuarios (de un comercio, un producto, un perfil) **pesen poco, se vean bien, no sean un riesgo y se puedan identificar**. Los números son valores por defecto; cámbialos en **Mis ajustes**.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Qué hace |
+|---|---|
+| *(vacío)* | **Por defecto.** Empieza en el paso 1 con todas sus preguntas |
+| `<qué fotos>` | Texto libre (por ejemplo «portada y logo del comercio, fotos de producto»). Responde la primera pregunta del paso 1; las demás se preguntan |
 
 ## Valores por defecto
 | Parámetro | Valor |
@@ -49,6 +58,12 @@ Receta para que las fotos que suben los usuarios (de un comercio, un producto, u
 - No confiar en `accept="image/*"` como defensa: es solo comodidad.
 - No exponer carpetas privadas por el mismo enlace público.
 - No subir las fotos de prueba reales de clientes a un repositorio.
+
+## Terminado cuando
+- Todas las reglas viven en un solo servicio de fotos.
+- Las pruebas del paso 10 existen y pasan (salida real en el resumen).
+- Los límites del servidor están **medidos** (por ejemplo `php -i` filtrando `upload_max_filesize` y `post_max_size`) y son mayores que el máximo de subida.
+- Una subida real, hecha desde el navegador en celular y en escritorio, dio un `.webp` con el lado largo de 1200 px o menos, el nombre según la convención, y un peso anotado en el resumen.
 
 ## Mis ajustes
 <!-- Cambia 5 MB, 1200 px, calidad, formato (por ejemplo AVIF) y convención de nombres. -->

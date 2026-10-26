@@ -1,12 +1,22 @@
 ---
 name: jay-k-a-plan-builder
-description: Arma un plan por bloques para trabajo grande, apoyándose en Superpowers (brainstorming y writing-plans), y lo deja en un archivo .md aprobado antes de ejecutar. Si Superpowers no está instalado, lo dice y no finge. Invócala con /jay-k-a-plan-builder.
+description: "Arma un plan por bloques para trabajo grande, apoyándose en Superpowers (brainstorming y writing-plans), y lo deja en un archivo .md aprobado antes de ejecutar. Si Superpowers no está instalado, lo dice y no finge. Invócala con /jay-k-a-plan-builder <qué se va a construir>, o «continuar <plan>» para ejecutar uno aprobado."
+argument-hint: "<qué se va a construir> | continuar <ruta-del-plan>"
 disable-model-invocation: true
 ---
 
 # JayKA · Plan Builder
 
 Para trabajo **grande**: una funcionalidad nueva, una vista completa, una migración, un rediseño. Para tareas pequeñas **no la uses**: pide el cambio directo (o usa `jay-k-a-tech-codex-plan-low` si lo hace Codex).
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Alias | Qué hace |
+|---|---|---|
+| `<qué se va a construir>` | | Texto libre. Empieza en la regla de honestidad y sigue desde el Paso 1 |
+| `continuar <ruta-del-plan>` | `seguir`, `resume` | Lee ese plan y va directo al Paso 6, desde el primer bloque sin marcar. Si el plan no está aprobado, vuelve al Paso 5 |
+| *(vacío)* | | Si en `docs/planes/` hay planes con bloques sin marcar, los lista y pregunta: «¿Continúo uno de estos o planeamos algo nuevo?». Si no hay, pregunta: «¿Qué se va a planear?» |
 
 ## Regla de honestidad (la primera)
 Esta skill está pensada para trabajar **con Superpowers** (`brainstorming` y `writing-plans`). Antes de empezar, **revisa la lista de skills disponibles** y busca `brainstorming` y `writing-plans` (pueden aparecer como `superpowers:brainstorming` y `superpowers:writing-plans`).
@@ -39,7 +49,7 @@ Un bloque es una unidad que se puede **construir, verificar y commitear sola** (
 Ordena por dependencia y por riesgo: lo incierto primero.
 
 ## Paso 4 · Escribir el plan
-Archivo: `docs/planes/AAAA-MM-DD-<slug>.md` (pide permiso para crear la carpeta si no existe). El plan es **contexto mínimo y autosuficiente**: alguien (o un agente) que lea solo ese archivo debe poder ejecutarlo. Eso ahorra tokens: se lee el plan en vez de repetir la conversación.
+Archivo: `docs/planes/AAAA-MM-DD-<slug>.md` (fecha, slug y carpeta según las convenciones). El plan es **contexto mínimo y autosuficiente**: alguien (o un agente) que lea solo ese archivo debe poder ejecutarlo. Eso ahorra tokens: se lee el plan en vez de repetir la conversación.
 Reglas de contenido:
 - Sin secretos, claves ni datos personales.
 - Lo no decidido va en **Decisiones pendientes**, no se inventa.
@@ -61,6 +71,10 @@ Al terminar todos los bloques: resumen de lo hecho y lo no hecho, resultado de p
 - No ejecuta sin aprobación.
 - No decide por el usuario las decisiones de negocio.
 - No reemplaza a Superpowers: lo usa, o dice que no puede.
+
+## Terminado cuando
+- **Planear:** el archivo del plan existe; cada bloque tiene objetivo, pasos, verificación, dependencias y tamaño; lo no decidido está en «Decisiones pendientes»; el usuario lo aprobó en la compuerta del Paso 5; nada se ejecutó antes. Si se usó la versión reducida, el plan lo dice.
+- **Ejecutar:** cada bloque terminado tiene su casilla marcada, su verificación corrida con el resultado real y su commit local. El cierre del Paso 7 se entregó.
 
 ## Mis ajustes
 <!-- Cambia la carpeta de planes, el tamaño de bloque o el número máximo de preguntas de la versión reducida. -->

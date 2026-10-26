@@ -1,6 +1,6 @@
 ---
 name: jay-k-a-tech-reverse
-description: Ingeniería inversa de un sitio en vivo o de un repositorio/template ajeno. Detecta stack y librerías, mide animaciones, transiciones y scroll con Playwright (duración, curva, disparador), deduce el easing de animaciones hechas con JS, revisa licencia y entrega un informe con evidencia y reproducciones mínimas verificadas. Invócala con /jay-k-a-tech-reverse live <url> o /jay-k-a-tech-reverse repo <ruta-o-url-git>.
+description: "Ingeniería inversa de un sitio en vivo o de un repositorio/template ajeno. Detecta stack y librerías, mide animaciones, transiciones y scroll con Playwright (duración, curva, disparador), deduce el easing de animaciones hechas con JS, revisa licencia y entrega un informe con evidencia y reproducciones mínimas verificadas. Invócala con /jay-k-a-tech-reverse live <url> o /jay-k-a-tech-reverse repo <ruta-o-url-git>."
 argument-hint: "live <url> | repo <ruta-o-url-git> [--nivel 1|2|3] [--foco \"<efecto>\"]"
 disable-model-invocation: true
 ---
@@ -11,7 +11,7 @@ Estudia **algo ajeno** (un sitio publicado, un repositorio o un template) para e
 
 Esta skill es un **contrato de ejecución**: cada paso dice qué entra, qué comando se corre, qué debe salir y qué hacer si falla. Si un paso no se puede cumplir, se dice en el informe; no se rellena con suposiciones.
 
-Argumentos recibidos: `$ARGUMENTS`
+Argumentos recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
 
 ## 1. Cómo leer los argumentos
 

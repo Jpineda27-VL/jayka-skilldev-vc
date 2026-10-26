@@ -1,6 +1,6 @@
 ---
 name: jay-k-a-working-rules
-description: Reglas de trabajo del autor para cualquier proyecto: plan antes de construir, permisos, nada de secretos ni servicios externos tocados por el asistente, no inventar reglas de negocio, verificar antes de decir «listo» y dejar estado al cerrar.
+description: "Reglas de trabajo del autor para cualquier proyecto: plan antes de construir, permisos, nada de secretos ni servicios externos tocados por el asistente, no inventar reglas de negocio, verificar antes de decir «listo» y dejar estado al cerrar."
 ---
 
 # JayKA · Working Rules
@@ -51,6 +51,9 @@ No se trata de pedir «una página que funcione», copiar lo que sirva y subirlo
 
 ## 9. Al cerrar la sesión
 Deja un documento de estado: qué se hizo, qué falta y qué decisiones se tomaron. Al abrir otra sesión, léelo primero (ver `jay-k-a-continuity` si está instalada).
+
+## 10. Convenciones de las skills JayKA
+Al usar cualquier skill `jay-k-a-*`, lee primero `reference/convenciones.md` de esta skill: argumentos, rutas, nombres (slug, fecha, NNN), permisos para crear carpetas, compuertas y «terminado cuando».
 
 ## Mis ajustes
 <!-- Agrega, cambia o quita reglas aquí. Ejemplo: «nunca uses el puerto 3000», «los commits en inglés». -->

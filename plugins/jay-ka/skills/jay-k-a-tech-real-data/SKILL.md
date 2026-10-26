@@ -1,12 +1,27 @@
 ---
 name: jay-k-a-tech-real-data
-description: Deja de trabajar con pantallas de demostración: datos de ejemplo guardados en la base con seeders repetibles y solo en local, cuentas de prueba sin secretos reales, inventario de lo que sigue en demostración y prueba del flujo completo de punta a punta entre roles. Invócala con /jay-k-a-tech-real-data.
+description: "Deja de trabajar con pantallas de demostración: datos de ejemplo guardados en la base con seeders repetibles y solo en local, cuentas de prueba sin secretos reales, inventario de lo que sigue en demostración y prueba del flujo completo de punta a punta entre roles. Invócala con /jay-k-a-tech-real-data, o con una fase (inventario, plan, sembrar, conectar, flujo)."
+argument-hint: "[inventario | plan | sembrar | conectar | flujo]"
 disable-model-invocation: true
 ---
 
 # JayKA · Tech · Real Data
 
 Para pasar de «pantallas que parecen funcionar» a **datos reales de ejemplo** que viajan por todo el sistema: se crean en la base, los ve el siguiente rol y aparecen en el panel. Así se detectan errores de conexión que una demo esconde.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Paso |
+|---|---|
+| *(vacío)* | **Por defecto.** Del Paso 1 al 6, en orden, con sus compuertas |
+| `inventario` | Paso 1 |
+| `plan` | Paso 2 |
+| `sembrar` | Paso 3 |
+| `conectar` | Paso 4 |
+| `flujo` | Paso 5 |
+
+Al empezar en una fase, comprueba que lo anterior existe (por ejemplo, `sembrar` necesita el plan del Paso 2). Si falta, dilo y ofrece hacerlo primero.
 
 ## Principios
 1. **Los datos de ejemplo viven en la base**, sembrados por seeders. Nunca escritos a mano dentro de las pantallas.
@@ -51,13 +66,20 @@ Para cada pantalla del inventario, en el orden acordado: quitar los datos escrit
 Sigue `reference/flow-test-checklist.md`. En resumen: recorrer, con cuentas de prueba, el camino completo entre roles (por ejemplo: cliente pide → comercio acepta → repartidor recibe → administrador lo ve), comprobando **cada paso en el servidor** y no solo en la pantalla. Al terminar, **limpiar o devolver a su estado** lo que la prueba cambió (cancelar el pedido de prueba, desconectar a los repartidores, vaciar carritos) para dejar los datos como se acordó.
 
 ## Paso 6 · Documentar
-Deja en un documento (sin contraseñas): cuentas de prueba por rol (usuarios), dónde se define la contraseña de desarrollo (nombre de la variable), cómo reiniciar los datos y qué sigue en demostración. Actualiza el estado del proyecto (`jay-k-a-continuity`).
+Deja en `docs/proyecto/datos-de-prueba.md` (sin contraseñas): cuentas de prueba por rol (usuarios), dónde se define la contraseña de desarrollo (nombre de la variable), cómo reiniciar los datos y qué sigue en demostración. Actualiza el estado del proyecto (`jay-k-a-continuity`).
 
 ## Qué NO hacer
 - No «arreglar» una pantalla de demostración con más datos escritos a mano.
 - No borrar historial para que el seeder quede bonito.
 - No sembrar en producción jamás.
 - No dejar la prueba de flujo con datos de prueba mezclados con lo real.
+
+## Terminado cuando
+- **Inventario:** cada pantalla tiene su fuente (a mano o base) y prioridad, y el orden quedó acordado.
+- **Sembrar:** los seeders corren **dos veces seguidas** sin duplicar (el conteo de filas de cada tabla sembrada es igual después de la primera y de la segunda corrida, **medido**), y se niegan a correr fuera de local (comprobado).
+- **Conectar:** ninguna pantalla del inventario lee datos escritos a mano sin el rótulo «Demostración».
+- **Flujo:** cada paso del recorrido entre roles se comprobó en el servidor, y los datos quedaron como se acordó.
+- `docs/proyecto/datos-de-prueba.md` está escrito, sin contraseñas.
 
 ## Mis ajustes
 <!-- Cantidades por defecto, nombre de la variable de contraseña, zona y estilo de nombres de ejemplo. -->

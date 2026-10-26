@@ -1,12 +1,22 @@
 ---
 name: jay-k-a-companion-tools
-description: Sugiere, en el momento justo, qué otras herramientas usar (Impeccable para auditar y pulir, Superpowers para planear, skills de diseño contra el aspecto de IA, seguridad, pruebas) sin reemplazarlas ni ejecutarlas. Invócala con /jay-k-a-companion-tools o deja que otras skills JayKA la mencionen.
+description: "Sugiere, en el momento justo, qué otras herramientas usar (Impeccable para auditar y pulir, Superpowers para planear, skills de diseño contra el aspecto de IA, seguridad, pruebas) sin reemplazarlas ni ejecutarlas. Invócala con /jay-k-a-companion-tools, opcionalmente diciendo en qué momento estás."
+argument-hint: "[<momento>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Companion Tools
 
 Esta skill **no hace trabajo propio**: recomienda qué herramienta de otros autores encaja con el momento, para no reinventar nada. Existen herramientas muy buenas (por ejemplo Impeccable, Superpowers); aquí solo se sabe **cuándo** conviene usarlas.
+
+## Argumentos
+Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
+
+| Argumento | Qué hace |
+|---|---|
+| *(vacío)* | **Por defecto.** Toma el momento de lo último que pasó en la conversación. Si no se puede saber, pregunta: «¿En qué momento estás: antes de un plan, después de construir interfaz, animación, seguridad, calidad de código, datos o entre sesiones?» |
+| `<momento>` | Texto libre («terminé el login», «voy a planear el panel»). Se elige la sección de abajo que corresponda |
+| `todo` | Responde como en «Si el usuario pregunta "¿qué más hay?"» |
 
 ## Reglas
 1. **Solo sugiere.** No ejecutes ninguna herramienta recomendada sin que el usuario lo pida. No la reemplaces con una versión propia.
@@ -55,6 +65,10 @@ Para este momento ([lo que acaba de pasar]):
 
 ## Si el usuario pregunta «¿qué más hay?»
 Lista las herramientas instaladas que encajan con lo que está haciendo, agrupadas como arriba, sin descripciones largas.
+
+## Terminado cuando
+- Hay 3 sugerencias o menos, cada una con su estado de instalación **comprobado** en la lista de la sesión.
+- Termina con «¿Corro alguna?» y no se ejecutó ni instaló nada.
 
 ## Mis ajustes
 <!-- Agrega tus herramientas favoritas o quita las que no uses. Ejemplo: «siempre sugerir impeccable audit después de style-build». -->
