@@ -64,10 +64,10 @@ Skills are written as an **execution contract**, not loose instructions:
 ## Pending
 - Run the `needs-shell` eval cases on macOS, Linux or WSL (Claude Code cannot sandbox a terminal on Windows).
 - Decide whether to shorten the manual skills' descriptions to lower the fixed cost (about 3,200 tokens per session).
-- Before publishing: check for personal data, choose a license, push, and verify the install command against the published repository.
+- License: MIT (decided). Before publishing: check for personal data, push, and verify the install command against the published repository.
 - Review all skills with a stronger model.
 
 ## How we work
 1. Build skills by groups, showing each one before calling it good.
 2. Test each skill installed for real, not only written.
-3. When the author orders it: review for personal data, choose a license, push.
+3. When the author orders it: review for personal data, push.

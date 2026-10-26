@@ -1,6 +1,7 @@
 {
   "name": "jay-ka",
   "version": "0.10.0",
+  "license": "MIT",
   "description": "jayka-* skills: working rules, Git, security, new project, style learning and building, reverse engineering and techniques. Optional helpers for developers who build with AI.",
   "author": {
     "name": "Jpineda27-VL"

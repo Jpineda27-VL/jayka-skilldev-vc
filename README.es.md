@@ -85,4 +85,4 @@ claude plugin eval . --tag no-shell --scaffold --allow-tools Write Edit --trust-
 Detalles, casos y límites en `plugins/jay-ka/evals/README.md` (en inglés).
 
 ## Licencia
-Por definir.
+[MIT](LICENSE).
