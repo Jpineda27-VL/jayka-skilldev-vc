@@ -46,9 +46,13 @@ Orden recomendado: **servidor (datos y reglas)** → **frontend A** → **fronte
 Usa el **checklist de paridad** (`reference/parity-checklist.md`) para no olvidar estados, textos ni tamaños.
 
 ## Paso 3 · Verificar los dos (obligatorio)
-- Abre **ambos** en navegador: escritorio y celular (si el servidor decide qué frontend servir según el dispositivo, simula cada uno con el tamaño y el agente de usuario correspondientes).
-- Recorre la pantalla en cada uno: datos reales, estado vacío, error de validación, carga.
-- Compara lado a lado: títulos, orden, textos, colores, estados, enlaces.
+1. **Comparación medida.** Con los dos frontends corriendo (local o publicados), escribe un archivo de rutas con una línea por pantalla, `id | urlA | urlB`, sacado del inventario, y corre:
+   `node "<SKILL_DIR>/scripts/capture-pair.mjs" --rutas <archivo> --out <carpeta> [--ua-b movil]`
+   (`SKILL_DIR` es el directorio base de esta skill. Hace falta Node 18 o más y Playwright: si falta, el script sale con código 3 y explica cómo instalarlo; se instala solo con permiso. Para una sola pantalla: `--a <urlA> --b <urlB>`).
+   - Usa `--ua-a` / `--ua-b` (`movil`, `escritorio` o un texto) cuando el servidor elige el frontend según el dispositivo.
+   - Por pantalla y tamaño (1280 y 375 px) devuelve: `igual` o `difiere`, títulos, acciones y campos que están solo en A o solo en B, y la similitud del texto (0 a 1; `igual` exige 0.9 o más). `paridad.html` muestra las capturas de página completa lado a lado con esas diferencias. **Mira `paridad.html`**: el script no ve colores, orden ni espaciados.
+2. **A mano, lo que el script no recorre:** estado vacío, error de validación y carga en cada frontend (el script no hace clics ni envía formularios).
+3. Compara lado a lado: títulos, orden, textos, colores, estados, enlaces.
 - Si cambió algo del servidor: corre las pruebas.
 - Si el frontend B es una app que se exporta o compila, **vuelve a exportarla** y verifica la versión nueva (no la anterior en caché).
 
@@ -56,7 +60,7 @@ Usa el **checklist de paridad** (`reference/parity-checklist.md`) para no olvida
 Marca el estado de paridad, la fecha y el commit. Si algo quedó pendiente, anótalo con el motivo y quién decide.
 
 ## Trampas frecuentes
-- **Datos de ejemplo escritos a mano** en uno de los frontends: la pantalla «funciona» pero no lee el servidor. Detecta con una búsqueda de constantes de demostración.
+- **Datos de ejemplo escritos a mano** en uno de los frontends: la pantalla «funciona» pero no lee el servidor. Detéctalo con `find-demo-data.mjs` de `jay-k-a-tech-real-data`.
 - **Recargas completas** en un frontend (parpadeo, esqueleto) y actualización en vivo en el otro: unifica el comportamiento (refrescar sin vaciar la pantalla).
 - **Rutas distintas** para la misma pantalla: documéntalas en el inventario.
 - **Fotos y rutas de archivos** que solo resuelve uno de los frontends: usa la misma función o regla para construir la dirección.
@@ -70,8 +74,8 @@ Marca el estado de paridad, la fecha y el commit. Si algo quedó pendiente, anó
 
 ## Terminado cuando
 - **`inventario`:** cada ruta y vista de los dos frontends tiene su fila, con estado de paridad.
-- **`cambio`:** la pantalla quedó cambiada en los dos frontends (o lo pendiente está anotado con motivo), el checklist de paridad está recorrido, las pruebas del servidor pasan si se tocó, y el inventario tiene estado, fecha y commit.
-- **`verificar`:** cada pantalla revisada se vio en los dos frontends, en escritorio y celular, y su estado en el inventario refleja lo que se vio.
+- **`cambio`:** la pantalla quedó cambiada en los dos frontends (o lo pendiente está anotado con motivo), `capture-pair.mjs` da `igual` (o cada diferencia está explicada), el checklist de paridad está recorrido, las pruebas del servidor pasan si se tocó, y el inventario tiene estado, fecha y commit.
+- **`verificar`:** `capture-pair.mjs` se corrió para cada pantalla revisada; cada `difiere` está explicado (corregido, o anotado como diferencia permitida con motivo); los estados que el script no recorre se revisaron a mano; y el estado en el inventario refleja lo que se vio.
 
 ## Mis ajustes
 <!-- Nombra tus dos frontends (por ejemplo «Blade» y «app Expo»), la ubicación del inventario y las diferencias permitidas. -->

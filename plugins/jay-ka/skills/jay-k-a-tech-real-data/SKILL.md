@@ -38,7 +38,7 @@ Al empezar en una fase, comprueba que lo anterior existe (por ejemplo, `sembrar`
 - Los datos deben ser **verosímiles** para el lugar donde se usará el proyecto (nombres, monedas, direcciones, teléfonos de ejemplo). No uses datos de personas reales.
 
 ## Paso 1 · Inventario de lo que sigue en demostración
-1. Recorre las pantallas y busca constantes o datos escritos a mano (clases «Demo», arreglos fijos, textos «de ejemplo», `lorem`).
+1. Corre `node "<SKILL_DIR>/scripts/find-demo-data.mjs" . --out docs/proyecto/demo-candidatos.json` (`SKILL_DIR` es el directorio base de esta skill; hace falta Node 18 o más). Encuentra lorem ipsum, nombres, correos y teléfonos de ejemplo, imágenes de relleno, constantes demo/mock, faker fuera de seeders, `TODO: conectar…` y arreglos de 3 o más objetos escritos a mano. Ignora seeders, factories, pruebas, fixtures y stories. Son **candidatos**: abre cada archivo y confirma. Después recorre las pantallas para lo que el script no ve (por ejemplo, números fijos en una gráfica).
 2. Arma una tabla: **pantalla · fuente actual (a mano / base) · qué falta para conectarla · prioridad**.
 3. Muéstrala al usuario y acuerda **el orden**. Marca lo que no tenga reglas de negocio decididas como «pendiente de decisión»: no se conecta inventando reglas.
 
@@ -58,6 +58,10 @@ Sigue `reference/seeder-pattern.md`:
 - Cuentas con contraseña desde variable de entorno.
 - Un seeder por tema (catálogo, cuentas, historial) y uno que los llame en orden.
 - Cuidado con la base real de pruebas: **respaldo antes**, y no borrar lo que tiene relaciones.
+- **Comprobar que se pueden repetir** (medido, no supuesto): anota el conteo de filas por tabla, corre los seeders, vuelve a contar, córrelos otra vez y vuelve a contar. La segunda corrida no debe cambiar ningún conteo.
+  - Laravel: `php artisan db:show --counts` antes y después de cada `php artisan db:seed --class=<SeederPrincipal>`.
+  - Otros: una consulta `SELECT COUNT(*)` por tabla sembrada, con la herramienta de base de datos del proyecto.
+- **Comprobar el candado de entorno:** corre el seeder con el entorno puesto en `production` **solo contra una base local o desechable** (por ejemplo, `APP_ENV=production php artisan db:seed --class=<Seeder>` con la base local). Debe negarse a correr. Nunca contra la base real.
 
 ## Paso 4 · Conectar las pantallas
 Para cada pantalla del inventario, en el orden acordado: quitar los datos escritos a mano, leer del servicio o API, cuidar los estados vacío y de error, y probarla con los datos sembrados. Si hay dos frontends, `jay-k-a-tech-views-parity`.
@@ -75,9 +79,9 @@ Deja en `docs/proyecto/datos-de-prueba.md` (sin contraseñas): cuentas de prueba
 - No dejar la prueba de flujo con datos de prueba mezclados con lo real.
 
 ## Terminado cuando
-- **Inventario:** cada pantalla tiene su fuente (a mano o base) y prioridad, y el orden quedó acordado.
+- **Inventario:** `find-demo-data.mjs` se corrió y cada candidato quedó confirmado o descartado; cada pantalla tiene su fuente (a mano o base) y prioridad, y el orden quedó acordado.
 - **Sembrar:** los seeders corren **dos veces seguidas** sin duplicar (el conteo de filas de cada tabla sembrada es igual después de la primera y de la segunda corrida, **medido**), y se niegan a correr fuera de local (comprobado).
-- **Conectar:** ninguna pantalla del inventario lee datos escritos a mano sin el rótulo «Demostración».
+- **Conectar:** al volver a correr `find-demo-data.mjs`, los únicos candidatos que quedan son los rotulados «Demostración» o los descartados con motivo.
 - **Flujo:** cada paso del recorrido entre roles se comprobó en el servidor, y los datos quedaron como se acordó.
 - `docs/proyecto/datos-de-prueba.md` está escrito, sin contraseñas.
 

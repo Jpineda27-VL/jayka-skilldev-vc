@@ -47,7 +47,7 @@ Guía de búsqueda: `reference/extraction-guide.md`.
 
 ## Paso 2 · Sistema de diseño (tokens)
 Extrae, con su origen (variable CSS, tema de Tailwind, constante, valor suelto):
-- **Color**: paleta completa con **roles** (fondo, superficie, texto, texto suave, primario, acento, éxito, aviso, peligro, bordes, enfoque), versión oscura si existe, y la frecuencia de uso. Mide el **contraste** de los pares importantes (texto/fondo, texto sobre botón, texto suave) según WCAG.
+- **Color**: paleta completa con **roles** (fondo, superficie, texto, texto suave, primario, acento, éxito, aviso, peligro, bordes, enfoque), versión oscura si existe, y la frecuencia de uso. Mide el **contraste** de los pares importantes (texto/fondo, texto sobre botón, texto suave) con `node "<SKILL_DIR>/scripts/contrast.mjs" <texto> <fondo> [<texto> <fondo> …]` (agrega `--grande` para texto de 24 px o más, o de 18.66 px en negrita). Nunca lo estimes a ojo.
 - **Tipografía**: familias (y de dónde cargan), pesos, escala de tamaños, interlineado, espaciado entre letras, unidades (rem o px), uso de números tabulares.
 - **Espaciado**: escala, rejilla base, anchos de contenedor, márgenes de página.
 - **Forma**: radios, bordes, sombras, opacidades, desenfoques, degradados.
@@ -69,16 +69,22 @@ Guarda el resultado en `tokens.json` (formato en `reference/tokens.schema.json`)
 - **Rendimiento visible**: fuentes, imágenes pesadas, animaciones costosas.
 
 ## Paso 5 · Medición en navegador (si lo autorizó)
-Usa las herramientas de navegador disponibles (por ejemplo Playwright) para:
-- Abrir cada superficie en escritorio (1280 px) y celular (375 px). Toma capturas **solo si el usuario las quiere guardar** (van a `capturas/` dentro de la ficha).
-- Ejecutar el fragmento de medición de `reference/extraction-guide.md` para obtener colores, tipografías, radios, espaciados y sombras **reales**, y compararlos con lo que dice el código.
+Se usa el capturador de `jay-k-a-tech-reverse` con la sonda de estilo de esta skill. Para cada superficie (una URL local o publicada):
+
+`node "<SKILL_DIR>/../jay-k-a-tech-reverse/scripts/capture-live.mjs" "<url>" --out "~/.claude/jay-k-a/estilos/<slug>/medicion/<superficie>" --steps 0 --hover 0 --no-reduced --eval "<SKILL_DIR>/scripts/style-probe.js"`
+
+Agrega `--sin-capturas` si el usuario no quiere guardar capturas.
+- Sale, por ventana (1280 px y 375 px), `eval-style-probe.json` con: fondos, colores de texto, bordes, familias, tamaño/peso/interlineado, radios, rellenos, separaciones, sombras, variables de `:root`, fuentes cargadas y **el contraste real de cada par texto/fondo visible** (con el fondo efectivo, componiendo transparencias), incluidos los pares que no cumplen.
+- Compara lo medido con lo que dice el código. Si no coinciden, manda lo medido y se anota la diferencia.
+- Si `capture-live.mjs --check` sale con código 3 (falta Playwright), pide permiso para instalarlo como explica `jay-k-a-tech-reverse`. Si no hay permiso, o `jay-k-a-tech-reverse` no está instalada, usa la herramienta de navegador disponible para evaluar el contenido de `scripts/style-probe.js` en cada pantalla, a los dos tamaños.
 - No inicies sesión con cuentas reales. Si hace falta una cuenta de prueba, que la ponga el usuario.
 
 ## Paso 6 · Escribir la ficha
 Carpeta: `~/.claude/jay-k-a/estilos/<slug>/`
 - `ficha.md`: sigue `reference/ficha-template.md`.
-- `tokens.json`: sigue `reference/tokens.schema.json`.
+- `tokens.json`: sigue `reference/tokens.schema.json`. Valídalo con `node "<SKILL_DIR>/scripts/check-tokens.mjs" "<ruta>/tokens.json"`: revisa claves, tipos, colores, fecha, slug y **recalcula cada contraste declarado**. Corrige hasta que salga con código 0.
 - `capturas/` (opcional).
+- `medicion/` (si hubo Paso 5): los JSON medidos, como evidencia.
 Luego **actualiza `~/.claude/jay-k-a/estilos/estilo-base.md`**: los rasgos que se repiten entre fichas (familias, tonos, radios, patrones), con el conteo de en cuántos proyectos aparece cada uno. Si hay una sola ficha, el estilo base es esa; no inventes tendencias.
 Las carpetas se crean según las convenciones.
 
@@ -92,7 +98,7 @@ Resumen corto:
 Cierra recordando que `jay-k-a-style-build` ya puede usar esta ficha y que `jay-k-a-style-library` sirve para compararlas.
 
 ## Terminado cuando
-- Existen `ficha.md` (con todas las secciones de `reference/ficha-template.md`) y `tokens.json` (válido según `reference/tokens.schema.json`) en `~/.claude/jay-k-a/estilos/<slug>/`.
+- Existen `ficha.md` (con todas las secciones de `reference/ficha-template.md`) y `tokens.json` en `~/.claude/jay-k-a/estilos/<slug>/`, y `check-tokens.mjs` sale con código 0.
 - Cada afirmación de la ficha tiene evidencia (`archivo:línea` o «medido en el navegador») o está marcada como inferida.
 - Los contrastes de los pares importantes están calculados, no estimados.
 - `estilo-base.md` está actualizado con los conteos.

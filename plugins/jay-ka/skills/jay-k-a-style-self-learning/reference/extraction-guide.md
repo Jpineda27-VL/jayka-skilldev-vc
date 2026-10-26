@@ -30,47 +30,17 @@ Usa las herramientas de búsqueda de archivos del entorno (no modifiques nada). 
 ## 4. Contraste (WCAG 2.x)
 Luminancia relativa: `L = 0.2126·R + 0.7152·G + 0.0722·B`, con cada canal `c = C/255` convertido a `c <= 0.03928 ? c/12.92 : ((c+0.055)/1.055)^2.4`.
 Razón de contraste: `(L1 + 0.05) / (L2 + 0.05)` con `L1` la mayor.
-Umbrales: texto normal AA 4.5:1 (AAA 7:1); texto grande (≥ 24 px, o ≥ 19 px en negrita) AA 3:1; componentes e íconos 3:1.
-Calcula con un fragmento corto de Python o Node si hay disponible; si no, a mano. No uses sitios externos con datos del proyecto.
+Umbrales: texto normal AA 4.5:1 (AAA 7:1); texto grande (≥ 24 px, o ≥ 18.66 px en negrita) AA 3:1; componentes e íconos 3:1.
+Calcula con `scripts/contrast.mjs` (por ejemplo `node scripts/contrast.mjs "#26264F" "#FFF8EF"`). No uses sitios externos con datos del proyecto.
 
 ## 5. Medición en el navegador (opcional, solo lectura)
-Con una herramienta de navegador (por ejemplo Playwright), abre cada pantalla y evalúa este fragmento. Devuelve las 12 o 14 apariciones más comunes de cada propiedad:
-
-```js
-(() => {
-  const cuenta = (m, k) => m.set(k, (m.get(k) || 0) + 1);
-  const fondo = new Map(), texto = new Map(), borde = new Map(), fam = new Map(),
-        tam = new Map(), radio = new Map(), relleno = new Map(), sombra = new Map();
-  for (const el of document.querySelectorAll('body *')) {
-    const s = getComputedStyle(el);
-    if (s.display === 'none' || s.visibility === 'hidden') continue;
-    if (s.backgroundColor !== 'rgba(0, 0, 0, 0)') cuenta(fondo, s.backgroundColor);
-    cuenta(texto, s.color);
-    if (parseFloat(s.borderTopWidth) > 0) cuenta(borde, s.borderTopColor);
-    cuenta(fam, s.fontFamily.split(',')[0].trim());
-    cuenta(tam, s.fontSize + ' / ' + s.fontWeight);
-    if (s.borderTopLeftRadius !== '0px') cuenta(radio, s.borderTopLeftRadius);
-    if (s.paddingTop !== '0px') cuenta(relleno, s.paddingTop);
-    if (s.boxShadow !== 'none') cuenta(sombra, s.boxShadow);
-  }
-  const top = (m, n = 12) => [...m].sort((a, b) => b[1] - a[1]).slice(0, n);
-  const variables = [...document.styleSheets].flatMap((h) => { try { return [...h.cssRules]; } catch { return []; } })
-    .filter((r) => r.selectorText === ':root')
-    .flatMap((r) => [...r.style].filter((p) => p.startsWith('--')).map((p) => [p, r.style.getPropertyValue(p).trim()]));
-  return {
-    fondo: top(fondo), texto: top(texto), borde: top(borde), familia: top(fam, 6), tamanoPeso: top(tam, 14),
-    radio: top(radio, 8), relleno: top(relleno, 10), sombra: top(sombra, 6), variablesRaiz: variables,
-    libreriasEnVentana: ['gsap', 'Lenis', 'AOS', 'Swiper', 'THREE', 'lottie'].filter((n) => n in window),
-    fuentesCargadas: [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family + ' ' + f.weight),
-  };
-})()
-```
+La sonda está en `scripts/style-probe.js` y se corre con el capturador de `jay-k-a-tech-reverse` (ver Paso 5 de `SKILL.md`). Mide fondos, colores de texto, bordes, familias, tamaño/peso/interlineado, radios, rellenos, separaciones, sombras, variables de `:root`, fuentes cargadas y el contraste real de cada par texto/fondo visible.
 
 Notas:
-- Los colores salen como `rgb(...)`; conviértelos a hex en la ficha.
-- Repite en escritorio (1280 px de ancho) y en celular (375 px) y anota diferencias.
-- Mide también un estado interactivo clave (foco de un botón o campo) si es posible.
-- Si una librería no aparece en `window`, no significa que no se use (puede venir empaquetada): confirma en `package.json`.
+- Los colores salen en hex; con transparencia se muestran como `#RRGGBB / alfa`.
+- Se mide en escritorio (1280 px) y en celular (375 px); anota las diferencias.
+- Mide también un estado interactivo clave (foco de un botón o campo) si es posible, a mano con la herramienta de navegador.
+- Si una librería no aparece en `window`, no significa que no se use (puede venir empaquetada): confírmalo en `package.json`.
 
 ## 6. Qué NO hacer
 - No abrir ni copiar `.env` o credenciales.

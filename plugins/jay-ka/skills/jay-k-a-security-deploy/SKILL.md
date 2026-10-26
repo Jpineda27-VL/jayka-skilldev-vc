@@ -22,10 +22,20 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 - No ejecutes nada contra el servidor de producción ni publiques. Las pruebas de la sección 9 se las pasas al usuario como comandos, o las corres solo si él te da la dirección y lo autoriza.
 - Primero entiende el stack (lenguaje, framework, hosting). Adapta los puntos; marca «no aplica» lo que no corresponda.
 
+## Scripts
+Están en `<SKILL_DIR>/scripts/` (`SKILL_DIR` es el directorio base de esta skill, que Claude Code muestra al cargarla). Necesitan Node 18 o más (`node --version`); si no hay Node, esos puntos se revisan a mano y el informe lo dice.
+
+| Script | Qué mide | Salida |
+|---|---|---|
+| `scan-git-secrets.mjs [<repo>]` | Secretos en **todo** el historial de git y en los archivos versionados hoy; si `.env` está en `.gitignore` | Tabla con commit, archivo y tipo; el valor siempre enmascarado. Código 1 si hay hallazgos |
+| `check-deploy.mjs <dominio> [--out <json>]` | HTTPS, redirección, certificado, encabezados, cookies, 24 rutas que deben dar 404/403 y página de error. Solo peticiones GET, de a una | Tabla `bien / falla / revisar / no aplica`. Código 1 si hay alguna falla |
+
 ## Cómo trabajas
 1. Pregunta (una sola vez, corto): framework, dónde se publica, si hay base de datos, si hay correo, si hay subida de archivos, si hay login.
-2. Recorre la lista de abajo contra el código y la configuración del proyecto (sin abrir archivos de secretos reales: mira solo plantillas como `.env.example`).
-3. Entrega un informe: **Bien**, **Falta** (con qué hacer), **No aplica** y **Necesita al usuario** (lo que solo él puede hacer).
+2. Corre `node "<SKILL_DIR>/scripts/scan-git-secrets.mjs" .` en la raíz del proyecto. Lo que encuentre va a la sección 2 como `Medido`. Un secreto real en el historial es **Falta** y **Necesita al usuario**: rotarlo (borrarlo del historial no basta).
+3. Recorre la lista de abajo contra el código y la configuración del proyecto (sin abrir archivos de secretos reales: mira solo plantillas como `.env.example`).
+4. Si hay dominio y el usuario lo autorizó, corre la sección 9 con el script.
+5. Entrega un informe: **Bien**, **Falta** (con qué hacer), **No aplica** y **Necesita al usuario** (lo que solo él puede hacer).
 
 ## 1. Entorno
 - Modo debug apagado y entorno en «production». Un error con debug encendido muestra claves y rutas.
@@ -64,14 +74,22 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 Esto se detalla en `jay-k-a-security-web`. Aquí solo confirma que existe un middleware de encabezados y límites de peticiones en login y formularios públicos.
 
 ## 9. Prueba final (el día de publicar)
-Pásale estas pruebas al usuario, con su dominio:
-- `curl -I https://TU-DOMINIO/.env` → debe dar 404.
-- `curl -I https://TU-DOMINIO/.git/config` → debe dar 404.
-- Revisar los encabezados con una herramienta como securityheaders.com (nota A o mejor).
-- Provocar un error a propósito: no debe mostrar trazas.
+**Medida por el script** (con el permiso del argumento `<dominio>`):
+`node "<SKILL_DIR>/scripts/check-deploy.mjs" <dominio> --out docs/seguridad/AAAA-MM-DD-deploy-red.json`
+Cubre: HTTPS y redirección, certificado, encabezados, cookies, rutas sensibles (`/.env`, `/.git/config`, logs, respaldos `.sql`, `phpinfo`, paneles de depuración, listados de carpetas…) y página de error sin trazas. Cada fila `falla` es **Falta**; cada `revisar` se mira a mano y se clasifica.
+Si el usuario prefiere correrlo él, dale el mismo comando, o como mínimo `curl -I https://SU-DOMINIO/.env` y `curl -I https://SU-DOMINIO/.git/config` (deben dar 404).
+
+**Solo a mano** (el script no inicia sesión ni envía formularios). Son pasos para el usuario, con una cuenta de prueba suya:
 - Abrir un recurso de otro usuario cambiando el número en la dirección: debe negarlo.
 - Diez intentos de login fallidos seguidos: debe bloquear o frenar.
-- Revisar que HTTP redirige a HTTPS.
+
+## Si algo falla
+| Situación | Qué hacer |
+|---|---|
+| `check-deploy` sale con código 2 (no conecta) | Comprueba el dominio con el usuario; si el sitio aún no está publicado, la sección 9 queda «pendiente» |
+| Una ruta da 200 con la página principal | Es la respuesta genérica de la app (`bien`); confirma que no sirve el archivo real |
+| `scan-git-secrets` encuentra un secreto que el usuario dice que es falso | Anótalo como «confirmado falso por el usuario»; no lo borres del informe |
+| No es un repositorio git | El punto del historial queda «no aplica» y se dice |
 
 ## Informe final
 Guárdalo en `docs/seguridad/AAAA-MM-DD-deploy.md` y muéstralo resumido. Termina con: qué quedó listo, qué falta, qué necesita hacer el usuario, y un veredicto claro: **listo para publicar** o **no publicar todavía** y por qué.

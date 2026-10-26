@@ -39,6 +39,15 @@ Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/con
 
 Los secretos, claves y servicios externos los maneja solo el usuario (ver `jay-k-a-working-rules`).
 
+## Medición (primero, en los dos modos)
+Scripts en `<SKILL_DIR>/scripts/` (`SKILL_DIR` es el directorio base de esta skill, que Claude Code muestra al cargarla). Necesitan Node 18 o más.
+1. **Patrones de riesgo en el código:** `node "<SKILL_DIR>/scripts/scan-security.mjs" . [--secciones <números>]`, usando los números de sección del área elegida.
+   - Devuelve candidatos con severidad, sección, `archivo:línea` y nota: HTML sin escapar, SQL armado con variables, asignación masiva, `$guarded = []`, excepciones de CSRF, rutas GET que cambian datos, CORS `*` con credenciales, cookies sin banderas, TLS desactivado, hashes débiles, token en `localStorage`, nombre de archivo del usuario y secretos escritos en el código (con los patrones de `jay-k-a-security-deploy`, si está instalada).
+   - **Cada candidato se confirma leyendo el código** antes de clasificarlo: puede ser un falso positivo (por ejemplo, `{!! !!}` con HTML que genera el propio servidor). Un candidato descartado se anota como «descartado: <motivo>».
+   - No encontrar nada no prueba que sea seguro: los permisos (sección 6) y los límites (sección 4) se revisan leyendo rutas, controladores y middleware.
+2. **Encabezados y cookies en ejecución** (secciones 1 y 2), si hay una dirección donde corre la app (local o publicada) y el usuario lo autoriza:
+   `node "<SKILL_DIR>/../jay-k-a-security-deploy/scripts/check-deploy.mjs" <url> --solo-encabezados`. Si esa skill no está, se miran los encabezados con `curl -sI <url>`.
+
 ## 1. Encabezados HTTP (un solo middleware global)
 - `Content-Security-Policy` estricta: `default-src 'self'`; `frame-ancestors 'none'`; `base-uri 'self'`; `form-action 'self'`; lista blanca explícita de dominios para scripts, estilos e imágenes. Evita `unsafe-inline`; si hace falta, usa nonces.
 - `X-Content-Type-Options: nosniff`.
@@ -106,8 +115,8 @@ Los secretos, claves y servicios externos los maneja solo el usuario (ver `jay-k
 Lista corta: **Bien**, **Falta** (con la corrección propuesta) y **No aplica**, cada punto con su origen (`Medido`, `Código` o `Inferido`). En modo auditar se guarda en `docs/seguridad/AAAA-MM-DD-web.md`. Pregunta antes de corregir.
 
 ## Terminado cuando
-- **Auditar:** cada punto de las secciones del área está clasificado y con origen; el informe está guardado; no se cambió código.
-- **Construir:** cada regla de las secciones del área está implementada o anotada como pendiente con su motivo, y las pruebas de la sección 10 que aplican se corrieron, con su resultado real.
+- **Auditar:** `scan-security.mjs` se corrió y cada candidato quedó confirmado o descartado con motivo; cada punto de las secciones del área está clasificado y con origen; el informe está guardado; no se cambió código.
+- **Construir:** cada regla de las secciones del área está implementada o anotada como pendiente con su motivo; `scan-security.mjs` sobre lo construido no deja candidatos de severidad alta sin explicar; y las pruebas de la sección 10 que aplican se corrieron, con su resultado real.
 
 ## Mis ajustes
 <!-- Cambia los números (intentos por minuto, peso máximo) o agrega reglas de tu stack. -->

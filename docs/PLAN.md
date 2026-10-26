@@ -50,7 +50,13 @@ Las skills se escriben como **contrato de ejecución**, no como instrucciones su
 - Scripts propios cuando una tarea se puede medir en vez de describir.
 Mejora de las demás skills a este estándar, por grupos:
 - ✅ **A · Base común (2026-10-26):** `jay-k-a-working-rules/reference/convenciones.md` (argumentos, rutas, slug/fecha/NNN, permisos de carpetas, compuertas, origen de afirmaciones). Las 18 manuales tienen `argument-hint`, tabla de argumentos con `$ARGUMENTS` y «Terminado cuando». Rutas unificadas (`.claude/estructura/arbol.md` y `pantallas.md`, `docs/seguridad/`, `docs/proyecto/datos-de-prueba.md`). Descripciones entre comillas (antes había 12 con «: », que rompe el YAML estricto).
-- 🔲 **B · Scripts que miden:** `security-deploy` (rutas 404, encabezados, HTTPS, claves en historial), `security-web` (patrones de riesgo), `style-self-learning` (captura de `tech-reverse`, contraste, validar tokens), `tech-real-data` (datos de demostración), `tech-views-parity` (capturas lado a lado).
+- ✅ **B · Scripts que miden (2026-10-26):** probados con sitios, repos y apps de prueba.
+  - `security-deploy`: `check-deploy.mjs` (HTTPS, redirección, certificado, encabezados, cookies, 24 rutas sensibles, página de error) y `scan-git-secrets.mjs` (secretos en todo el historial, valores enmascarados), con `secret-patterns.json`.
+  - `security-web`: `scan-security.mjs` (22 reglas por sección más secretos en el código; los hallazgos son candidatos que se confirman leyendo).
+  - `style-self-learning`: `style-probe.js` (se corre con `capture-live.mjs --eval` de `tech-reverse`; incluye el contraste real con el fondo efectivo), `contrast.mjs` y `check-tokens.mjs` (recalcula contrastes). Corrigió dos contrastes mal calculados en el ejemplo de `tokens.schema.json`.
+  - `tech-real-data`: `find-demo-data.mjs`, más comprobación medida de seeders repetibles y del candado de entorno.
+  - `tech-views-parity`: `capture-pair.mjs` (capturas lado a lado, diferencias de títulos, acciones y campos, similitud de texto, `paridad.html`).
+  - `capture-live.mjs` ganó `--eval` y `--sin-capturas` para que otras skills lo reusen.
 - 🔲 **C · Plantillas:** `CONTINUAR.md`, `entrevista.md` con claves estables (y `style-build` leyendo claves en vez de números), `CLAUDE.md` inicial, Codex sin Playwright.
 - 🔲 **D · Recortar las tres automáticas** (sin repetir reglas entre ellas).
 - 🔲 **E · Pruebas de las skills** (escenarios por skill; confirmar el formato de evaluación de plugins).

@@ -19,6 +19,9 @@
 //   --wait 1500                    espera tras cargar (ms)
 //   --timeout 45000                tiempo máximo de carga (ms)
 //   --headed                       muestra el navegador
+//   --sin-capturas                 no guarda capturas de pantalla (solo los JSON)
+//   --eval <archivo.js>            evalúa además esa sonda propia al cargar (una expresión) y guarda
+//                                  eval-<nombre>.json en cada ventana (lo usan otras skills JayKA)
 import { readFileSync, writeFileSync, mkdirSync, renameSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
@@ -46,7 +49,10 @@ const HOVER = Number(opt('--hover', '6'));
 const TRACK = opt('--track', '').split(',').map((s) => s.trim()).filter(Boolean);
 const WAIT = Number(opt('--wait', '1500'));
 const TIMEOUT = Number(opt('--timeout', '45000'));
-const BLOCK_TITLE = /just a moment|attention required|access denied|verify you are human|captcha|are you a robot/i;
+const EVAL_FILE = opt('--eval', null);
+const evalExpr = EVAL_FILE ? readFileSync(resolve(EVAL_FILE), 'utf8') : null;
+const evalName = EVAL_FILE ? `eval-${EVAL_FILE.replace(/\\/g, '/').split('/').pop().replace(/\.[^.]+$/, '')}.json` : null;
+const BLOCK_TITLE =/just a moment|attention required|access denied|verify you are human|captcha|are you a robot/i;
 
 async function loadPlaywright() {
   const bases = [process.env.JAYKA_TOOLS, join(homedir(), '.claude', 'jay-k-a', 'tools'), process.cwd()].filter(Boolean);
@@ -280,10 +286,15 @@ for (const vp of viewports) {
   await pause(WAIT);
 
   const save = (name, data) => { writeFileSync(join(dir, name), JSON.stringify(data, null, 2)); info.archivos.push(name); };
-  const shot = async (name) => { await page.screenshot({ path: join(dir, name) }).catch(() => {}); info.archivos.push(name); };
+  const shot = async (name) => {
+    if (flag('--sin-capturas')) return;
+    await page.screenshot({ path: join(dir, name) }).catch(() => {});
+    info.archivos.push(name);
+  };
 
   const probeLoad = await page.evaluate(probeExpr).catch((e) => ({ error: String(e) }));
   save('sonda-carga.json', probeLoad);
+  if (evalExpr) save(evalName, await page.evaluate(evalExpr).catch((e) => ({ error: String(e).slice(0, 300) })));
   await shot('00-carga.png');
 
   // Movimiento del ratón y hover (solo escritorio)

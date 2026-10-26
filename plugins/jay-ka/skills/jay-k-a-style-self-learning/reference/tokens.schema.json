@@ -1,7 +1,7 @@
 {
-  "$comment": "Formato de tokens.json de una ficha de estilo. Todos los campos son opcionales: si no se encontró, se omite o va null. Cada grupo puede traer 'fuente' (archivo:línea o 'medido').",
+  "$comment": "Formato de tokens.json de una ficha de estilo. Todos los campos son opcionales: si no se encontró, se omite o va null. Cada grupo puede traer 'fuente' (archivo:línea o 'medido'). La fecha va como AAAA-MM-DD. Valídalo con scripts/check-tokens.mjs.",
   "proyecto": "slug-del-proyecto",
-  "fecha": "AAAA-MM-DD",
+  "fecha": "2026-01-15",
   "sensacion": ["cálida", "festiva"],
   "color": {
     "roles": {
@@ -20,8 +20,8 @@
     "oscuro": null,
     "otros": [{ "valor": "#FFC93C", "uso": "subrayado y detalles", "frecuencia": 12 }],
     "contraste": [
-      { "par": "texto/fondo", "ratio": 12.4, "cumple": "AAA" },
-      { "par": "textoSuave/fondo", "ratio": 7.1, "cumple": "AAA" }
+      { "par": "texto/fondo", "ratio": 13.53, "cumple": "AAA" },
+      { "par": "textoSuave/fondo", "ratio": 7.91, "cumple": "AAA" }
     ],
     "fuente": "src/styles/tokens.css:1-40"
   },
