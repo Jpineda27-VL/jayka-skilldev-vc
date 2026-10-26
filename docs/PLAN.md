@@ -27,9 +27,9 @@ Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripci
 | 6 | `jay-k-a-project-structure` | manual | ✅ carpetas según haya solo frontend, solo backend o ambos |
 | 7 | `jay-k-a-new-project` | manual | ✅ entrevista de ~40 preguntas, cada una **obligatoriamente** respondida o saltada a mano (nunca automático); identidad con tonos de color solo para sondear; informe final de lo definido y lo que falta; crea CLAUDE.md, REGLAS.md, estructura, git init y memoria; puede generar un prompt para otro chat |
 | 8 | `jay-k-a-continuity` | manual | ✅ al cerrar guarda estado, memoria, grafo y commit; al abrir lee el estado y dice dónde quedamos |
-| 9 | `jay-k-a-style-self-learning` | manual | 🔲 estudia un proyecto terminado (solo frontend: cliente y dashboard), guarda una ficha + `tokens.json` en `~/.claude/jay-k-a/estilos/` y mantiene `estilo-base.md` |
-| 10 | `jay-k-a-style-build` | manual | 🔲 toma el informe de `new-project` y las fichas; sugiere paletas, fuentes y estilos; construye prototipos; termina sugiriendo `companion-tools` |
-| 11 | `jay-k-a-style-library` | manual | 🔲 **solo informa**: lista y compara fichas, dice qué coincide o ya funcionó; no cambia nada |
+| 9 | `jay-k-a-style-self-learning` | manual | ✅ estudia un proyecto terminado (solo frontend: cliente y dashboard), guarda una ficha + `tokens.json` en `~/.claude/jay-k-a/estilos/` y mantiene `estilo-base.md` |
+| 10 | `jay-k-a-style-build` | manual | ✅ toma el informe de `new-project` y las fichas; sugiere paletas, fuentes y estilos; construye prototipos; termina sugiriendo `companion-tools` |
+| 11 | `jay-k-a-style-library` | manual | ✅ **solo informa**: lista y compara fichas, dice qué coincide o ya funcionó; no cambia nada |
 | 12 | `jay-k-a-tech-laravel-backend` | manual | 🔲 servicios, errores de negocio, acción única por POST, bitácora, validación y pruebas |
 | 13 | `jay-k-a-tech-photos` | manual | 🔲 subida: WebP, 1200 px, 5 MB, nombres claros |
 | 14 | `jay-k-a-tech-views-parity` | manual | 🔲 versión genérica: dos frontends (por ejemplo web y app) con las mismas pantallas |
