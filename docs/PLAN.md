@@ -68,9 +68,20 @@ Mejora de las demás skills a este estándar, por grupos:
   - `plugins/jay-ka/evals/`: 12 escenarios para `claude plugin eval`. Los 6 `sin-shell` pasaron 6/6 en Windows (1 corrida, Sonnet, 0.38 USD). Los 6 `requiere-shell` **no se pudieron correr aquí**: Claude Code no aísla la terminal en Windows. Hay que correrlos en macOS, Linux o WSL.
   - Lo que salió al probar: cada skill manual dice ahora la respuesta exacta ante un argumento desconocido (antes estaba solo en las convenciones y el modelo no la usaba).
 
+## Instalación probada (2026-10-26)
+- **Plugin desde la carpeta local:** `claude plugin marketplace add "<ruta del repo>"` y `claude plugin install jay-ka@jay-ka-skilldev-vc` (ámbito usuario). Lee directo de `plugins/jay-ka`, así que los cambios del repo se ven en la siguiente sesión. `claude plugin details jay-ka` reconoce las 21 skills.
+- **Costo fijo:** unas **3,200 fichas por sesión**. Las descripciones de las skills manuales también cuentan, aunque su cuerpo no se cargue.
+- **Corridas en sesiones nuevas (Sonnet, solo lectura):** `init` (catálogo), `init buscar`, `continuity bailar` («No reconozco») y `style-library` (sin biblioteca, solo informa, no creó carpetas).
+- **Arreglado al probar:**
+  - `init` marcaba 18 skills como «no instaladas». Las manuales no aparecen en la lista de skills de la sesión; ahora se comprueba por archivo.
+  - Con el plugin, los comandos llevan el prefijo `/jay-ka:`; nueva sección 2b de las convenciones y aclaración en los textos que nombran comandos.
+  - `init` contaba mal el total; el catálogo dice ahora «21 skills».
+- **Copia a `~/.claude/skills`:** `install.sh` e `install.ps1` probados con `CLAUDE_HOME` temporal: 21 copiadas; bash no pisa sin `--force`; las rutas entre skills vecinas funcionan.
+- `/jay-k-a-init` sin prefijo **no** funciona con el plugin: hay que usar `/jay-ka:jay-k-a-init`.
+
 ## Pendiente
 - Correr los escenarios `requiere-shell` en macOS, Linux o WSL.
-- Probar el plugin instalado de verdad (`/plugin marketplace add` + `/plugin install`) y el script de copia.
+- Decidir si se acortan las descripciones de las skills manuales para bajar el costo fijo.
 
 ## Cómo trabajamos
 1. Construir las skills por grupos, mostrando cada una antes de darla por buena.

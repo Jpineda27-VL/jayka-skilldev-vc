@@ -28,7 +28,7 @@ Reglas, en este orden. Aplica la primera que corresponda y no improvises otra:
 2. **Sin modo**: si el objetivo es una URL de `github.com`, `gitlab.com`, `bitbucket.org` o `codeberg.org` → `repo`; si es otra URL → `live`; si es una ruta que existe → `repo`. Escribe una línea: «Modo inferido: `<modo>`.» y sigue.
 3. `live` con una URL de `github.com/<usuario>/<repo>` (no `github.io`) → pregunta una sola cosa: «¿Estudio el código (repo) o la página publicada (live)?».
 4. `live` sin `http(s)://` → antepón `https://` y dilo en una línea.
-5. Falta el objetivo o no es válido → responde solo: «Falta el objetivo. Ejemplos: `/jay-k-a-tech-reverse live https://ejemplo.com` · `/jay-k-a-tech-reverse repo https://github.com/usuario/template`». No hagas nada más.
+5. Falta el objetivo o no es válido → responde solo: «Falta el objetivo. Ejemplos: `/jay-k-a-tech-reverse live https://ejemplo.com` (con el plugin: `/jay-ka:` delante, convenciones §2b) · `/jay-k-a-tech-reverse repo https://github.com/usuario/template`». No hagas nada más.
 6. `--nivel` por defecto: **2**. `--foco` es opcional: la detección se hace completa, pero el inventario y las pistas se centran en ese efecto.
 
 ## 2. Niveles

@@ -32,7 +32,7 @@ Busca, en este orden, y di qué encontraste y qué no:
    - Identidad: todas las claves `identidad.*` (sensación, tonos, evitar, tipografía, imágenes, marca, referencias, modo, densidad).
    - Datos sensibles: `calidad.sensibilidad`. Dispositivos: `calidad.dispositivos`.
    - Solo cuentan las entradas con estado `respondida`. Las `no-sé` activan el Paso 2 para ese rasgo; las `saltada` y las que no existan se tratan como «sin dato» y se dice cuáles faltaron.
-   - Si la entrevista no tiene claves (formato anterior a la v0.6), dilo y pide correr `/jay-k-a-new-project retomar` para convertirla, o sigue con el mini-cuestionario.
+   - Si la entrevista no tiene claves (formato anterior a la v0.6), dilo y pide correr `/jay-k-a-new-project retomar` (con el plugin: `/jay-ka:` delante, convenciones §2b) para convertirla, o sigue con el mini-cuestionario.
 2. La biblioteca personal: `~/.claude/jay-k-a/estilos/<slug>/ficha.md`, `tokens.json` y `estilo-base.md`.
 3. Un estilo ya definido en el proyecto (`docs/proyecto/estilo.md`, tokens existentes).
 4. Lo que el usuario pida ahora: **qué se va a construir** (pantallas o flujo del prototipo).

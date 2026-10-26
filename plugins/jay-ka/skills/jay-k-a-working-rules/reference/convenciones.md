@@ -9,6 +9,13 @@ Todas las skills JayKA siguen estas reglas. Si una skill dice algo distinto, man
 - Palabra no reconocida: responde «No reconozco `<palabra>`. Opciones: …» y no hagas nada más.
 - Falta un dato obligatorio: pregunta **solo** por ese dato, con un ejemplo.
 
+## 2b. Cómo se nombra una skill al sugerirla
+El pack se puede instalar de dos formas, y el comando cambia:
+- **Como plugin** (la ruta de la skill que estás usando contiene `/plugins/`): `/jay-ka:<nombre>`, por ejemplo `/jay-ka:jay-k-a-continuity cerrar`.
+- **Copiado a `~/.claude/skills`** (`scripts/install.sh` o `install.ps1`): `/<nombre>`, por ejemplo `/jay-k-a-continuity cerrar`.
+
+Cada vez que le digas al usuario que corra una skill, escríbela con el prefijo de la instalación actual. En los textos de las skills los nombres van sin prefijo (`jay-k-a-…`) porque valen para las dos formas.
+
 ## 2. Rutas
 **Dentro del proyecto**
 

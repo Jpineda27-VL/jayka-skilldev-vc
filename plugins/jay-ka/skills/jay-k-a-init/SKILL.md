@@ -7,7 +7,11 @@ disable-model-invocation: true
 
 # JayKA · Init
 
-Muestra el catálogo. **Una línea por skill, sin explicaciones largas.** Para cada una indica si está instalada, mirando la lista de skills disponibles en la sesión (una skill de plugin aparece como `jay-ka:<nombre>`).
+Muestra el catálogo. **Una línea por skill, sin explicaciones largas.**
+
+**Instalada o no:** comprueba si existe `../<nombre>/SKILL.md` (ruta relativa a esta skill) con Glob o Read. **No uses la lista de skills de la sesión**: las skills manuales (con `disable-model-invocation`) no aparecen ahí aunque estén instaladas.
+
+**Cómo se invoca:** escribe cada nombre con el prefijo que corresponde a la instalación, según la sección 2b de las convenciones (con plugin, `/jay-ka:<nombre>`; copiada a `~/.claude/skills`, `/<nombre>`).
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
@@ -33,7 +37,7 @@ Las skills automáticas se cargan cuando Claude las cree útiles; `CLAUDE.md` se
    - Nunca cambies nada fuera de las marcas.
 6. Muestra las líneas que cambiaron.
 
-## Catálogo
+## Catálogo (21 skills)
 Formato de salida: grupo, y debajo `nombre <argumentos>: descripción corta [instalada / no instalada]`.
 
 ### Automáticas (Claude las carga cuando aplican; las reglas que deben valer siempre van con `instalar-reglas`)
@@ -72,7 +76,7 @@ Formato de salida: grupo, y debajo `nombre <argumentos>: descripción corta [ins
 Pregunta una sola cosa: «¿Cuál quieres usar?».
 
 ## Terminado cuando
-- Catálogo: aparecen todas las skills de la lista, cada una con su estado de instalación **comprobado** en la lista de la sesión (no supuesto).
+- Catálogo: aparecen todas las skills de la lista, cada una con su estado de instalación **comprobado por archivo** (no supuesto) y con el prefijo de invocación correcto para esta instalación.
 - `<skill>`: el resumen sale de su `SKILL.md` leído en este momento. Si no está instalada, se dice y se resume desde este catálogo.
 - `buscar`: una sugerencia con motivo, o «ninguna encaja» y por qué.
 - `instalar-reglas`: el destino tiene el bloque una sola vez, entre sus marcas; nada fuera de ellas cambió; o, si el usuario no aprobó, nada cambió.

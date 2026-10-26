@@ -4,7 +4,7 @@ Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicac
 
 *English: a personal skill pack for Claude Code covering working rules, Git, security, project structure and design-style learning. Generic, editable, opt-in.*
 
-> Estado: v0.8.0, catálogo de 21 skills (sin probar todavía instaladas dentro de Claude Code). Mira `docs/PLAN.md`.
+> Estado: v0.8.1, catálogo de 21 skills, probado instalado como plugin y por copia. Mira `docs/PLAN.md`.
 
 ## Instalar
 

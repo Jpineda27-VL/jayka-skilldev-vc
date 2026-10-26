@@ -14,7 +14,7 @@ Consulta de la biblioteca personal de estilos. **Solo informa: no crea, edita ni
 - `<slug>/ficha.md` y `<slug>/tokens.json` (y, opcional, `capturas/`)
 - `estilo-base.md`: rasgos que se repiten entre fichas
 
-Si la carpeta no existe o está vacía, dilo y explica cómo crear la primera ficha: «Corre `/jay-k-a-style-self-learning` sobre un proyecto terminado». No crees la carpeta.
+Si la carpeta no existe o está vacía, dilo y explica cómo crear la primera ficha: «Corre `/jay-k-a-style-self-learning` (con el plugin: `/jay-ka:` delante, convenciones §2b) sobre un proyecto terminado». No crees la carpeta.
 
 ## Argumentos
 Recibidos: `$ARGUMENTS` · Convenciones: `../jay-k-a-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
