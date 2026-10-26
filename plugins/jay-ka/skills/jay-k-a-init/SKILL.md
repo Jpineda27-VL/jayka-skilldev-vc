@@ -40,6 +40,7 @@ Formato de salida: grupo, y debajo `nombre: descripción corta [instalada / no i
 - `jay-k-a-tech-photos`: subida de fotos comprimidas a WebP con nombres claros.
 - `jay-k-a-tech-views-parity`: dos frontends con las mismas pantallas.
 - `jay-k-a-tech-real-data`: datos de ejemplo reales con seeders, sin demostración.
+- `jay-k-a-tech-reverse`: ingeniería inversa de un sitio (`live <url>`) o repo (`repo <ruta>`): stack, animaciones medidas e informe.
 
 ## Al terminar
 Pregunta una sola cosa: «¿Cuál quieres usar?». Si el usuario describe lo que necesita en vez de dar un nombre, sugiere la skill que mejor encaje y por qué en una línea.

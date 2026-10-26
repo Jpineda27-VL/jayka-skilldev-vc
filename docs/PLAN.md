@@ -38,6 +38,17 @@ Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripci
 | 16 | `jay-k-a-tech-codex-plan-high` | manual | ✅ trabajo grande: pasa por `plan-builder`, pide el esquema de una vista completa (formulario, etc.), vuelve en `.md`; el usuario revisa |
 | 17 | `jay-k-a-tech-real-data` | manual | ✅ seeders repetibles, sin datos de demostración, prueba de punta a punta |
 | 18 | `jay-k-a-companion-tools` | manual | ✅ solo sugiere cuándo usar `impeccable` (audit, polish, critique), `ui-ux-pro-max`, `design-taste-frontend`, `emil-design-eng` y Superpowers (`brainstorming`, `writing-plans`) |
+| 19 | `jay-k-a-tech-reverse` | manual | ✅ ingeniería inversa de algo ajeno: `live <url>` o `repo <ruta-o-url-git>`, niveles 1-3. Scripts propios: escaneo de repo, captura con Playwright (scroll, hover, navegación, video, movimiento reducido), pistas por fotograma con ajuste de easing y comparación original/reproducción. Probada con sitio de prueba y un sitio real con GSAP |
+
+## Estándar de ejecución (desde `jay-k-a-tech-reverse`)
+Las skills se escriben como **contrato de ejecución**, no como instrucciones sueltas:
+- Argumentos con reglas de lectura en orden y respuesta exacta cuando faltan.
+- Cada paso: qué entra, comando exacto, qué debe salir y qué hacer si falla.
+- «Terminado cuando…» comprobable para cada nivel o fase.
+- Compuertas de permiso con el texto exacto de la pregunta.
+- Tabla «Si algo falla».
+- Scripts propios cuando una tarea se puede medir en vez de describir.
+Pendiente: revisar las demás skills con este estándar (después de la revisión con otro modelo).
 
 ## Cómo trabajamos
 1. Construir las skills por grupos, mostrando cada una antes de darla por buena.
@@ -45,6 +56,7 @@ Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripci
 3. Cuando el autor lo ordene: revisar que no haya datos personales, elegir licencia, subir.
 
 ## Pendientes de decisión
+- Revisión de todas las skills con un modelo más potente antes de instalarlas.
 - Licencia (por ejemplo MIT).
 - Si el README lleva también versión en inglés.
 - Verificar el comando de instalación con el repositorio ya publicado.
