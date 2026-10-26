@@ -1,46 +1,46 @@
 ---
 name: jayka-style-library
-description: "Consulta la biblioteca de fichas de estilo (solo lectura): lista, muestra, compara fichas y busca cuál encaja con una descripción, indicando qué coincide y qué ya funcionó. No modifica nada. Invócala con /jayka-style-library lista, ver, comparar, buscar, resumen, huecos o registro."
-argument-hint: "lista | ver <slug> | comparar <a> <b> [<c>] | buscar <descripción> | resumen | huecos | registro"
+description: "Queries the library of style profiles (read-only): lists, shows, compares profiles and searches which one fits a description, saying what matches and what already worked. It changes nothing. Invoke it with /jayka-style-library list, show, compare, search, summary, gaps or log."
+argument-hint: "list | show <slug> | compare <a> <b> [<c>] | search <description> | summary | gaps | log"
 disable-model-invocation: true
 ---
 
 # JayKA · Style Library
 
-Consulta de la biblioteca personal de estilos. **Solo informa: no crea, edita ni borra nada.** Las fichas las escribe `jayka-style-self-learning`; las usa `jayka-style-build`.
+Query of the personal style library. **It only informs: it creates, edits and deletes nothing.** Profiles are written by `jayka-style-self-learning`; they are used by `jayka-style-build`.
 
-## Dónde está
-`~/.claude/jay-k-a/estilos/`
-- `<slug>/ficha.md` y `<slug>/tokens.json` (y, opcional, `capturas/`)
-- `estilo-base.md`: rasgos que se repiten entre fichas
+## Where it is
+`~/.claude/jayka/styles/`
+- `<slug>/profile.md` and `<slug>/tokens.json` (and, optionally, `screenshots/`)
+- `base-style.md`: traits that repeat across profiles
 
-Si la carpeta no existe o está vacía, dilo y explica cómo crear la primera ficha: «Corre `/jayka-style-self-learning` (con el plugin: `/jay-ka:` delante, convenciones §2b) sobre un proyecto terminado». No crees la carpeta.
+If the folder does not exist or is empty, say so and explain how to create the first profile: «Run `/jayka-style-self-learning` (as a plugin: `/jay-ka:` in front, conventions §2b) on a finished project». Do not create the folder.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-Sin argumentos se ejecuta **`lista`**. Alias: `list`, `show` = `ver`, `compare` = `comparar`, `search` = `buscar`, `summary` = `resumen`, `gaps` = `huecos`, `log` = `registro`. Un slug que no existe → «No hay una ficha `<slug>`. Fichas: …».
+With no arguments, **`list`** runs. Aliases: `lista` = `list`, `ver` = `show`, `comparar` = `compare`, `buscar` = `search`, `resumen` = `summary`, `huecos` = `gaps`, `registro` = `log`. A slug that does not exist → «There is no profile `<slug>`. Profiles: …».
 
-## Comandos
-- **`lista`**: una línea por ficha: nombre, fecha, sensación en 5 palabras, tonos principales, tecnología, y si tiene «Resultado y lecciones» escrito.
-- **`ver <slug>`**: resumen de una ficha en máximo 15 líneas: identidad, paleta con roles, tipografía, motivos, tecnología, qué se llevaría y qué evitar. Pregunta si quiere la ficha completa.
-- **`comparar <a> <b> [<c>]`**: tabla lado a lado: sensación, color, tipografía, forma, movimiento, densidad, tecnología, resultado. Cierra con **qué comparten**, **qué las distingue** y **cuándo conviene cada una**.
-- **`buscar <descripción>`**: busca qué fichas encajan con lo que el usuario describe («algo cálido para una tienda de reservas, en celular»). Usa las dimensiones de `jayka-style-build/reference/matching.md` si está disponible. Por cada coincidencia: **qué coincide**, **qué no**, y **qué funcionó** según su sección «Resultado y lecciones». Si ninguna encaja, dilo.
-- **`resumen`**: lee `estilo-base.md` y cuenta cuántos proyectos comparten cada rasgo (familias, tonos, radios, patrones, librerías). Señala la **firma** del usuario (lo que más se repite).
-- **`huecos`**: qué le falta a la biblioteca: fichas sin «Resultado y lecciones», fichas antiguas (por fecha), fichas sin medición en navegador, y rasgos que aparecen en una sola ficha.
-- **`registro`**: lista, por ficha, las lecciones registradas: qué funcionó y qué se cambiaría.
+## Commands
+- **`list`**: one line per profile: name, date, feeling in 5 words, main tones, technology, and whether it has «Results and lessons» written.
+- **`show <slug>`**: summary of a profile in at most 15 lines: identity, palette with roles, typography, motifs, technology, what would be carried over and what to avoid. Ask whether they want the full profile.
+- **`compare <a> <b> [<c>]`**: side-by-side table: feeling, color, typography, shape, motion, density, technology, result. Close with **what they share**, **what sets them apart** and **when each one is suitable**.
+- **`search <description>`**: searches which profiles fit what the user describes («something warm for a booking shop, on mobile»). Use the dimensions of `jayka-style-build/reference/matching.md` if available. For each match: **what matches**, **what does not**, and **what worked** according to its «Results and lessons» section. If none fits, say so.
+- **`summary`**: reads `base-style.md` and counts how many projects share each trait (families, tones, radii, patterns, libraries). Points out the user's **signature** (what repeats the most).
+- **`gaps`**: what the library lacks: profiles without «Results and lessons», old profiles (by date), profiles without browser measurement, and traits that appear in a single profile.
+- **`log`**: lists, per profile, the lessons recorded: what worked and what would change.
 
-## Reglas
-1. **Solo lectura.** Si el usuario pide cambiar o crear una ficha, dile qué skill lo hace (`jayka-style-self-learning` para fichas, `jayka-style-build` para usarlas) y no lo hagas aquí.
-2. No inventes datos que la ficha no tenga: di «sin dato» y de dónde saldría.
-3. No muestres capturas ni datos personales de clientes aunque estén en una ficha.
-4. Respuestas cortas: tablas y listas, sin repetir la ficha entera.
-5. Las coincidencias son sugerencias. La decisión es del usuario.
+## Rules
+1. **Read-only.** If the user asks to change or create a profile, tell them which skill does it (`jayka-style-self-learning` for profiles, `jayka-style-build` to use them) and do not do it here.
+2. Do not invent data the profile does not have: say «no data» and where it would come from.
+3. Do not show screenshots or clients' personal data even if they are in a profile.
+4. Short answers: tables and lists, without repeating the whole profile.
+5. Matches are suggestions. The decision is the user's.
 
-## Terminado cuando
-- La respuesta sale solo de lo que dicen las fichas leídas en este momento; cada dato ausente dice «sin dato».
-- Ningún archivo de la biblioteca cambió.
+## Done when
+- The answer comes only from what the profiles read right now say; every missing datum says «no data».
+- No file of the library changed.
 
-## Mis ajustes
-<!-- Cambia el formato de la lista o agrega comandos propios. -->
+## My settings
+<!-- Change the list format or add commands of your own. -->

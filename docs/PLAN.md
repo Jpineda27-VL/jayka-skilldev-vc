@@ -1,98 +1,73 @@
-# Plan y decisiones del repositorio `jay-ka-skilldev-vc`
+# Plan and decisions of the `jay-ka-skilldev-vc` repository
 
-Este documento es el punto de continuidad: quien abra el proyecto en una sesión nueva lo lee primero.
+This document is the continuity point: whoever opens the project in a new session reads it first.
 
-## Decisiones tomadas (2026-10-26)
-- Prefijo de todas las skills: `jayka-` y nombres en inglés. El texto de las skills va en español.
-  - Cambio del 2026-10-26 (v0.9.0): antes era `jay-k-a-` y las cuatro técnicas llevaban `tech-`. Ahora el formato es `/jay-ka:jayka-<comando>` (el catálogo se llama `jayka-menu`, no `init`) (plugin `jay-ka`, skill `jayka-<comando>`), más corto: `jayka-reverse`, `jayka-codex-low`, `jayka-codex-high`, `jayka-photos`…
-  - Se conserva `jay-k-a` solo en rutas de datos (`~/.claude/jay-k-a/…`) y en las marcas del bloque de `CLAUDE.md`, porque no son nombres de skill y cambiarlas desconectaría lo ya guardado.
-  - Con el prefijo `jayka-` el riesgo de choque al copiar las carpetas sueltas a `~/.claude/skills` sigue siendo bajo, así que los scripts de copia siguen valiendo (`/jayka-menu`).
-- **Todas las skills son genéricas**: sirven para cualquier proyecto. Nada específico de un proyecto del autor.
-- El repositorio es un **marketplace de plugins de Claude Code** con un plugin `jay-ka` que trae todas las skills. Alternativa: un script que copia las skills a `~/.claude/skills`.
-- Dueño en GitHub: cuenta `Jpineda27-VL`. El repositorio se crea **privado**; el autor lo pasa a público cuando quiera.
-- Se construye primero en local. Sin push hasta que el autor lo ordene.
-- Las skills traen una sección **Mis ajustes** para que cada persona cambie las reglas a su estilo. Que las skills aprendan solas queda como idea para después.
-- El asistente **nunca** toca claves, tokens ni servicios externos: solo el usuario. Está escrito en `jayka-working-rules`.
-- Esto no es «vibe coding»: se entiende, se planea, se aprueba, se construye por grupos, se verifica y se audita.
-- No se reemplaza nada de otras herramientas (Impeccable, Superpowers, etc.): solo se **sugieren** (`jayka-companion-tools`).
+## Purpose
+Optional **helper skills** for developers who build with AI («vibe coding») and want to keep order through the chat, without typing commands or remembering processes. They are not a framework: a project keeps its own skills and rules, and these are used only when they help. Generic: nothing specific to one project.
 
-## Catálogo
-Estado: ✅ escrita · 🔲 pendiente. Automática = Claude la carga cuando aplica (su descripción está siempre a la vista, el texto completo entra al usarla); manual = solo con `/nombre`. Lo que debe valer siempre va además en `CLAUDE.md` con `/jayka-menu instalar-reglas`.
+## Decisions
+- **Language (2026-10-26, v0.10.0):** all skills, templates, scripts, tests and docs are in **English**. Claude answers and writes human-readable documents in the user's language. Machine-read tokens always stay in English (statuses, interview keys, file and folder names, template headings, origin tags). Arguments are English with Spanish aliases. The README exists in English and Spanish (`README.md`, `README.es.md`). No Spanish glossary for now; add one only if Spanish output turns out inconsistent.
+- **Naming:** plugin `jay-ka`, skills `jayka-<command>`, called as `/jay-ka:jayka-<command>` (or `/jayka-<command>` when copied to `~/.claude/skills`). History: `jay-k-a-` (v0.1–0.8) → `jayka-` (v0.9); `tech-` dropped; `init` renamed `menu`.
+- **Paths:** project files in English (`.claude/state/CONTINUE.md`, `docs/project/…`, `docs/plans/`, `docs/codex/{tasks,results,screenshots}/`, `docs/security/`); personal library at `~/.claude/jayka/{styles,reverse,tools}/`. Single source: `jayka-working-rules/reference/conventions.md`.
+- The repository is a **Claude Code plugin marketplace** with one plugin, `jay-ka`, that carries all the skills. Alternative: a script that copies the skills to `~/.claude/skills`.
+- GitHub owner: account `Jpineda27-VL`. Created **private**; the author makes it public when they want. Built locally first; no push until the author orders it.
+- Skills have a **My settings** section so each person can change the rules. Self-learning skills are left as an idea for later.
+- The assistant **never** touches keys, tokens or external services: only the user. Written in `jayka-working-rules`.
+- **Vibe coding, with order:** understand, plan, approve, build in groups, verify, audit. Building with AI is welcome; improvising is not.
+- Nothing from other tools (Impeccable, Superpowers, etc.) is replaced: they are only **suggested** (`jayka-companion-tools`).
+- The five rules that must always hold can also be put in `CLAUDE.md` with `/jayka-menu install-rules`, because `CLAUDE.md` is always read while automatic skills load only when Claude judges them useful.
 
-| # | Skill | Tipo | Estado |
-|---|---|---|---|
-| 0 | `jayka-menu` | manual | ✅ catálogo en una línea por skill |
-| 1 | `jayka-communication` | automática | ✅ |
-| 2 | `jayka-working-rules` | automática | ✅ |
-| 3 | `jayka-git-rules` | automática | ✅ |
-| 4 | `jayka-security-deploy` | manual | ✅ `.env`, claves, debug apagado, HTTPS, cron, respaldos, rutas que deben dar 404, checklist del día de subir |
-| 5 | `jayka-security-web` | manual | ✅ encabezados y CSP, CSRF, cookies, límites de peticiones y login, subidas, permisos entre usuarios, prueba final |
-| 6 | `jayka-project-structure` | manual | ✅ carpetas según haya solo frontend, solo backend o ambos |
-| 7 | `jayka-new-project` | manual | ✅ entrevista de ~40 preguntas, cada una **obligatoriamente** respondida o saltada a mano (nunca automático); identidad con tonos de color solo para sondear; informe final de lo definido y lo que falta; crea CLAUDE.md, REGLAS.md, estructura, git init y memoria; puede generar un prompt para otro chat |
-| 8 | `jayka-continuity` | manual | ✅ al cerrar guarda estado, memoria, grafo y commit; al abrir lee el estado y dice dónde quedamos |
-| 9 | `jayka-style-self-learning` | manual | ✅ estudia un proyecto terminado (solo frontend: cliente y dashboard), guarda una ficha + `tokens.json` en `~/.claude/jay-k-a/estilos/` y mantiene `estilo-base.md` |
-| 10 | `jayka-style-build` | manual | ✅ toma el informe de `new-project` y las fichas; sugiere paletas, fuentes y estilos; construye prototipos; termina sugiriendo `companion-tools` |
-| 11 | `jayka-style-library` | manual | ✅ **solo informa**: lista y compara fichas, dice qué coincide o ya funcionó; no cambia nada |
-| 12 | `jayka-laravel-backend` | manual | ✅ servicios, errores de negocio, acción única por POST, bitácora, validación y pruebas |
-| 13 | `jayka-photos` | manual | ✅ subida: WebP, 1200 px, 5 MB, nombres claros |
-| 14 | `jayka-views-parity` | manual | ✅ versión genérica: dos frontends (por ejemplo web y app) con las mismas pantallas |
-| 15 | `jayka-plan-builder` | manual | ✅ usa Superpowers (`brainstorming`) si está instalado; si no, avisa que no corre igual, ofrece una versión reducida y recomienda instalarlo; nunca lo instala; entrega el plan en `.md` |
-| 16 | `jayka-codex-low` | manual | ✅ tareas simples: instrucción en `.md`, vuelve un plan básico en `.md`, pruebas básicas y revisión con Playwright |
-| 16 | `jayka-codex-high` | manual | ✅ trabajo grande: pasa por `plan-builder`, pide el esquema de una vista completa (formulario, etc.), vuelve en `.md`; el usuario revisa |
-| 17 | `jayka-real-data` | manual | ✅ seeders repetibles, sin datos de demostración, prueba de punta a punta |
-| 18 | `jayka-companion-tools` | manual | ✅ solo sugiere cuándo usar `impeccable` (audit, polish, critique), `ui-ux-pro-max`, `design-taste-frontend`, `emil-design-eng` y Superpowers (`brainstorming`, `writing-plans`) |
-| 19 | `jayka-reverse` | manual | ✅ ingeniería inversa de algo ajeno: `live <url>` o `repo <ruta-o-url-git>`, niveles 1-3. Scripts propios: escaneo de repo, captura con Playwright (scroll, hover, navegación, video, movimiento reducido), pistas por fotograma con ajuste de easing y comparación original/reproducción. Probada con sitio de prueba y un sitio real con GSAP |
+## Catalog
+Automatic = Claude loads it when it applies (its description is always in view, the full text enters on use); manual = only with `/name`.
 
-## Estándar de ejecución (desde `jayka-reverse`)
-Las skills se escriben como **contrato de ejecución**, no como instrucciones sueltas:
-- Argumentos con reglas de lectura en orden y respuesta exacta cuando faltan.
-- Cada paso: qué entra, comando exacto, qué debe salir y qué hacer si falla.
-- «Terminado cuando…» comprobable para cada nivel o fase.
-- Compuertas de permiso con el texto exacto de la pregunta.
-- Tabla «Si algo falla».
-- Scripts propios cuando una tarea se puede medir en vez de describir.
-Mejora de las demás skills a este estándar, por grupos:
-- ✅ **A · Base común (2026-10-26):** `jayka-working-rules/reference/convenciones.md` (argumentos, rutas, slug/fecha/NNN, permisos de carpetas, compuertas, origen de afirmaciones). Las 18 manuales tienen `argument-hint`, tabla de argumentos con `$ARGUMENTS` y «Terminado cuando». Rutas unificadas (`.claude/estructura/arbol.md` y `pantallas.md`, `docs/seguridad/`, `docs/proyecto/datos-de-prueba.md`). Descripciones entre comillas (antes había 12 con «: », que rompe el YAML estricto).
-- ✅ **B · Scripts que miden (2026-10-26):** probados con sitios, repos y apps de prueba.
-  - `security-deploy`: `check-deploy.mjs` (HTTPS, redirección, certificado, encabezados, cookies, 24 rutas sensibles, página de error) y `scan-git-secrets.mjs` (secretos en todo el historial, valores enmascarados), con `secret-patterns.json`.
-  - `security-web`: `scan-security.mjs` (22 reglas por sección más secretos en el código; los hallazgos son candidatos que se confirman leyendo).
-  - `style-self-learning`: `style-probe.js` (se corre con `capture-live.mjs --eval` de `reverse`; incluye el contraste real con el fondo efectivo), `contrast.mjs` y `check-tokens.mjs` (recalcula contrastes). Corrigió dos contrastes mal calculados en el ejemplo de `tokens.schema.json`.
-  - `real-data`: `find-demo-data.mjs`, más comprobación medida de seeders repetibles y del candado de entorno.
-  - `views-parity`: `capture-pair.mjs` (capturas lado a lado, diferencias de títulos, acciones y campos, similitud de texto, `paridad.html`).
-  - `capture-live.mjs` ganó `--eval` y `--sin-capturas` para que otras skills lo reusen.
-- ✅ **C · Plantillas (2026-10-26):**
-  - `continuity/reference/continuar-template.md` (encabezado con rama y commit, hecho con verificación, pendientes con siguiente paso y bloqueo, decisiones con fecha).
-  - `new-project`: las 42 preguntas tienen **clave estable** (`proyecto.nombre` … `calidad.forma-de-trabajo`); plantillas de `entrevista.md` (formato fijo por entrada con estado), `informe-inicial.md` (cada dato cita su clave) y `CLAUDE.md` (menos de 40 líneas). `retomar` convierte entrevistas del formato anterior.
-  - `style-build` lee la entrevista por clave, y su mini-cuestionario guarda con las mismas claves.
-  - Codex: la tarea dice si su entorno tiene Playwright; sin él, Codex no lo instala ni describe lo que no vio y declara la revisión «NO HECHA» con la lista de lo que hay que mirar. Quien revisa la hace siempre, y sin revisión visual no hay «cumple».
-- ✅ **D · Las tres automáticas sin repeticiones (2026-10-26):** cada regla vive en un solo lugar (`communication`: cómo se habla y se cierra; `working-rules`: permisos, secretos, verificación, negocio, datos y convenciones; `git-rules`: Git) y las demás apuntan a ella. `git-rules` cede ante las reglas de Git del `CLAUDE.md` del usuario. Nuevo bloque `working-rules/reference/bloque-claude-md.md` con las 5 reglas que no pueden fallar, instalable con `/jayka-menu instalar-reglas [global|proyecto]` (con permiso, solo entre sus marcas). No se quitó ninguna regla. Las manuales conservan sus recordatorios de secretos porque son específicos de su contexto.
-- ✅ **E · Pruebas (2026-10-26):**
-  - `tests/run.mjs`: 15 pruebas deterministas, de estructura (frontmatter, argumentos, «Terminado cuando», referencias y scripts citados que existan, versiones) y de cada script con fixtures temporales. Los secretos falsos se arman en tiempo de ejecución. Las 3 con navegador se omiten sin Playwright. Resultado: 15/15.
-  - `plugins/jay-ka/evals/`: 12 escenarios para `claude plugin eval`. Los 6 `sin-shell` pasaron 6/6 en Windows (1 corrida, Sonnet, 0.38 USD). Los 6 `requiere-shell` **no se pudieron correr aquí**: Claude Code no aísla la terminal en Windows. Hay que correrlos en macOS, Linux o WSL.
-  - Lo que salió al probar: cada skill manual dice ahora la respuesta exacta ante un argumento desconocido (antes estaba solo en las convenciones y el modelo no la usaba).
+| Skill | Type | What it does |
+|---|---|---|
+| `jayka-menu` | manual | Catalog, one line per skill; `search`; `install-rules` |
+| `jayka-communication` | automatic | How to talk: user's language, summary first, no editing while chatting |
+| `jayka-working-rules` | automatic | Working rules and the shared conventions |
+| `jayka-git-rules` | automatic | Local commits; push and PR only on order; defers to the user's own Git rules |
+| `jayka-security-deploy` | manual | Pre-publishing checklist with scripts: git-history secrets, HTTPS, headers, cookies, 24 sensitive paths |
+| `jayka-security-web` | manual | Web security rules, `build` / `audit`, with a risk-pattern scanner |
+| `jayka-project-structure` | manual | Folder tree for frontend-only, backend-only or both |
+| `jayka-new-project` | manual | 42-question interview with stable keys, each answered or skipped by hand; report; base files |
+| `jayka-continuity` | manual | `close` saves state, memory, graph and commit; `open` reads the state |
+| `jayka-style-self-learning` | manual | Studies a finished project (frontend), saves a profile + `tokens.json`, with measured contrast |
+| `jayka-style-build` | manual | Builds prototypes from the interview and the profiles |
+| `jayka-style-library` | manual | Read-only queries over the profiles |
+| `jayka-laravel-backend` | manual | Services, business errors, one action per POST, audit log, tests |
+| `jayka-photos` | manual | Uploads: WebP, 1200 px, 5 MB, clear names |
+| `jayka-views-parity` | manual | Two frontends with the same screens; measured side-by-side comparison |
+| `jayka-plan-builder` | manual | Plan by blocks in `.md`; uses Superpowers if installed, says so if not |
+| `jayka-codex-low` | manual | Simple tasks for Codex; the reviewer always does the visual check |
+| `jayka-codex-high` | manual | Big work for Codex, through a plan |
+| `jayka-real-data` | manual | Repeatable seeders, no demo data, end-to-end flow test |
+| `jayka-companion-tools` | manual | Suggests when to use Impeccable, Superpowers and other tools |
+| `jayka-reverse` | manual | Reverse engineering of a site (`live`) or repo (`repo`), levels 1–3, with Playwright measurements and easing fitting |
 
-## Instalación probada (2026-10-26)
-- **Plugin desde la carpeta local:** `claude plugin marketplace add "<ruta del repo>"` y `claude plugin install jay-ka@jay-ka-skilldev-vc` (ámbito usuario). Lee directo de `plugins/jay-ka`, así que los cambios del repo se ven en la siguiente sesión. `claude plugin details jay-ka` reconoce las 21 skills.
-- **Costo fijo:** unas **3,200 fichas por sesión**. Las descripciones de las skills manuales también cuentan, aunque su cuerpo no se cargue.
-- **Corridas en sesiones nuevas (Sonnet, solo lectura):** `menu` (catálogo), `menu buscar`, `continuity bailar` («No reconozco») y `style-library` (sin biblioteca, solo informa, no creó carpetas).
-- **Arreglado al probar:**
-  - `menu` marcaba 18 skills como «no instaladas». Las manuales no aparecen en la lista de skills de la sesión; ahora se comprueba por archivo.
-  - Con el plugin, los comandos llevan el prefijo `/jay-ka:`; nueva sección 2b de las convenciones y aclaración en los textos que nombran comandos.
-  - `menu` contaba mal el total; el catálogo dice ahora «21 skills».
-- **Copia a `~/.claude/skills`:** `install.sh` e `install.ps1` probados con `CLAUDE_HOME` temporal: 21 copiadas; bash no pisa sin `--force`; las rutas entre skills vecinas funcionan.
-- `/jayka-menu` sin prefijo **no** funciona con el plugin: hay que usar `/jay-ka:jayka-menu`.
+## Execution standard
+Skills are written as an **execution contract**, not loose instructions:
+- Arguments with reading rules in order, and an exact answer for unknown ones.
+- Each step: what goes in, the exact command, what must come out and what to do if it fails.
+- A checkable «Done when…» for each level or phase.
+- Permission gates with the exact text of the question.
+- Scripts of their own when something can be measured instead of described.
 
-## Pendiente
-- Correr los escenarios `requiere-shell` en macOS, Linux o WSL.
-- Decidir si se acortan las descripciones de las skills manuales para bajar el costo fijo.
+## History
+- **A · Common base:** conventions file, arguments table and «Done when» in every manual skill.
+- **B · Measuring scripts:** `check-deploy`, `scan-git-secrets`, `scan-security`, `style-probe`, `contrast`, `check-tokens`, `find-demo-data`, `capture-pair`; `capture-live` gained `--eval` and `--no-screenshots`.
+- **C · Templates:** `CONTINUE.md`, interview with stable keys, initial report, `CLAUDE.md`; Codex tasks declare whether Playwright exists and never claim a visual check they did not do.
+- **D · One home per rule** in the three automatic skills; `install-rules` block for `CLAUDE.md`.
+- **E · Tests:** `tests/run.mjs` (16 deterministic checks, 16/16) and `plugins/jay-ka/evals/` (13 `claude plugin eval` cases; the 7 `no-shell` ones passed 7/7 on Windows, including `reply-in-spanish`).
+- **Install tested** from a local folder as plugin, and with both copy scripts. Fixed while testing: `menu` checks installation by file; commands carry the `/jay-ka:` prefix.
+- **Rename and English (v0.9–0.10).**
 
-## Cómo trabajamos
-1. Construir las skills por grupos, mostrando cada una antes de darla por buena.
-2. Probar cada skill instalada de verdad (no solo escribirla).
-3. Cuando el autor lo ordene: revisar que no haya datos personales, elegir licencia, subir.
+## Pending
+- Run the `needs-shell` eval cases on macOS, Linux or WSL (Claude Code cannot sandbox a terminal on Windows).
+- Decide whether to shorten the manual skills' descriptions to lower the fixed cost (about 3,200 tokens per session).
+- Before publishing: check for personal data, choose a license, push, and verify the install command against the published repository.
+- Review all skills with a stronger model.
 
-## Pendientes de decisión
-- Revisión de todas las skills con un modelo más potente antes de instalarlas.
-- Licencia (por ejemplo MIT).
-- Si el README lleva también versión en inglés.
-- Verificar el comando de instalación con el repositorio ya publicado.
+## How we work
+1. Build skills by groups, showing each one before calling it good.
+2. Test each skill installed for real, not only written.
+3. When the author orders it: review for personal data, choose a license, push.

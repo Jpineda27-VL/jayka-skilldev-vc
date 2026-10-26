@@ -1,60 +1,60 @@
-# Ingeniería inversa · <nombre del objetivo>
+# Reverse engineering · <name of the target>
 
-- **Objetivo:** <url o repo>
-- **Modo y nivel:** <live|repo> · nivel <1|2|3>
-- **Fecha:** <AAAA-MM-DD>
-- **Método de captura:** <capture-live.mjs con Playwright | manual con <herramienta>>
-- **Foco:** <efecto pedido o «completo»>
+- **Target:** <url or repo>
+- **Mode and level:** <live|repo> · level <1|2|3>
+- **Date:** <YYYY-MM-DD>
+- **Capture method:** <capture-live.mjs with Playwright | manual with <tool>>
+- **Focus:** <requested effect or «complete»>
 
-## 1. Resumen
-<3 a 5 líneas: qué es, con qué está hecho y qué lo hace distinto.>
+## 1. Summary
+<3 to 5 lines: what it is, what it is made with and what makes it different.>
 
-## 2. Licencia
-- **Clase:** <Permisiva | Copyleft | Comercial | Sin licencia | No aplica (sitio en vivo)>
-- **Evidencia:** <archivo o campo>
-- **Qué permite:** <una línea>
+## 2. License
+- **Class:** <Permissive | Copyleft | Commercial | No license | Not applicable (live site)>
+- **Evidence:** <file or field>
+- **What it allows:** <one line>
 
 ## 3. Stack
-| Capa | Tecnología | Versión | Origen |
+| Layer | Technology | Version | Origin |
 |---|---|---|---|
 | Framework | | | |
-| Estilos | | | |
-| Animación | | | |
+| Styles | | | |
+| Animation | | | |
 | Scroll | | | |
-| Transición entre páginas | | | |
+| Page transition | | | |
 | 3D / canvas / vector | | | |
-| Constructor / CMS | | | |
+| Builder / CMS | | | |
 
-## 4. Inventario de efectos
-| Id | Efecto | Dónde | Disparador | Mecanismo | Valores | Origen |
+## 4. Inventory of effects
+| Id | Effect | Where | Trigger | Mechanism | Values | Origin |
 |---|---|---|---|---|---|---|
 | E1 | | | | | | |
 
-### Detalle por efecto
-#### E1 · <nombre>
-- **Qué se ve:** <descripción breve, con referencia a capturas: `captura/live-1280x800/02-scroll-03.png`>
-- **Cómo funciona:** <mecanismo en 2 o 3 líneas>
-- **Valores:** <propiedades, duración (ms), retraso, curva, stagger, start/end, scrub, pin>
-- **Evidencia:** <Medido: archivo JSON y campo | Código: archivo:línea | Inferido: por qué>
-- **Cómo reproducirlo:** <receta en palabras, sin copiar su código>
+### Detail per effect
+#### E1 · <name>
+- **What is seen:** <short description, with reference to screenshots: `capture/live-1280x800/02-scroll-03.png`>
+- **How it works:** <mechanism in 2 or 3 lines>
+- **Values:** <properties, duration (ms), delay, curve, stagger, start/end, scrub, pin>
+- **Evidence:** <Measured: JSON file and field | Code: file:line | Inferred: why>
+- **How to reproduce it:** <recipe in words, without copying its code>
 
-## 5. Accesibilidad y rendimiento del movimiento
-- **Movimiento reducido:** <veredicto y cifras>
-- **Propiedades costosas animadas:** <lista o «ninguna»>
-- **Scroll secuestrado:** <sí/no y con qué>
-- **Peso:** <librerías y canvas/WebGL>
+## 5. Accessibility and performance of the motion
+- **Reduced motion:** <verdict and figures>
+- **Costly properties animated:** <list or «none»>
+- **Hijacked scroll:** <yes/no and with what>
+- **Weight:** <libraries and canvas/WebGL>
 
-## 6. Reproducciones (nivel 3)
-| Id | Archivo | Comparación | Resultado |
+## 6. Reproductions (level 3)
+| Id | File | Comparison | Result |
 |---|---|---|---|
-| E1 | `repro/E1.html` | `compare-motion.mjs` canal <canal> | ✓ / ✗ <motivo> |
+| E1 | `repro/E1.html` | `compare-motion.mjs` channel <channel> | ✓ / ✗ <reason> |
 
-## 7. Lo que quedó sin medir o inferido
-- <punto y motivo>
+## 7. What stayed unmeasured or inferred
+- <point and reason>
 
-## 8. Cómo usar esto
-- <qué conviene llevar a un proyecto propio y qué no>
-- <siguiente skill o herramienta sugerida>
+## 8. How to use this
+- <what is worth carrying to your own project and what is not>
+- <next suggested skill or tool>
 
-## Archivos
-- `hallazgos-repo.json` · `captura/resumen.json` · `captura/red.json` · `captura/live-*/` · `pistas/` · `repro/`
+## Files
+- `repo-findings.json` · `capture/summary.json` · `capture/network.json` · `capture/live-*/` · `tracks/` · `repro/`

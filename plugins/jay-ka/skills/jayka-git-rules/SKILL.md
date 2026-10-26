@@ -1,50 +1,50 @@
 ---
 name: jayka-git-rules
-description: "Reglas de Git y GitHub para cualquier proyecto: commits locales libres, push solo cuando el usuario lo avise, PR y merge nunca sin petición, rama de trabajo en lugar de main y deploy solo con orden. Úsala al hacer commits, ramas, push, PR o deploy."
+description: "Git and GitHub rules for any project: free local commits, push only when the user says so, never a PR or merge without a request, work on a branch instead of main, deploy only on order. Use when committing, branching, pushing, opening a PR or deploying."
 ---
 
 # JayKA · Git Rules
 
-Principio: nada sale del equipo sin que el usuario lo pida en el chat. Aprobar un cambio en local no autoriza subirlo.
+Principle: nothing leaves the machine unless the user asks for it in the chat. Approving a change locally does not authorize pushing it.
 
-**Precedencia:** si el usuario tiene reglas de Git en su `CLAUDE.md` (global `~/.claude/CLAUDE.md` o del proyecto), **mandan esas**. Esta skill solo cubre lo que ellas no digan. Si alguna regla de aquí choca con las suyas, sigue las suyas y no repitas la de aquí.
+**Precedence:** if the user has Git rules in their `CLAUDE.md` (global `~/.claude/CLAUDE.md` or the project's), **those win**. This skill only covers what they do not say. If a rule here clashes with theirs, follow theirs and do not repeat the one from here.
 
-## Primero: ¿hay remoto?
-Revisa `git remote -v`.
-- **Sin remoto (repo solo local):** commitea en la rama actual sin preguntar por ramas, push ni PR.
-- **Con remoto (GitHub u otro):** aplica todo lo de abajo.
+## First: is there a remote?
+Check `git remote -v`.
+- **No remote (local-only repo):** commit on the current branch without asking about branches, push or PR.
+- **With a remote (GitHub or other):** apply everything below.
 
-## Ramas
-- El trabajo normal va en una rama de tema, casi nunca directo en `main`.
-- Si el chat arranca en `main`, después del primer mensaje del usuario y antes de seguir, pregunta: «¿Seguimos en `main` o usamos una rama?».
-- No crees, cambies ni borres ramas sin preguntar. Una rama por tema.
+## Branches
+- Normal work goes on a topic branch, almost never straight on `main`.
+- If the chat starts on `main`, after the user's first message and before continuing, ask: «Do we stay on `main` or use a branch?».
+- Do not create, switch or delete branches without asking. One branch per topic.
 
 ## Commits
-- Commits locales en la rama de trabajo: permitidos cuando tengan sentido o el usuario los pida.
-- Mensaje en presente, con una línea de resumen clara, en el idioma del proyecto.
-- Respeta la línea de atribución (`Co-Authored-By`) que indique el entorno.
-- Antes de commitear mira qué entra (`git status`, `git diff --staged`). Nunca incluyas secretos, claves ni archivos locales de configuración.
-- No uses `--no-verify` ni te saltes hooks, salvo que el usuario lo pida. Si un hook falla, arregla la causa.
-- Prefiere un commit nuevo a reescribir uno anterior.
+- Local commits on the working branch: allowed when they make sense or the user asks.
+- Message in the present tense, with a clear one-line summary, in the project's language.
+- Respect the attribution line (`Co-Authored-By`) that the environment indicates.
+- Before committing look at what goes in (`git status`, `git diff --staged`). Never include secrets, keys or local configuration files.
+- Do not use `--no-verify` or skip hooks unless the user asks. If a hook fails, fix the cause.
+- Prefer a new commit over rewriting an earlier one.
 
 ## Push
-- **Solo cuando el usuario lo avise, en ese momento.** Una aprobación anterior no cubre otro push.
-- Antes de pedir confirmación, di qué sube: rama, número de commits y destino. Ejemplo: «¿Subo 3 commits de `mi-rama` a `origin`?».
+- **Only when the user says so, at that moment.** A previous approval does not cover another push.
+- Before asking for confirmation, say what goes up: branch, number of commits and destination. Example: «Push 3 commits from `my-branch` to `origin`?».
 
-## Integrar a `main` y pull requests
-- Merge a `main` solo con orden explícita. Usa `git merge --ff-only`; si no avanza limpio, detente y avisa. Antes, corre las pruebas.
-- **Nunca** abras un PR ni hagas merge en GitHub sin petición explícita. Si la piden, confirma: «¿Abro un PR con N commits de `rama` hacia `main`?».
+## Merging into `main` and pull requests
+- Merge into `main` only with an explicit order. Use `git merge --ff-only`; if it does not advance cleanly, stop and say so. Run the tests first.
+- **Never** open a PR or merge on GitHub without an explicit request. If they ask, confirm: «Open a PR with N commits from `branch` into `main`?».
 
 ## Deploy
-- Solo con orden explícita del usuario, con `main` ya actualizado y con pruebas verdes.
-- Después, verifica con una petición real al sitio y reporta el código de respuesta.
+- Only with the user's explicit order, with `main` already updated and tests green.
+- Afterwards, verify with a real request to the site and report the response code.
 
-## Destructivo
-- No uses `git reset --hard`, `git push --force`, `git clean -f` ni borres ramas o carpetas sin confirmación.
-- Si una operación puede perder datos, haz un respaldo o pregunta antes.
+## Destructive
+- Do not use `git reset --hard`, `git push --force`, `git clean -f` or delete branches or folders without confirmation.
+- If an operation can lose data, make a backup or ask first.
 
-## Reporte al cerrar
-El cierre de `jayka-communication`, más qué quedó sin subir (rama y número de commits).
+## Report when closing
+The closing of `jayka-communication`, plus what was left unpushed (branch and number of commits).
 
-## Mis ajustes
-<!-- Cambia lo que no sea tu estilo. Ejemplo: «trabajo directo en main», «los PR sí los abre el asistente». -->
+## My settings
+<!-- Change what is not your style. Example: «I work straight on main», «the assistant may open PRs». -->

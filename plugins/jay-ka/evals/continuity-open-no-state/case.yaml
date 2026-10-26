@@ -1,0 +1,33 @@
+schema_version: "1.0"
+name: continuity-open-no-state
+description: Opening without CONTINUE.md says so, summarizes from git and creates or modifies nothing.
+tags: [continuity, needs-shell]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    /jay-ka:jayka-continuity open
+
+    (I write in English.)
+  max_turns: 8
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Bash, Write]
+runs: 1
+graders:
+  - type: regex
+    name: says-there-is-no-state
+    pattern: "CONTINUE\\.md[\\s\\S]{0,80}(not exist|no |not found|missing|absent|n't)|(no |not |missing|n't)[\\s\\S]{0,80}CONTINUE\\.md"
+    flags: i
+  - type: regex
+    name: uses-the-commit
+    pattern: "contact form"
+    flags: i
+  - type: file_exists
+    name: does-not-create-the-state
+    path: ".claude/state/CONTINUE.md"
+    exists: false
+  - type: tool_used
+    name: does-not-write
+    tool: Write
+    min: 0
+    max: 0

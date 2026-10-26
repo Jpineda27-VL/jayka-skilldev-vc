@@ -1,206 +1,206 @@
 ---
 name: jayka-reverse
-description: "Ingeniería inversa de un sitio en vivo o de un repositorio/template ajeno. Detecta stack y librerías, mide animaciones, transiciones y scroll con Playwright (duración, curva, disparador), deduce el easing de animaciones hechas con JS, revisa licencia y entrega un informe con evidencia y reproducciones mínimas verificadas. Invócala con /jayka-reverse live <url> o /jayka-reverse repo <ruta-o-url-git>."
-argument-hint: "live <url> | repo <ruta-o-url-git> [--nivel 1|2|3] [--foco \"<efecto>\"]"
+description: "Reverse engineering of a live site or of someone else's repository/template. Detects the stack and libraries, measures animations, transitions and scroll with Playwright (duration, curve, trigger), deduces the easing of JS-made animations, checks the license and delivers a report with evidence and verified minimal reproductions. Invoke it with /jayka-reverse live <url> or /jayka-reverse repo <path-or-git-url>."
+argument-hint: "live <url> | repo <path-or-git-url> [--level 1|2|3] [--focus \"<effect>\"]"
 disable-model-invocation: true
 ---
 
-# JayKA · Tech · Reverse
+# JayKA · Reverse
 
-Estudia **algo ajeno** (un sitio publicado, un repositorio o un template) para entender **cómo está hecho** y poder reproducir sus técnicas con contenido propio. Es distinta de `jayka-style-self-learning`, que estudia **tus** proyectos y guarda tu estilo. Aquí el resultado es un **informe técnico** con evidencia medida, no una ficha personal.
+Studies **something that is not yours** (a published site, a repository or a template) to understand **how it is made** and to be able to reproduce its techniques with your own content. It differs from `jayka-style-self-learning`, which studies **your** projects and saves your style. Here the result is a **technical report** with measured evidence, not a personal profile.
 
-Esta skill es un **contrato de ejecución**: cada paso dice qué entra, qué comando se corre, qué debe salir y qué hacer si falla. Si un paso no se puede cumplir, se dice en el informe; no se rellena con suposiciones.
+This skill is an **execution contract**: each step says what goes in, which command runs, what must come out and what to do if it fails. If a step cannot be met, the report says so; it is not filled in with assumptions.
 
-Argumentos recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+Received arguments: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-## 1. Cómo leer los argumentos
+## 1. How to read the arguments
 
-Forma: `<modo> <objetivo> [--nivel 1|2|3] [--foco "<efecto>"]`
+Form: `<mode> <target> [--level 1|2|3] [--focus "<effect>"]` (aliases `--nivel`, `--foco`)
 
-| Modo | Alias aceptados | Objetivo válido |
+| Mode | Accepted aliases | Valid target |
 |---|---|---|
-| `live` | `online`, `web` | URL `http://` o `https://` |
-| `repo` | `local`, `git` | ruta local que exista, o URL git (`https://github.com/…`, `https://gitlab.com/…`, `git@…`, termina en `.git`) |
+| `live` | `online`, `web` | URL `http://` or `https://` |
+| `repo` | `local`, `git` | an existing local path, or a git URL (`https://github.com/…`, `https://gitlab.com/…`, `git@…`, ends in `.git`) |
 
-Reglas, en este orden. Aplica la primera que corresponda y no improvises otra:
-1. La primera palabra (en minúsculas) decide el modo según la tabla.
-2. **Sin modo**: si el objetivo es una URL de `github.com`, `gitlab.com`, `bitbucket.org` o `codeberg.org` → `repo`; si es otra URL → `live`; si es una ruta que existe → `repo`. Escribe una línea: «Modo inferido: `<modo>`.» y sigue.
-3. `live` con una URL de `github.com/<usuario>/<repo>` (no `github.io`) → pregunta una sola cosa: «¿Estudio el código (repo) o la página publicada (live)?».
-4. `live` sin `http(s)://` → antepón `https://` y dilo en una línea.
-5. Falta el objetivo o no es válido → responde solo: «Falta el objetivo. Ejemplos: `/jayka-reverse live https://ejemplo.com` (con el plugin: `/jay-ka:` delante, convenciones §2b) · `/jayka-reverse repo https://github.com/usuario/template`». No hagas nada más.
-6. `--nivel` por defecto: **2**. `--foco` es opcional: la detección se hace completa, pero el inventario y las pistas se centran en ese efecto.
+Rules, in this order. Apply the first that matches and do not improvise another:
+1. The first word (lowercase) decides the mode according to the table.
+2. **No mode**: if the target is a URL of `github.com`, `gitlab.com`, `bitbucket.org` or `codeberg.org` → `repo`; if it is another URL → `live`; if it is a path that exists → `repo`. Write one line: «Inferred mode: `<mode>`.» and go on.
+3. `live` with a URL of `github.com/<user>/<repo>` (not `github.io`) → ask only one thing: «Do I study the code (repo) or the published page (live)?».
+4. `live` without `http(s)://` → prepend `https://` and say so in one line.
+5. The target is missing or invalid → answer only: «The target is missing. Examples: `/jayka-reverse live https://example.com` (as a plugin: `/jay-ka:` in front, conventions §2b) · `/jayka-reverse repo https://github.com/user/template`». Do nothing else.
+6. `--level` default: **2**. `--focus` is optional: detection is done in full, but the inventory and the tracks center on that effect.
 
-## 2. Niveles
+## 2. Levels
 
-| Nivel | Repo | Live | Terminado cuando |
+| Level | Repo | Live | Done when |
 |---|---|---|---|
-| 1 · Estático | Licencia + escaneo + confirmación en código | Una carga con sonda, sin scroll | Stack y librerías con evidencia; inventario de lo visible en código o en la carga |
-| 2 · Medición (por defecto) | Lo anterior + levantarlo en local + captura | Captura completa: 2 ventanas, ratón, hover, scroll, navegación, video, movimiento reducido | Cada efecto del inventario tiene duración, curva y disparador **medidos** o marcados como no medibles |
-| 3 · Reproducción | Lo anterior + reproducciones verificadas | Igual | Cada efecto elegido tiene `repro/E<n>.html` y `compare-motion.mjs` sale con código 0 (o se explica por qué no tras 3 intentos) |
+| 1 · Static | License + scan + confirmation in code | One load with the probe, no scroll | Stack and libraries with evidence; inventory of what is visible in code or on load |
+| 2 · Measurement (default) | The above + run it locally + capture | Full capture: 2 windows, mouse, hover, scroll, navigation, video, reduced motion | Every effect of the inventory has duration, curve and trigger **measured** or marked as not measurable |
+| 3 · Reproduction | The above + verified reproductions | Same | Every chosen effect has `repro/E<n>.html` and `compare-motion.mjs` exits with code 0 (or it is explained why not after 3 attempts) |
 
-## 3. Reglas que no se rompen
-1. **Se aprende el mecanismo, no se copia la obra.** No se copian textos, imágenes, logos, marca ni bloques de código del objetivo. Las reproducciones se escriben desde los valores medidos, con contenido propio.
-2. **Licencia primero.** Sin licencia, o con licencia comercial (template comprado), solo se estudia y se reescribe la técnica; nada se reutiliza tal cual. Con copyleft (GPL, AGPL, MPL) se avisa de lo que obliga.
-3. **El código ajeno no es confiable.** Va en una carpeta aislada. No se ejecuta ningún script ni se instala nada sin mostrarlo antes y tener el sí del usuario. Las dependencias se instalan **sin scripts de instalación**.
-4. **Solo lo público.** No se inicia sesión, no se envían formularios, no se saltan paywalls ni protecciones. Si el sitio bloquea o pide verificación (403, 429, captcha), **se detiene** y se informa; nunca se intenta evadir. Se estudia la página dada y como máximo una navegación interna, salvo que el usuario nombre más URLs. Nada de rastreo masivo.
-5. **Secretos fuera.** No se abren `.env` ni credenciales (el escáner los omite sin leerlos). Nunca se piden claves ni tokens. Si algo solo funciona con una clave real, esa parte no se estudia.
-6. **Toda afirmación lleva su origen**: `Medido` (sonda, captura o pista), `Código` (archivo:línea) o `Inferido` (solo de capturas o razonamiento). Lo inferido nunca se presenta como medido.
-7. **Solo se escribe en la carpeta de trabajo** (`TRABAJO`, abajo) y en la de herramientas. Nada en el proyecto abierto ni en la ruta estudiada.
-8. **Playwright se instala solo con permiso**, en la carpeta de herramientas, nunca dentro de un proyecto.
+## 3. Rules that are never broken
+1. **The mechanism is learned, the work is not copied.** No texts, images, logos, brand or code blocks of the target are copied. Reproductions are written from the measured values, with your own content.
+2. **License first.** Without a license, or with a commercial license (a bought template), it is only studied and the technique is rewritten; nothing is reused as is. With copyleft (GPL, AGPL, MPL) warn about what it obliges.
+3. **Someone else's code is not trustworthy.** It goes in an isolated folder. No script is run and nothing is installed without showing it first and having the user's yes. Dependencies are installed **without install scripts**.
+4. **Public only.** No logging in, no submitting forms, no bypassing paywalls or protections. If the site blocks or asks for verification (403, 429, captcha), **stop** and report; never try to evade it. The given page and at most one internal navigation are studied, unless the user names more URLs. No mass crawling.
+5. **Secrets out.** `.env` and credentials are not opened (the scanner skips them without reading). Keys or tokens are never requested. If something only works with a real key, that part is not studied.
+6. **Every claim carries its origin**: `Measured` (probe, capture or track), `Code` (file:line) or `Inferred` (only from screenshots or reasoning). What is inferred is never presented as measured.
+7. **Only write in the study folder** (`STUDY`, below) and in the tools folder. Nothing in the open project or in the studied path.
+8. **Playwright is installed only with permission**, in the tools folder, never inside a project.
 
-## 4. Rutas
-- `SKILL_DIR`: el directorio base de esta skill (Claude Code lo muestra al cargarla). Los scripts están en `SKILL_DIR/scripts/`.
-- `TRABAJO`: `~/.claude/jay-k-a/inversa/<slug>/`. El `<slug>` sale del host y la ruta (live) o del nombre del repo (repo), en minúsculas y con guiones. Si ya existe, pregunta: «¿Actualizo el estudio anterior (lo guardo como `<slug>.<AAAA-MM-DD>`) o creo uno nuevo?».
-- `HERRAMIENTAS`: `~/.claude/jay-k-a/tools/` (aquí va Playwright).
-- En Windows, las URL de archivo van así: `file:///C:/Users/<usuario>/.claude/jay-k-a/inversa/<slug>/repro/E1.html`.
+## 4. Paths
+- `SKILL_DIR`: the base directory of this skill (Claude Code shows it when loading it). The scripts are in `SKILL_DIR/scripts/`.
+- `STUDY`: `~/.claude/jayka/reverse/<slug>/`. The `<slug>` comes from the host and path (live) or the repo name (repo), in lowercase with hyphens. If it already exists, ask: «Do I update the previous study (saving it as `<slug>.<YYYY-MM-DD>`) or create a new one?».
+- `TOOLS`: `~/.claude/jayka/tools/` (Playwright goes here).
+- On Windows, file URLs look like this: `file:///C:/Users/<user>/.claude/jayka/reverse/<slug>/repro/E1.html`.
 
-Contenido de `TRABAJO`:
+Content of `STUDY`:
 ```
-fuente/               clon del repo (solo si el objetivo es una URL git o si hubo que copiarlo para correrlo)
-hallazgos-repo.json   salida de scan-repo.mjs
-captura/              salida de capture-live.mjs (una subcarpeta por ventana, red.json, resumen.json)
-pistas/               capturas con --track para efectos hechos con JS
-repro/                reproducciones mínimas propias y sus capturas
-informe.md            el informe final
+source/               clone of the repo (only if the target is a git URL or if it had to be copied to run it)
+repo-findings.json    output of scan-repo.mjs
+capture/              output of capture-live.mjs (one subfolder per window, network.json, summary.json)
+tracks/               captures with --track for JS-made effects
+repro/                own minimal reproductions and their captures
+report.md             the final report
 ```
 
-## 5. Paso 0 · Preparación (siempre)
-1. `node --version` → hace falta 18 o más. Si no hay Node: detente y dilo; esta skill no funciona sin él.
-2. Si el nivel es 2 o más, o el modo es `live`: `node "<SKILL_DIR>/scripts/capture-live.mjs" --check`
-   - Código 0 → sigue.
-   - Código 3 → pide permiso con el texto exacto: «Para medir hace falta Playwright con Chromium (unos 150 MB) en `~/.claude/jay-k-a/tools/`, fuera de tus proyectos. ¿Lo instalo?». Con el sí: `npm install --prefix "<HERRAMIENTAS>" playwright` y `npx --prefix "<HERRAMIENTAS>" playwright install chromium`; repite `--check`.
-   - Si dice que no → **modo manual**: usa la herramienta de navegador disponible (Playwright MCP o el navegador integrado). Obtén la sonda con `node "<SKILL_DIR>/scripts/capture-live.mjs" --print-probe`, evalúala en la página, desplázate y toma capturas a mano. El informe dirá «captura manual: sin video, sin pistas por fotograma, sin pasada de movimiento reducido».
-3. Anuncia en tres líneas: modo y objetivo, nivel, carpeta de trabajo. No pidas aprobación para el nivel 1; los permisos se piden en cada compuerta.
+## 5. Step 0 · Preparation (always)
+1. `node --version` → 18 or newer is needed. If there is no Node: stop and say so; this skill does not work without it.
+2. If the level is 2 or more, or the mode is `live`: `node "<SKILL_DIR>/scripts/capture-live.mjs" --check`
+   - Code 0 → go on.
+   - Code 3 → ask for permission with the exact text: «Measuring needs Playwright with Chromium (about 150 MB) in `~/.claude/jayka/tools/`, outside your projects. Shall I install it?». With the yes: `npm install --prefix "<TOOLS>" playwright` and `npx --prefix "<TOOLS>" playwright install chromium`; repeat `--check`.
+   - If they say no → **manual mode**: use the available browser tool (Playwright MCP or the built-in browser). Get the probe with `node "<SKILL_DIR>/scripts/capture-live.mjs" --print-probe`, evaluate it on the page, scroll and take screenshots by hand. The report will say «manual capture: no video, no per-frame tracks, no reduced-motion pass».
+3. Announce in three lines: mode and target, level, study folder. Do not ask for approval for level 1; permissions are asked at each gate.
 
-## 6. Modo repo
+## 6. Repo mode
 
-**R1 · Obtener la fuente**
-- Ruta local: se usa tal cual, **solo lectura**.
-- URL git: `git clone --depth 1 --no-recurse-submodules -c core.symlinks=false "<url>" "<TRABAJO>/fuente"`
-- Si el clon falla (privado, no existe, pide credenciales): detente y responde «No pude clonarlo: es privado o no existe. Si es tuyo, clónalo tú y pásame la ruta local.». No pidas tokens.
+**R1 · Get the source**
+- Local path: used as is, **read-only**.
+- Git URL: `git clone --depth 1 --no-recurse-submodules -c core.symlinks=false "<url>" "<STUDY>/source"`
+- If the clone fails (private, does not exist, asks for credentials): stop and answer «I could not clone it: it is private or does not exist. If it is yours, clone it yourself and give me the local path.». Do not ask for tokens.
 
-**R2 · Licencia**
-Lee `LICENSE*` / `COPYING*` y el campo `license` de `package.json`. Busca también textos de licencia comercial (por ejemplo «Envato», «ThemeForest», «Regular License», «single use»). Clasifica:
+**R2 · License**
+Read `LICENSE*` / `COPYING*` and the `license` field of `package.json`. Also look for commercial license texts (for example «Envato», «ThemeForest», «Regular License», «single use»). Classify:
 
-| Clase | Ejemplos | Qué se puede hacer |
+| Class | Examples | What can be done |
 |---|---|---|
-| Permisiva | MIT, ISC, BSD, Apache-2.0, MIT-0, Unlicense, CC0 | Reutilizar con atribución según la licencia; igual se reescribe por la regla 1 |
-| Copyleft | GPL, LGPL, AGPL, MPL | Reutilizar obliga a liberar bajo la misma licencia; se avisa |
-| Comercial | Template comprado | Solo estudiar; uso según lo que diga la licencia comprada |
-| Sin licencia | Ningún archivo ni campo | Todos los derechos reservados: solo estudiar |
+| Permissive | MIT, ISC, BSD, Apache-2.0, MIT-0, Unlicense, CC0 | Reuse with attribution according to the license; it is rewritten anyway by rule 1 |
+| Copyleft | GPL, LGPL, AGPL, MPL | Reusing obliges releasing under the same license; warn |
+| Commercial | Bought template | Only study; use according to what the bought license says |
+| No license | No file or field | All rights reserved: only study |
 
-**R3 · Escaneo**
-`node "<SKILL_DIR>/scripts/scan-repo.mjs" "<FUENTE>" --out "<TRABAJO>/hallazgos-repo.json"`
-- Sale un resumen con detecciones (`[categoría] librería — evidencia`), scripts de instalación marcados con ⚠ y estadísticas de movimiento en CSS y en código.
-- Si no detecta nada y no hay movimiento: dilo («sitio estático sin animación detectable en código») y pasa al nivel 2 si corresponde; puede haber movimiento que solo se ve en ejecución.
+**R3 · Scan**
+`node "<SKILL_DIR>/scripts/scan-repo.mjs" "<SOURCE>" --out "<STUDY>/repo-findings.json"`
+- It prints a summary with detections (`[category] library — evidence`), install scripts marked with ⚠ and motion statistics in CSS and in code.
+- If it detects nothing and there is no motion: say so («static site without motion detectable in code») and move to level 2 if it applies; there may be motion that is only seen at runtime.
 
-**R4 · Confirmar en el código**
-Un paquete en `package.json` sin uso en el código se informa como «instalada, no usada». Para cada detección busca dónde se inicializa y dónde se define cada efecto, y anota `archivo:línea`. Patrones de búsqueda: `gsap.registerPlugin`, `gsap.timeline`, `ScrollTrigger.create`, `scrollTrigger:`, `new Lenis`, `<motion.`, `AnimatePresence`, `useScroll`, `useTransform`, `layoutId`, `@keyframes`, `transition:`, `startViewTransition`, `view-transition-name`, `animation-timeline`, `IntersectionObserver`, `requestAnimationFrame`. La guía para interpretar cada señal está en `reference/reading-guide.md`.
+**R4 · Confirm in the code**
+A package in `package.json` that is not used in the code is reported as «installed, not used». For each detection look for where it is initialized and where each effect is defined, and note `file:line`. Search patterns: `gsap.registerPlugin`, `gsap.timeline`, `ScrollTrigger.create`, `scrollTrigger:`, `new Lenis`, `<motion.`, `AnimatePresence`, `useScroll`, `useTransform`, `layoutId`, `@keyframes`, `transition:`, `startViewTransition`, `view-transition-name`, `animation-timeline`, `IntersectionObserver`, `requestAnimationFrame`. The guide to interpret each signal is in `reference/reading-guide.md`.
 
-**R5 · Correrlo (nivel 2 o más)**
-Compuerta: muestra al usuario, sacado de `hallazgos-repo.json`, el gestor de paquetes, los scripts de instalación, el script que se va a correr (`dev`, `start` o `preview`) y si existe `.env.example`. Pregunta: «¿Instalo sus dependencias sin scripts de instalación y lo levanto en local?».
-- Si la fuente es una ruta local, primero se **copia** a `<TRABAJO>/fuente` (`git clone "<ruta>" "<TRABAJO>/fuente"` si es repo git; si no, copia excluyendo `node_modules`). Nunca se instala en la ruta del usuario.
-- Instalación según el gestor:
+**R5 · Run it (level 2 or more)**
+Gate: show the user, taken from `repo-findings.json`, the package manager, the install scripts, the script to be run (`dev`, `start` or `preview`) and whether `.env.example` exists. Ask: «Shall I install its dependencies without install scripts and start it locally?».
+- If the source is a local path, it is first **copied** to `<STUDY>/source` (`git clone "<path>" "<STUDY>/source"` if it is a git repo; otherwise copy excluding `node_modules`). Never install in the user's path.
+- Install according to the manager:
 
-| Gestor | Comando |
+| Manager | Command |
 |---|---|
-| npm | `npm ci --ignore-scripts` (sin lockfile: `npm install --ignore-scripts`) |
+| npm | `npm ci --ignore-scripts` (no lockfile: `npm install --ignore-scripts`) |
 | pnpm | `pnpm install --frozen-lockfile --ignore-scripts` |
 | yarn 1 | `yarn install --frozen-lockfile --ignore-scripts` |
 | yarn 2+ | `yarn install --immutable --mode=skip-build` |
 | bun | `bun install --frozen-lockfile --ignore-scripts` |
 
-- Si falla porque un paquete necesita su script de instalación (por ejemplo `esbuild`, `sharp`, `@swc/core`): nombra el paquete y pide permiso para `npm rebuild <paquete>`; solo ese.
-- `.env`: solo si existe `.env.example`, se copia como `.env` con los valores de ejemplo. Nunca claves reales.
-- Levanta el servidor **en segundo plano** con el script elegido, lee el puerto en su salida y comprueba que responde (`curl -sI http://localhost:<puerto>`).
-- HTML estático sin Node: `python -m http.server 4173 --directory "<FUENTE>"`. PHP/Laravel o similar sin las herramientas instaladas: quédate en nivel 1 y dilo.
-- Si no compila: quédate en nivel 1, copia al informe las 10 líneas clave del error y sigue.
-- Con el servidor arriba, ejecuta los pasos L2 y L3 contra `http://localhost:<puerto>`. Al terminar, **detén el servidor**.
+- If it fails because a package needs its install script (for example `esbuild`, `sharp`, `@swc/core`): name the package and ask permission for `npm rebuild <package>`; only that one.
+- `.env`: only if `.env.example` exists, copy it as `.env` with the sample values. Never real keys.
+- Start the server **in the background** with the chosen script, read the port from its output and check that it answers (`curl -sI http://localhost:<port>`).
+- Static HTML without Node: `python -m http.server 4173 --directory "<SOURCE>"`. PHP/Laravel or similar without the tools installed: stay at level 1 and say so.
+- If it does not build: stay at level 1, copy the 10 key lines of the error into the report and go on.
+- With the server up, run steps L2 and L3 against `http://localhost:<port>`. When finished, **stop the server**.
 
-## 7. Modo live
+## 7. Live mode
 
-**L1 · Nivel 1 (rápido)**
-`node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<TRABAJO>/captura" --viewports 1280x800 --steps 0 --hover 0 --no-reduced`
+**L1 · Level 1 (quick)**
+`node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<STUDY>/capture" --viewports 1280x800 --steps 0 --hover 0 --no-reduced`
 
-**L2 · Nivel 2 (completo)**
-`node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<TRABAJO>/captura" --video --nav`
-Hace, por cada ventana (1280×800 y 375×812): sonda al cargar, recorrido del ratón y hover (solo escritorio), scroll en 8 pasos con rueda, clic en un enlace interno con capturas a 0–1800 ms, sonda final y registro de **cada** animación CSS o Web Animation que aparece y en qué fase. Al final, una pasada con `prefers-reduced-motion: reduce`.
-- Lee el resumen que imprime y luego **mira las capturas** (`00-carga.png`, `01-hover-*.png`, `02-scroll-*.png`, `03-nav-*.png`).
-- Lee `captura/live-1280x800/animaciones-vistas.json` (qué se animó, cuándo y con qué valores), `sonda-final.json` (GSAP y ScrollTrigger si están expuestos, CSS, variables) y `captura/red.json` (librerías encontradas en los JS descargados, aunque estén empaquetadas, y source maps).
-- Si sale «BLOQUEADO»: detente (regla 4). Informa y ofrece estudiar el repo si el usuario lo tiene.
+**L2 · Level 2 (full)**
+`node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<STUDY>/capture" --video --nav`
+For each window (1280×800 and 375×812) it does: probe on load, mouse path and hover (desktop only), scroll in 8 steps with the wheel, a click on an internal link with screenshots at 0–1800 ms, a final probe and a record of **every** CSS animation or Web Animation that appears and in which phase. At the end, a pass with `prefers-reduced-motion: reduce`.
+- Read the summary it prints and then **look at the screenshots** (`00-load.png`, `01-hover-*.png`, `02-scroll-*.png`, `03-nav-*.png`).
+- Read `capture/live-1280x800/animations-seen.json` (what was animated, when and with which values), `probe-final.json` (GSAP and ScrollTrigger if exposed, CSS, variables) and `capture/network.json` (libraries found in the downloaded JS, even if bundled, and source maps).
+- If it says «BLOCKED»: stop (rule 4). Report and offer to study the repo if the user has it.
 
-**L3 · Pistas por fotograma (efectos hechos con JS)**
-Un efecto que se ve en las capturas pero no aparece en `animaciones-vistas.json` lo mueve JavaScript (GSAP empaquetado, `requestAnimationFrame`, scroll suave). Para medirlo:
-1. Elige hasta 4 selectores **estables** de esos elementos (id, clase o atributo `data-*`), sacados de la sonda o del DOM.
-2. `node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<TRABAJO>/pistas" --viewports 1280x800 --no-reduced --track "<sel1>,<sel2>"`
-3. En `pistas/live-1280x800/pistas.json` cada tramo trae canal (`opacity`, `tx`, `ty`, `escala`, `rotacion`, `recorte0..3`, `filtro0..1`), desde→hasta, duración, si está **ligado al scroll** (scrub) y las 3 curvas que mejor ajustan, con su error.
-4. Interpretación del error de ajuste: ≤ 0.02 → la curva es esa; 0.02–0.05 → probable, dilo así; > 0.05 → curva propia o compuesta: informa la curva cruda y no le pongas nombre. En tramos ligados al scroll la curva depende del scroll, no del tiempo: informa `start`/`end` y `scrub`, no un easing.
+**L3 · Per-frame tracks (JS-made effects)**
+An effect that is seen in the screenshots but does not appear in `animations-seen.json` is moved by JavaScript (bundled GSAP, `requestAnimationFrame`, smooth scroll). To measure it:
+1. Choose up to 4 **stable** selectors of those elements (id, class or `data-*` attribute), taken from the probe or the DOM.
+2. `node "<SKILL_DIR>/scripts/capture-live.mjs" "<url>" --out "<STUDY>/tracks" --viewports 1280x800 --no-reduced --track "<sel1>,<sel2>"`
+3. In `tracks/live-1280x800/tracks.json` each segment carries the channel (`opacity`, `tx`, `ty`, `scale`, `rotation`, `clip0..3`, `filter0..1`), from→to, duration, whether it is **linked to scroll** (scrub) and the 3 curves that fit best, with their error.
+4. Reading the fit error: ≤ 0.02 → the curve is that one; 0.02–0.05 → probable, say so; > 0.05 → own or composite curve: report the raw curve and do not name it. For segments linked to scroll the curve depends on the scroll, not on time: report `start`/`end` and `scrub`, not an easing.
 
-**L4 · Librerías empaquetadas**
-Si `red.json` encontró una librería en el código descargado (`firmasEnCodigo`) pero no está en `window`, está empaquetada: sus valores salen de las pistas (L3), no de leer su configuración. Si hay source maps públicos, puedes leerlos con la herramienta de navegador para **ubicar** el código original de un efecto. Se cita la ubicación; no se copia el código.
+**L4 · Bundled libraries**
+If `network.json` found a library in the downloaded code (`codeSignatures`) but it is not on `window`, it is bundled: its values come from the tracks (L3), not from reading its configuration. If there are public source maps, you can read them with the browser tool to **locate** the original code of an effect. The location is cited; the code is not copied.
 
-## 8. Pasos comunes
+## 8. Common steps
 
-**C1 · Inventario de efectos**
-Una fila por efecto, con id `E1…En`:
+**C1 · Inventory of effects**
+One row per effect, with id `E1…En`:
 
-| Id | Efecto | Dónde | Disparador | Mecanismo | Valores | Origen |
+| Id | Effect | Where | Trigger | Mechanism | Values | Origin |
 |---|---|---|---|---|---|---|
-| E1 | Títulos que suben al entrar | `h2.section-title` | scroll (entra en pantalla) | GSAP + ScrollTrigger | `ty` 40→0 px, 800 ms, power3.out, stagger 0.08 s, start `top 80%` | Medido (pista) + Código `src/anim.ts:42` |
+| E1 | Titles that rise on entering | `h2.section-title` | scroll (enters viewport) | GSAP + ScrollTrigger | `ty` 40→0 px, 800 ms, power3.out, stagger 0.08 s, start `top 80%` | Measured (track) + Code `src/anim.ts:42` |
 
-- Disparadores válidos: `carga`, `scroll (entra en pantalla)`, `scroll (ligado / scrub)`, `scroll (fijado / pin)`, `hover`, `ratón (sigue al cursor)`, `clic`, `navegación`, `continuo (bucle)`.
-- Valores mínimos: propiedades animadas, duración, retraso, curva y, si aplica, stagger, start/end, scrub y pin.
-- Con `--foco`: el inventario lleva ese efecto completo y del resto solo una lista corta.
+- Valid triggers: `load`, `scroll (enters viewport)`, `scroll (linked / scrub)`, `scroll (pinned)`, `hover`, `mouse (follows cursor)`, `click`, `navigation`, `continuous (loop)`.
+- Minimum values: animated properties, duration, delay, curve and, if it applies, stagger, start/end, scrub and pin.
+- With `--focus`: the inventory carries that effect in full and only a short list of the rest.
 
-**C2 · Accesibilidad y rendimiento del movimiento**
-- Movimiento reducido: el veredicto de `movimiento-reducido.json` (o «no medido» en modo manual).
-- Propiedades costosas: animar `top`, `left`, `width`, `height`, `margin` o `box-shadow` obliga a recalcular la página; `transform`, `opacity` y `filter` no. Señala los efectos que usan las costosas.
-- Scroll secuestrado (Lenis, Locomotive, ScrollSmoother): dilo, porque cambia cómo se siente el scroll y afecta al teclado y a los lectores de pantalla.
-- Cantidad de `canvas` / WebGL y peso de las librerías (en `red.json`).
+**C2 · Accessibility and performance of the motion**
+- Reduced motion: the verdict of `reduced-motion.json` (or «not measured» in manual mode).
+- Costly properties: animating `top`, `left`, `width`, `height`, `margin` or `box-shadow` forces the page to recalculate; `transform`, `opacity` and `filter` do not. Point out the effects that use the costly ones.
+- Hijacked scroll (Lenis, Locomotive, ScrollSmoother): say so, because it changes how scrolling feels and affects the keyboard and screen readers.
+- Amount of `canvas` / WebGL and weight of the libraries (in `network.json`).
 
-**C3 · Reproducción (nivel 3)**
-1. Pregunta qué efectos reproducir (por defecto, los 3 más distintivos del inventario).
-2. Para cada uno escribe `repro/E<n>.html`: una página independiente, con **contenido propio**, la misma librería y **la misma versión** fijada desde `https://cdn.jsdelivr.net/npm/<paquete>@<versión>/…` (o solo CSS si el original es CSS), y los valores del inventario. Dale altura suficiente si el efecto depende del scroll.
-3. Mide la reproducción con el mismo método que el original:
-   `node "<SKILL_DIR>/scripts/capture-live.mjs" "file:///<TRABAJO>/repro/E<n>.html" --out "<TRABAJO>/repro/captura-E<n>" --viewports 1280x800 --no-reduced --hover 0 --track "<selector propio>"`
-4. Compara:
-   `node "<SKILL_DIR>/scripts/compare-motion.mjs" "<TRABAJO>/pistas/live-1280x800/pistas.json" "<TRABAJO>/repro/captura-E<n>/live-1280x800/pistas.json" --canal <canal>`
-   Para animaciones CSS, compara los `animaciones-vistas.json` de ambos.
-5. Código 0 → hecho. Código 1 → ajusta los valores y repite, **máximo 3 intentos**; después informa lo que no coincide y por qué.
+**C3 · Reproduction (level 3)**
+1. Ask which effects to reproduce (by default, the 3 most distinctive of the inventory).
+2. For each one write `repro/E<n>.html`: an independent page, with **your own content**, the same library and **the same version** pinned from `https://cdn.jsdelivr.net/npm/<package>@<version>/…` (or CSS only if the original is CSS), and the values of the inventory. Give it enough height if the effect depends on scroll.
+3. Measure the reproduction with the same method as the original:
+   `node "<SKILL_DIR>/scripts/capture-live.mjs" "file:///<STUDY>/repro/E<n>.html" --out "<STUDY>/repro/capture-E<n>" --viewports 1280x800 --no-reduced --hover 0 --track "<own selector>"`
+4. Compare:
+   `node "<SKILL_DIR>/scripts/compare-motion.mjs" "<STUDY>/tracks/live-1280x800/tracks.json" "<STUDY>/repro/capture-E<n>/live-1280x800/tracks.json" --channel <channel>`
+   For CSS animations, compare the `animations-seen.json` of both.
+5. Code 0 → done. Code 1 → adjust the values and repeat, **at most 3 attempts**; then report what does not match and why.
 
-**C4 · Informe**
-Escribe `TRABAJO/informe.md` con `reference/report-template.md`. Incluye las rutas de las capturas, no las incrustes.
+**C4 · Report**
+Write `STUDY/report.md` from `reference/report-template.md`. Include the screenshot paths, do not embed them.
 
-**C5 · Entrega al usuario (máximo 8 líneas)**
-1. Stack y librerías (con versión).
-2. Los 3 efectos más distintivos, con sus valores.
-3. Licencia y lo que permite.
-4. Movimiento reducido y rendimiento, en una línea.
-5. Qué quedó inferido o sin medir.
-6. Dónde está el informe.
-7. Siguiente paso sugerido: usar el informe como referencia en `jayka-style-build`, o las herramientas de animación y diseño que tengas instaladas (ver `jayka-companion-tools`).
-No implementes nada en el proyecto del usuario: eso es otra tarea, a pedido.
+**C5 · Delivery to the user (8 lines at most)**
+1. Stack and libraries (with version).
+2. The 3 most distinctive effects, with their values.
+3. License and what it allows.
+4. Reduced motion and performance, in one line.
+5. What stayed inferred or unmeasured.
+6. Where the report is.
+7. Suggested next step: use the report as a reference in `jayka-style-build`, or the animation and design tools you have installed (see `jayka-companion-tools`).
+Do not implement anything in the user's project: that is another task, on request.
 
-## 9. Si algo falla
+## 9. If something fails
 
-| Situación | Qué hacer |
+| Situation | What to do |
 |---|---|
-| `--check` sale con 3 y el usuario no quiere instalar | Modo manual (Paso 0); el informe lo dice |
-| Sitio bloquea, 401/403/429 o captcha | Detenerse; informar; no evadir |
-| La sonda cuenta `hojasBloqueadas` | Normal en CSS de otro dominio: usa `red.json` → `css`, que lo analiza desde la red |
-| GSAP detectado en `red.json` pero no en `window` | Está empaquetado: mide con pistas (L3) |
-| `scrollY` no cambia al hacer scroll | Scroll con `transform` (Locomotive v4, ScrollSmoother): pon una pista sobre el contenedor que se mueve |
-| Página infinita o muy alta | Limita con `--steps`; el informe dice hasta dónde se recorrió |
-| Contenido detrás de login | No se estudia; se informa |
-| El repo no compila | Quedarse en nivel 1 con el error en el informe |
-| Una pista no detecta tramos | El selector no se movió o no existe: comprueba el selector con la sonda y repite |
+| `--check` exits with 3 and the user does not want to install | Manual mode (Step 0); the report says so |
+| The site blocks, 401/403/429 or captcha | Stop; report; do not evade |
+| The probe counts `blockedSheets` | Normal for CSS from another domain: use `network.json` → `css`, which analyzes it from the network |
+| GSAP detected in `network.json` but not on `window` | It is bundled: measure with tracks (L3) |
+| `scrollY` does not change when scrolling | Scroll done with `transform` (Locomotive v4, ScrollSmoother): put a track on the container that moves |
+| Infinite or very tall page | Limit with `--steps`; the report says how far it was walked |
+| Content behind a login | It is not studied; report it |
+| The repo does not build | Stay at level 1 with the error in the report |
+| A track detects no segments | The selector did not move or does not exist: check the selector with the probe and repeat |
 
-## 10. Qué NO hace
-- No copia ni publica código, textos, imágenes ni marca ajenos.
-- No implementa nada en tu proyecto.
-- No evade protecciones, no inicia sesión, no envía formularios.
-- No escribe fuera de `TRABAJO` y `HERRAMIENTAS`.
+## 10. What it does NOT do
+- It does not copy or publish other people's code, texts, images or brand.
+- It does not implement anything in your project.
+- It does not evade protections, log in or submit forms.
+- It does not write outside `STUDY` and `TOOLS`.
 
-## Mis ajustes
-<!-- Cambia aquí el nivel por defecto, las ventanas (--viewports), los pasos de scroll, la tolerancia de compare-motion o la carpeta de trabajo. Lo que pongas aquí manda sobre lo de arriba. -->
+## My settings
+<!-- Change here the default level, the windows (--viewports), the scroll steps, the compare-motion tolerance or the study folder. What you put here wins over the above. -->

@@ -1,47 +1,47 @@
-# Resultado {{NNN}} · {{título}}
+# Result {{NNN}} · {{title}}
 
-## Estado
-{{hecho | hecho con observaciones | no pude terminar}}
+## Status
+{{done | done with remarks | could not finish}}
 
-## Qué construí
-- `{{archivo}}`: {{una línea}}
+## What I built
+- `{{file}}`: {{one line}}
 - …
 
-## Decisiones que tomé por mi cuenta
-| Decisión | Motivo |
+## Decisions I made on my own
+| Decision | Reason |
 |---|---|
 | | |
 
-## Pruebas
-- Comando: `{{comando}}`
-- Resultado real: {{pasaron X de Y | fallaron: …}}
-- Reglas cubiertas por prueba: …
+## Tests
+- Command: `{{command}}`
+- Real result: {{X of Y passed | failed: …}}
+- Rules covered by a test: …
 
-## Revisión visual
-- Estado: {{hecha con Playwright | NO HECHA}}
-- Si se hizo:
+## Visual check
+- Status: {{done with Playwright | NOT DONE}}
+- If done:
 
-| Pantalla | Estado | 375 px | 1280 px | Captura |
+| Screen | State | 375 px | 1280 px | Screenshot |
 |---|---|---|---|---|
-| | éxito / error de validación / vacío | | | |
+| | success / validation error / empty | | | |
 
-- Si NO se hizo: motivo ({{sin Playwright | no pude levantar la app: error}}) y lo que falta mirar:
-  - [ ] {{pantalla}} · {{estado}} · {{tamaño}}: {{qué revisar}}
+- If NOT done: reason ({{no Playwright | could not start the app: error}}) and what is left to look at:
+  - [ ] {{screen}} · {{state}} · {{size}}: {{what to check}}
 
-## Dudas y decisiones que necesito del usuario
+## Doubts and decisions I need from the user
 - …
 
-## Pendiente y lo que NO hice
-- … (motivo)
+## Pending and what I did NOT do
+- … (reason)
 
-## Cómo probarlo
-- Rutas: …
-- Datos de ejemplo: … (sin claves reales)
+## How to try it
+- Routes: …
+- Sample data: … (no real keys)
 
 ---
-*Revisión de quien pidió la tarea (se llena después):*
-- Diff revisado (solo archivos permitidos, sin dependencias ni secretos): sí / no
-- Pruebas corridas de nuevo: sí / no
-- Pantallas vistas a 375 y 1280 y flujo recorrido (por Codex o, si no pudo, por quien revisa): sí / no
-- Reglas de negocio inventadas: ninguna / …
-- Veredicto: cumple / cumple con observaciones / no cumple
+*Review by whoever requested the task (filled in afterwards):*
+- Diff reviewed (only allowed files, no dependencies or secrets): yes / no
+- Tests run again: yes / no
+- Screens seen at 375 and 1280 and flow covered (by Codex or, if it could not, by the reviewer): yes / no
+- Business rules invented: none / …
+- Verdict: meets / meets with remarks / does not meet

@@ -1,94 +1,94 @@
 ---
 name: jayka-project-structure
-description: "Propone la jerarquía de carpetas de un proyecto según tenga solo frontend, solo backend o ambos (más docs, estado, respaldos y herramientas). Invócala con /jayka-project-structure nuevo al empezar un proyecto, u «ordenar» para uno existente."
-argument-hint: "[nuevo | ordenar | ver]"
+description: "Proposes the folder hierarchy of a project depending on whether it has only a frontend, only a backend or both (plus docs, state, backups and tools). Invoke it with /jayka-project-structure new when starting a project, or «tidy» for an existing one."
+argument-hint: "[new | tidy | show]"
 disable-model-invocation: true
 ---
 
 # JayKA · Project Structure
 
-Ayuda a decidir cómo se organizan las carpetas. **Propones; no mueves ni renombras nada sin que el usuario lo apruebe.**
+Helps decide how folders are organized. **You propose; you do not move or rename anything without the user's approval.**
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| *(vacío)* | | **Por defecto.** Si la carpeta actual tiene código (más archivos que `README`, `.git` y `.claude`), actúa como `ordenar`; si no, como `nuevo`. Dilo en una línea |
-| `nuevo` | `new` | Propone el árbol para un proyecto que empieza |
-| `ordenar` | `existente`, `tidy` | Mira la estructura actual y propone cambios, sin mover nada |
-| `ver` | `show` | Muestra el árbol aprobado en `.claude/estructura/arbol.md`. Si no existe, lo dice |
+| *(empty)* | | **Default.** If the current folder has code (more files than `README`, `.git` and `.claude`), act as `tidy`; otherwise as `new`. Say so in one line |
+| `new` | `nuevo` | Proposes the tree for a project that is starting |
+| `tidy` | `existing`, `ordenar`, `existente` | Looks at the current structure and proposes changes, without moving anything |
+| `show` | `ver` | Shows the approved tree in `.claude/structure/tree.md`. If it does not exist, say so |
 
-## 1. Pregunta primero (corto, una por vez)
-1. ¿Qué es? ¿Solo frontend, solo backend, o ambos? ¿Hay app móvil, panel de administración, API pública?
-2. Con `ordenar`: mira la estructura actual y respétala en lo que ya funcione.
-3. ¿En qué idioma van los nombres de carpetas (español o inglés)? Usa el idioma del proyecto y no mezcles.
-4. ¿Un solo repositorio (monorepo) o uno por parte?
+## 1. Ask first (short, one at a time)
+1. What is it? Only frontend, only backend, or both? Is there a mobile app, an admin panel, a public API?
+2. With `tidy`: look at the current structure and respect it wherever it already works.
+3. In which language should folder names be (English, Spanish…)? Use the project's language and do not mix.
+4. A single repository (monorepo) or one per part?
 
-## 2. Estructuras base
-Los nombres son ejemplos; adáptalos al idioma y al framework del proyecto.
+## 2. Base structures
+The names are examples; adapt them to the project's language and framework.
 
-**Solo frontend (sitio o app estática):**
+**Frontend only (static site or app):**
 ```text
-proyecto/
-  src/              código
-  public/           archivos estáticos
-  docs/             decisiones y notas
-  .claude/          estado y reglas para el asistente
+project/
+  src/              code
+  public/           static files
+  docs/             decisions and notes
+  .claude/          state and rules for the assistant
 ```
 
-**Solo backend (API o servicio):**
+**Backend only (API or service):**
 ```text
-proyecto/
-  src/ (o app/)     código, con las reglas de negocio en servicios
-  tests/            una prueba por regla importante
-  database/         migraciones y seeders
+project/
+  src/ (or app/)    code, with business rules in services
+  tests/            one test per important rule
+  database/         migrations and seeders
   docs/
-  backups/          respaldos con fecha (fuera del repositorio si pesan)
+  backups/          dated backups (outside the repository if heavy)
   .claude/
 ```
 
-**Frontend y backend (monorepo):**
+**Frontend and backend (monorepo):**
 ```text
-proyecto/
-  frontend/         lo que ve el usuario (puede tener subcarpetas: web, app, panel)
-  backend/          servidor, base de datos y pruebas
-  shared/           código o tipos compartidos, solo si de verdad se comparten
-  design-system/    tokens (colores, fuentes), iconos, logo
+project/
+  frontend/         what the user sees (may have subfolders: web, app, panel)
+  backend/          server, database and tests
+  shared/           shared code or types, only if really shared
+  design-system/    tokens (colors, fonts), icons, logo
   docs/
-  tools/            scripts de despliegue y utilidades
+  tools/            deployment scripts and utilities
   backups/
   .claude/
 ```
 
-## 3. Carpeta `.claude/` (para trabajar con el asistente)
+## 3. The `.claude/` folder (for working with the assistant)
 ```text
 .claude/
-  estado/           qué está hecho, qué falta, decisiones (el punto de continuidad)
-  reglas/           reglas de trabajo del proyecto
-  estructura/       arbol.md (este árbol y las rutas de la app) y pantallas.md
+  state/            what is done, what is missing, decisions (the continuity point)
+  rules/            working rules of the project
+  structure/        tree.md (this tree and the app routes) and screens.md
 ```
-Con `CLAUDE.md` en la raíz, corto, apuntando a esos documentos.
+With a short `CLAUDE.md` at the root, pointing to those documents.
 
-## 4. Reglas de orden
-- Una carpeta, una responsabilidad. Si una carpeta mezcla dos cosas, sepáralas.
-- La lógica de negocio vive en el backend; el frontend solo muestra y envía.
-- Lo que no debe subirse al repositorio va en `.gitignore`: secretos, respaldos pesados, archivos subidos por usuarios, dependencias.
-- Nombres de archivos y rutas en minúsculas, sin espacios ni acentos; si el proyecto usa español, hazlo igual en todo.
-- Las rutas de la app se documentan en un solo lugar (`.claude/estructura/arbol.md`).
-- Archivos grandes de datos o respaldos: fuera del código.
+## 4. Order rules
+- One folder, one responsibility. If a folder mixes two things, separate them.
+- Business logic lives in the backend; the frontend only shows and sends.
+- What must not be uploaded to the repository goes in `.gitignore`: secrets, heavy backups, user-uploaded files, dependencies.
+- File and route names in lowercase, without spaces or accents; if the project uses another language, do it the same way everywhere.
+- The app's routes are documented in one place (`.claude/structure/tree.md`).
+- Large data files or backups: outside the code.
 
-## 5. Entrega
-1. Muestra el árbol propuesto y por qué (3 líneas).
-2. Si el proyecto ya existe, lista qué se movería y espera la aprobación. Mover archivos se hace con Git (`git mv`) y en un commit aparte.
-3. Si es nuevo, crea las carpetas solo después de que el usuario apruebe.
-4. Deja el árbol aprobado escrito en `.claude/estructura/arbol.md`.
+## 5. Delivery
+1. Show the proposed tree and why (3 lines).
+2. If the project already exists, list what would move and wait for approval. Moving files is done with Git (`git mv`) and in a separate commit.
+3. If it is new, create the folders only after the user approves.
+4. Leave the approved tree written in `.claude/structure/tree.md`.
 
-## Terminado cuando
-- El árbol aprobado está en `.claude/estructura/arbol.md`.
-- Con `nuevo`: existen las carpetas aprobadas y ninguna más.
-- Con `ordenar`: cada movimiento aprobado se hizo con `git mv` en un commit aparte, y después el proyecto sigue arrancando (pruebas o compilación corridas, con su resultado). Lo no aprobado quedó igual.
+## Done when
+- The approved tree is in `.claude/structure/tree.md`.
+- With `new`: the approved folders exist and no others.
+- With `tidy`: every approved move was done with `git mv` in a separate commit, and afterwards the project still starts (tests or build run, with their result). What was not approved stayed the same.
 
-## Mis ajustes
-<!-- Tus nombres favoritos de carpetas, por ejemplo interfaz/ y servidor/, o tu propia convención. -->
+## My settings
+<!-- Your favorite folder names, for example ui/ and server/, or your own convention. -->

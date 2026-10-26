@@ -1,54 +1,54 @@
-# Emparejar identidad con fichas, y derivar paletas
+# Matching identity with profiles, and deriving palettes
 
-## 1. Dimensiones de comparación
-Compara la entrevista (o el mini-cuestionario) con cada ficha en estas dimensiones. Puntúa 0 (no coincide), 1 (parcial), 2 (coincide) y **explica cada puntaje con evidencia**.
+## 1. Comparison dimensions
+Compare the interview (or the mini-questionnaire) with each profile on these dimensions. Score 0 (does not match), 1 (partial), 2 (matches) and **explain each score with evidence**.
 
-| Dimensión | De dónde sale en la entrevista | De dónde sale en la ficha |
+| Dimension | Where it comes from in the interview | Where it comes from in the profile |
 |---|---|---|
-| Sensación | P30 | Sección 1 (sensación en 5 palabras) |
-| Familia de color | P31 (tonos) y P32 (evitar) | Sección 3 (roles, armonía) |
-| Tipografía | P33 | Sección 4 |
-| Imágenes | P34 | Sección 9 |
-| Densidad | P38 | Secciones 5, 8 |
-| Modo | P37 | Sección 3 (oscuro) |
-| Público y tono | P4, P36 | Sección 1 y voz de los textos |
-| Plataforma | P21, P40 | Sección 2 y layouts en celular |
-| Tecnología | P18 | Sección 2 |
+| Feeling | `identity.feeling` | Section 1 (feeling in 5 words) |
+| Color family | `identity.tones` and `identity.avoid` | Section 3 (roles, harmony) |
+| Typography | `identity.typography` | Section 4 |
+| Imagery | `identity.imagery` | Section 9 |
+| Density | `identity.density` | Sections 5, 8 |
+| Mode | `identity.mode` | Section 3 (dark) |
+| Audience and tone | `project.user`, `identity.references` | Section 1 and voice of the texts |
+| Platform | `tech.platform`, `quality.devices` | Section 2 and mobile layouts |
+| Technology | `tech.frontend` | Section 2 |
 
-Reglas:
-- Un tono que el usuario quiso **evitar** (P32) y que la ficha usa como primario es un **veto**: no la propongas, o dilo claramente.
-- La tecnología pesa poco para el estilo, pero mucho para el esfuerzo: si los tokens no se portan, dilo («hay que traducir de variables CSS a tema de Tailwind»).
-- Si dos fichas empatan, prefiere la que tenga **«Resultado y lecciones»** positivo.
-- Si ninguna llega a 10 de 18, no fuerces: «ninguna encaja bien» y pasa a direcciones nuevas.
+Rules:
+- A tone the user wanted to **avoid** (`identity.avoid`) that the profile uses as primary is a **veto**: do not propose it, or say so clearly.
+- Technology weighs little for style, but a lot for effort: if the tokens do not carry over, say so («CSS variables must be translated into a Tailwind theme»).
+- If two profiles tie, prefer the one with a positive **«Results and lessons»**.
+- If none reaches 10 out of 18, do not force it: «none fits well» and move on to new directions.
 
-## 2. Sinónimos de sensación (para interpretar respuestas)
-- **Cálida / acogedora:** fondos crema o marfil, acentos terracota, coral o dorado, esquinas redondeadas, fotos con luz natural.
-- **Festiva / alegre:** colores saturados y contrastantes, formas orgánicas, patrones o franjas, movimiento ligero.
-- **Sobria / corporativa:** neutros fríos, un solo acento, rejilla estricta, poca decoración, tipografía neutra.
-- **Técnica / precisa:** monoespaciada en datos, líneas finas, alta densidad, acentos fríos, mucho dato visible.
-- **Elegante / premium:** contraste alto, mucho espacio en blanco, tipografía con serifa o muy fina, paleta contenida.
-- **Juvenil / enérgica:** color vivo, formas grandes, tipografía gruesa, movimiento marcado.
-- **Brutalista / cruda:** bordes gruesos, sombras duras sin desenfoque, tipografía grande, paleta plana.
-- **Minimalista:** pocos elementos, jerarquía tipográfica clara, color casi ausente.
-Si el usuario usa una palabra que no está aquí, pregunta qué ejemplo concreto tiene en mente.
+## 2. Feeling synonyms (to interpret answers)
+- **Warm / welcoming:** cream or ivory backgrounds, terracotta, coral or gold accents, rounded corners, photos with natural light.
+- **Festive / cheerful:** saturated and contrasting colors, organic shapes, patterns or stripes, light motion.
+- **Sober / corporate:** cool neutrals, a single accent, strict grid, little decoration, neutral typography.
+- **Technical / precise:** monospaced in data, thin lines, high density, cool accents, lots of visible data.
+- **Elegant / premium:** high contrast, lots of white space, serif or very thin typography, restrained palette.
+- **Youthful / energetic:** vivid color, large shapes, heavy typography, marked motion.
+- **Brutalist / raw:** thick borders, hard shadows without blur, large type, flat palette.
+- **Minimalist:** few elements, clear typographic hierarchy, almost no color.
+If the user uses a word that is not here, ask what concrete example they have in mind.
 
-## 3. Derivar una paleta desde tonos sueltos
-Cuando solo hay familias de color («rojo, azul, verde»), no elijas tres colores y los pegues. Sigue esto:
-1. **Elige un protagonista** (el tono que más define la sensación) y un **acento** que contraste; el tercero, si lo hay, es de apoyo o de estado (éxito, aviso).
-2. Trabaja en **OKLCH** (o HSL si no hay mejor): fija un tono (hue) y varía luminosidad y croma.
-3. **Neutros con intención:** nunca gris puro. Tíñelos hacia el tono protagonista (croma bajo) o hacia su opuesto cálido/frío según la sensación.
-4. **Roles obligatorios:** fondo, superficie, texto, texto suave, primario, acento, éxito, aviso, peligro, borde, enfoque. Todos con valor concreto.
-5. **Escala por rol:** 3 o 4 pasos (suave, base, fuerte, texto sobre él).
-6. **Verifica contraste** (WCAG): texto normal ≥ 4.5:1, texto grande ≥ 3:1, componentes e íconos ≥ 3:1. Texto suave sobre fondo ≥ 4.5:1. Texto sobre primario y sobre acento ≥ 4.5:1. Si un color que le gusta al usuario no pasa para texto, úsalo para formas y no para texto, y dilo.
-7. **Modo oscuro** (si se pidió): no inviertas; reduce la luminosidad de superficies, sube un poco el croma del acento y reverifica contraste.
-8. Un color de **peligro** y uno de **éxito** que no choquen con el protagonista (por ejemplo, si el primario es rojo, el peligro necesita otro tratamiento para no confundirse).
-9. Entrega siempre la paleta con **valores hex**, el **par de contraste medido** y una frase de por qué funciona.
+## 3. Deriving a palette from loose tones
+When there are only color families («red, blue, green»), do not pick three colors and paste them together. Follow this:
+1. **Choose a protagonist** (the tone that most defines the feeling) and a contrasting **accent**; the third one, if there is one, is for support or state (success, warning).
+2. Work in **OKLCH** (or HSL if there is nothing better): fix a hue and vary lightness and chroma.
+3. **Neutrals with intent:** never pure gray. Tint them toward the protagonist hue (low chroma) or toward its warm/cool opposite depending on the feeling.
+4. **Mandatory roles:** background, surface, text, soft text, primary, accent, success, warning, danger, border, focus. All with a concrete value.
+5. **Scale per role:** 3 or 4 steps (soft, base, strong, text on it).
+6. **Check contrast** (WCAG): normal text ≥ 4.5:1, large text ≥ 3:1, components and icons ≥ 3:1. Soft text on background ≥ 4.5:1. Text on primary and on accent ≥ 4.5:1. If a color the user likes does not pass for text, use it for shapes and not for text, and say so. Use `jayka-style-self-learning/scripts/contrast.mjs`.
+7. **Dark mode** (if requested): do not invert; lower the lightness of surfaces, raise the accent chroma a little and re-check contrast.
+8. A **danger** and a **success** color that do not clash with the protagonist (for example, if the primary is red, danger needs another treatment so it is not confused).
+9. Always deliver the palette with **hex values**, the **measured contrast pair** and one sentence on why it works.
 
-## 4. Llevar tokens de una ficha a otra tecnología
-- Variables CSS → tema de Tailwind: cada variable de color pasa a `theme.extend.colors`; radios a `borderRadius`; espaciados a `spacing`.
-- Tailwind → variables CSS: genera `:root { --color-… }` desde el tema.
-- Web → app móvil: un archivo de tema (`theme.ts`) con las mismas claves; los `rem` pasan a números escalados.
-- Conserva **nombres de roles**, no nombres de valores (`primario`, no `azul-600`).
+## 4. Carrying tokens from a profile to another technology
+- CSS variables → Tailwind theme: each color variable goes to `theme.extend.colors`; radii to `borderRadius`; spacing to `spacing`.
+- Tailwind → CSS variables: generate `:root { --color-… }` from the theme.
+- Web → mobile app: a theme file (`theme.ts`) with the same keys; `rem` values become scaled numbers.
+- Keep **role names**, not value names (`primary`, not `blue-600`).
 
-## 5. Qué decir cuando no hay fichas
-«Aún no hay fichas en la biblioteca. Puedo proponerte tres direcciones nuevas o, mejor, estudiar uno de tus proyectos terminados con `jayka-style-self-learning` para que la próxima vez salga más a tu medida.»
+## 5. What to say when there are no profiles
+«There are no profiles in the library yet. I can propose three new directions or, better, study one of your finished projects with `jayka-style-self-learning` so next time it comes out more tailored to you.»

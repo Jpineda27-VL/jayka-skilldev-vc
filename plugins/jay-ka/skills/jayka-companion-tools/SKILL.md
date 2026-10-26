@@ -1,75 +1,75 @@
 ---
 name: jayka-companion-tools
-description: "Sugiere, en el momento justo, qué otras herramientas usar (Impeccable para auditar y pulir, Superpowers para planear, skills de diseño contra el aspecto de IA, seguridad, pruebas) sin reemplazarlas ni ejecutarlas. Invócala con /jayka-companion-tools, opcionalmente diciendo en qué momento estás."
-argument-hint: "[<momento>]"
+description: "Suggests, at the right moment, which other tools to use (Impeccable to audit and polish, Superpowers to plan, design skills against the AI look, security, tests) without replacing or running them. Invoke it with /jayka-companion-tools, optionally saying what moment you are in."
+argument-hint: "[<moment>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Companion Tools
 
-Esta skill **no hace trabajo propio**: recomienda qué herramienta de otros autores encaja con el momento, para no reinventar nada. Existen herramientas muy buenas (por ejemplo Impeccable, Superpowers); aquí solo se sabe **cuándo** conviene usarlas.
+This skill **does no work of its own**: it recommends which tool by other authors fits the moment, so nothing is reinvented. There are very good tools (for example Impeccable, Superpowers); here we only know **when** to use them.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Qué hace |
+| Argument | What it does |
 |---|---|
-| *(vacío)* | **Por defecto.** Toma el momento de lo último que pasó en la conversación. Si no se puede saber, pregunta: «¿En qué momento estás: antes de un plan, después de construir interfaz, animación, seguridad, calidad de código, datos o entre sesiones?» |
-| `<momento>` | Texto libre («terminé el login», «voy a planear el panel»). Se elige la sección de abajo que corresponda |
-| `todo` | Responde como en «Si el usuario pregunta "¿qué más hay?"» |
+| *(empty)* | **Default.** Takes the moment from the last thing that happened in the conversation. If it cannot be known, ask: «What moment are you in: before a plan, after building interface, animation, security, code quality, data or between sessions?» |
+| `<moment>` | Free text («I finished the login», «I am going to plan the panel»). Pick the section below that fits |
+| `all` (`todo`) | Answer as in «If the user asks "what else is there?"» |
 
-## Reglas
-1. **Solo sugiere.** No ejecutes ninguna herramienta recomendada sin que el usuario lo pida. No la reemplaces con una versión propia.
-2. **Revisa qué está instalado.** Mira la lista de skills disponibles en la sesión. Recomienda las instaladas con su nombre exacto; de las que **no** están, di el nombre, para qué sirve y que no está instalada. **Nunca instales nada** (requiere permiso explícito del usuario, y la instalación la decide él).
-3. **Pocas sugerencias, bien elegidas.** Máximo 3 por momento, cada una en una línea: qué es, por qué ahora, y qué se obtiene. Marca la que recomiendas primero.
-4. No inventes capacidades: si no conoces una herramienta, no la describas.
-5. La decisión es del usuario. Termina con: «¿Corro alguna?».
+## Rules
+1. **Only suggest.** Do not run any recommended tool unless the user asks. Do not replace it with a version of your own.
+2. **Check what is installed.** For third-party tools, look at the list of skills available in the session. Recommend the installed ones by their exact name; for those that are **not** there, give the name, what it is for and that it is not installed. For `jayka-*` skills, check by file (`../<name>/SKILL.md`), because manual skills do not appear in the session list. **Never install anything** (it requires the user's explicit permission, and they decide the installation).
+3. **Few suggestions, well chosen.** At most 3 per moment, each in one line: what it is, why now, and what you get. Mark the one you recommend first.
+4. Do not invent capabilities: if you do not know a tool, do not describe it.
+5. The decision is the user's. End with: «Shall I run any of them?».
 
-## Cuándo sugerir qué
+## When to suggest what
 
-### Antes de un plan o bloque grande de trabajo
-(más de ~5 archivos, varios días, requisitos poco claros, o cambios que tocan datos)
-- **Superpowers `brainstorming`**: aclara la idea antes de planear.
-- **Superpowers `writing-plans`**: escribe el plan que se va a ejecutar, en `.md`.
-- **`jayka-plan-builder`**: arma el plan por bloques usando lo anterior; para Codex, ver `jayka-codex-low` y `-high`.
+### Before a plan or a big block of work
+(more than ~5 files, several days, unclear requirements, or changes that touch data)
+- **Superpowers `brainstorming`**: clarifies the idea before planning.
+- **Superpowers `writing-plans`**: writes the plan to be executed, in `.md`.
+- **`jayka-plan-builder`**: builds the plan by blocks using the above; for Codex, see `jayka-codex-low` and `jayka-codex-high`.
 
-### Después de construir o cambiar interfaz
-- **Impeccable**: `audit` (calidad técnica: accesibilidad, rendimiento, responsivo), `critique` (revisión de UX), `polish` (pasada final), `harden` (casos límite, errores), `adapt` (otros tamaños y dispositivos).
-- Para el **aspecto de IA**: `design-taste-frontend`, `emil-design-eng` (detalles de pulido y animación), `ui-ux-pro-max` (estilos, paletas y pautas de UX), `high-end-visual-design`, `minimalist-ui` o `industrial-brutalist-ui` según el estilo, `redesign-existing-projects` para mejorar algo ya hecho.
-- **Prueba de rotura:** `break-ui` (datos extremos: nombres largos, listas vacías, números enormes).
+### After building or changing the interface
+- **Impeccable**: `audit` (technical quality: accessibility, performance, responsive), `critique` (UX review), `polish` (final pass), `harden` (edge cases, errors), `adapt` (other sizes and devices).
+- For the **AI look**: `design-taste-frontend`, `emil-design-eng` (polish and animation details), `ui-ux-pro-max` (styles, palettes and UX guidelines), `high-end-visual-design`, `minimalist-ui` or `industrial-brutalist-ui` depending on the style, `redesign-existing-projects` to improve something already built.
+- **Break test:** `break-ui` (extreme data: long names, empty lists, huge numbers).
 
-### Animación y movimiento
-`animate` (construir), `review-animations` (revisar), `improve-animations` (auditar todo el proyecto), `animation-performance` (si va lenta), `animate-expo` (React Native / Expo), `mobile-native` (que una web se sienta nativa en el celular).
+### Animation and motion
+`animate` (build), `review-animations` (review), `improve-animations` (audit the whole project), `animation-performance` (if it is slow), `animate-expo` (React Native / Expo), `mobile-native` (make a web app feel native on the phone).
 
-### Seguridad
-- `jayka-security-web` (construir o auditar), `jayka-security-deploy` (antes de publicar).
-- `security-review` y `differential-review` (revisión de cambios con enfoque de seguridad).
+### Security
+- `jayka-security-web` (build or audit), `jayka-security-deploy` (before publishing).
+- `security-review` and `differential-review` (review of changes with a security focus).
 
-### Calidad de código y pruebas
-- `/code-review` (errores en el diff), `simplify` (reuso y limpieza), `safe-refactor` (reestructurar sin cambiar comportamiento), `surgical-patch` (arreglo mínimo), `verify-and-stop` (comprobar que se cumple lo pedido sin ampliar alcance), `investigate-first` (fallos que no se entienden).
-- `playwright-skill` (automatizar y revisar en navegador).
+### Code quality and tests
+- `/code-review` (errors in the diff), `simplify` (reuse and cleanup), `safe-refactor` (restructure without changing behavior), `surgical-patch` (minimal fix), `verify-and-stop` (check that what was asked is met without widening scope), `investigate-first` (failures that are not understood).
+- `playwright-skill` (automate and review in a browser).
 
-### Datos y gráficas
-`dataviz` (cualquier gráfica o panel de cifras).
+### Data and charts
+`dataviz` (any chart or number panel).
 
-### Entre sesiones
-`jayka-continuity` (cerrar y abrir), `jayka-style-self-learning` (cuando un proyecto queda terminado, para guardar su estilo).
+### Between sessions
+`jayka-continuity` (close and open), `jayka-style-self-learning` (when a project is finished, to save its style).
 
-## Formato de salida
+## Output format
 ```text
-Para este momento ([lo que acaba de pasar]):
-1. [herramienta] (instalada | no instalada): [para qué, en una línea].
+For this moment ([what just happened]):
+1. [tool] (installed | not installed): [what for, in one line].
 2. …
-¿Corro alguna?
+Shall I run any of them?
 ```
 
-## Si el usuario pregunta «¿qué más hay?»
-Lista las herramientas instaladas que encajan con lo que está haciendo, agrupadas como arriba, sin descripciones largas.
+## If the user asks «what else is there?»
+List the installed tools that fit what they are doing, grouped as above, without long descriptions.
 
-## Terminado cuando
-- Hay 3 sugerencias o menos, cada una con su estado de instalación **comprobado** en la lista de la sesión.
-- Termina con «¿Corro alguna?» y no se ejecutó ni instaló nada.
+## Done when
+- There are 3 suggestions or fewer, each with its installation status **checked** (in the session list for third-party tools, by file for `jayka-*`).
+- It ends with «Shall I run any of them?» and nothing was run or installed.
 
-## Mis ajustes
-<!-- Agrega tus herramientas favoritas o quita las que no uses. Ejemplo: «siempre sugerir impeccable audit después de style-build». -->
+## My settings
+<!-- Add your favorite tools or remove those you do not use. Example: «always suggest impeccable audit after style-build». -->

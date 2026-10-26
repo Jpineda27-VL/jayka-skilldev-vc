@@ -1,81 +1,81 @@
 ---
 name: jayka-plan-builder
-description: "Arma un plan por bloques para trabajo grande, apoyándose en Superpowers (brainstorming y writing-plans), y lo deja en un archivo .md aprobado antes de ejecutar. Si Superpowers no está instalado, lo dice y no finge. Invócala con /jayka-plan-builder <qué se va a construir>, o «continuar <plan>» para ejecutar uno aprobado."
-argument-hint: "<qué se va a construir> | continuar <ruta-del-plan>"
+description: "Builds a plan by blocks for big work, relying on Superpowers (brainstorming and writing-plans), and leaves it in an approved .md file before executing. If Superpowers is not installed, it says so and does not pretend. Invoke it with /jayka-plan-builder <what to build>, or «continue <plan>» to execute an approved one."
+argument-hint: "<what to build> | continue <plan-path>"
 disable-model-invocation: true
 ---
 
 # JayKA · Plan Builder
 
-Para trabajo **grande**: una funcionalidad nueva, una vista completa, una migración, un rediseño. Para tareas pequeñas **no la uses**: pide el cambio directo (o usa `jayka-codex-low` si lo hace Codex).
+For **big** work: a new feature, a complete view, a migration, a redesign. For small tasks **do not use it**: ask for the change directly (or use `jayka-codex-low` if Codex does it).
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| `<qué se va a construir>` | | Texto libre. Empieza en la regla de honestidad y sigue desde el Paso 1 |
-| `continuar <ruta-del-plan>` | `seguir`, `resume` | Lee ese plan y va directo al Paso 6, desde el primer bloque sin marcar. Si el plan no está aprobado, vuelve al Paso 5 |
-| *(vacío)* | | Si en `docs/planes/` hay planes con bloques sin marcar, los lista y pregunta: «¿Continúo uno de estos o planeamos algo nuevo?». Si no hay, pregunta: «¿Qué se va a planear?» |
+| `<what to build>` | | Free text. Starts at the honesty rule and continues from Step 1 |
+| `continue <plan-path>` | `resume`, `continuar`, `seguir` | Reads that plan and goes straight to Step 6, from the first unchecked block. If the plan is not approved, go back to Step 5 |
+| *(empty)* | | If `docs/plans/` has plans with unchecked blocks, list them and ask: «Do I continue one of these or do we plan something new?». If there are none, ask: «What are we going to plan?» |
 
-## Regla de honestidad (la primera)
-Esta skill está pensada para trabajar **con Superpowers** (`brainstorming` y `writing-plans`). Antes de empezar, **revisa la lista de skills disponibles** y busca `brainstorming` y `writing-plans` (pueden aparecer como `superpowers:brainstorming` y `superpowers:writing-plans`).
+## Honesty rule (the first one)
+This skill is meant to work **with Superpowers** (`brainstorming` and `writing-plans`). Before starting, **check the list of available skills** and look for `brainstorming` and `writing-plans` (they may appear as `superpowers:brainstorming` and `superpowers:writing-plans`).
 
-### Si están instaladas
-Úsalas de verdad: invócalas con la herramienta de skills, en ese orden. No simules que las ejecutaste.
+### If they are installed
+Really use them: invoke them with the skills tool, in that order. Do not pretend you ran them.
 
-### Si NO están instaladas
-No continúes en silencio. Di exactamente esto (con tus palabras, pero con este contenido):
-> «Plan Builder está pensado para usar Superpowers y no lo tengo instalado, así que no puede correr como fue diseñado. Opciones: (a) lo instalas tú y te digo cómo; yo no instalo nada sin tu permiso, (b) sigo con una versión reducida que usa solo mis propias instrucciones: sirve, pero **no es igual**, sin la lluvia de ideas guiada de Superpowers, (c) lo dejamos para otro momento.»
-- No inventes resultados de herramientas que no corriste.
-- Si elige (b), anota en el plan: «Hecho con la versión reducida (sin Superpowers)».
-- Si elige (a), dile qué instalar y espera. No lo instales por tu cuenta.
+### If they are NOT installed
+Do not go on silently. Say exactly this (in your own words, but with this content):
+> «Plan Builder is meant to use Superpowers and I do not have it installed, so it cannot run as designed. Options: (a) you install it and I tell you how; I do not install anything without your permission, (b) I go on with a reduced version that uses only my own instructions: it works, but it is **not the same**, without Superpowers' guided brainstorming, (c) we leave it for another time.»
+- Do not invent results of tools you did not run.
+- If they choose (b), note in the plan: «Made with the reduced version (without Superpowers)».
+- If they choose (a), tell them what to install and wait. Do not install it on your own.
 
-## Paso 1 · Contexto mínimo
-Lee solo lo necesario, sin modificar nada: `CLAUDE.md`, el estado del proyecto (por ejemplo `.claude/estado/CONTINUAR.md`), las decisiones ya tomadas y los archivos que el trabajo tocaría. **No repitas preguntas ya respondidas en los documentos.** Resume el contexto en 5 líneas para el plan.
+## Step 1 · Minimum context
+Read only what is needed, without modifying anything: `CLAUDE.md`, the project state (for example `.claude/state/CONTINUE.md`), the decisions already made and the files the work would touch. **Do not repeat questions already answered in the documents.** Summarize the context in 5 lines for the plan.
 
-## Paso 2 · Aclarar (brainstorming)
-Con Superpowers: invoca `brainstorming`. Sin él, versión reducida: haz como máximo **5 preguntas**, una por vez, sobre objetivo, quién lo usa, qué queda fuera, restricciones y cómo se sabrá que está bien.
-Resultado: **objetivo en una frase**, **alcance** (entra, no entra), **criterios de aceptación** y **riesgos**.
+## Step 2 · Clarify (brainstorming)
+With Superpowers: invoke `brainstorming`. Without it, reduced version: ask at most **5 questions**, one at a time, about goal, who uses it, what stays out, constraints and how it will be known to be right.
+Result: **goal in one sentence**, **scope** (in, out), **acceptance criteria** and **risks**.
 
-## Paso 3 · Plan por bloques
-Con Superpowers: invoca `writing-plans` con ese resultado. Sin él, usa `reference/plan-template.md`.
-Un bloque es una unidad que se puede **construir, verificar y commitear sola** (una sesión o menos). Cada bloque trae:
-- Objetivo y alcance (archivos o módulos).
-- Pasos concretos.
-- Verificación (pruebas y qué mirar en navegador).
-- Dependencias de otros bloques y tamaño (S, M, L).
-- Qué decisión del usuario necesita, si alguna.
-Ordena por dependencia y por riesgo: lo incierto primero.
+## Step 3 · Plan by blocks
+With Superpowers: invoke `writing-plans` with that result. Without it, use `reference/plan-template.md`.
+A block is a unit that can be **built, verified and committed on its own** (one session or less). Each block carries:
+- Goal and scope (files or modules).
+- Concrete steps.
+- Verification (tests and what to look at in the browser).
+- Dependencies on other blocks and size (S, M, L).
+- What decision it needs from the user, if any.
+Order by dependency and by risk: the uncertain first.
 
-## Paso 4 · Escribir el plan
-Archivo: `docs/planes/AAAA-MM-DD-<slug>.md` (fecha, slug y carpeta según las convenciones). El plan es **contexto mínimo y autosuficiente**: alguien (o un agente) que lea solo ese archivo debe poder ejecutarlo. Eso ahorra tokens: se lee el plan en vez de repetir la conversación.
-Reglas de contenido:
-- Sin secretos, claves ni datos personales.
-- Lo no decidido va en **Decisiones pendientes**, no se inventa.
-- Cada bloque con casillas `[ ]` que se marcan al terminar.
+## Step 4 · Write the plan
+File: `docs/plans/YYYY-MM-DD-<slug>.md` (date, slug and folder following the conventions). The plan is **minimum, self-sufficient context**: someone (or an agent) who reads only that file must be able to execute it. That saves tokens: the plan is read instead of repeating the conversation.
+Content rules:
+- No secrets, keys or personal data.
+- What is undecided goes under **Pending decisions**, it is not invented.
+- Every block with `[ ]` boxes that are checked when done.
 
-## Paso 5 · Aprobación (puerta)
-Muestra el plan **resumido**: objetivo, lista de bloques con tamaño y orden, y las decisiones pendientes. Pregunta: «¿Lo apruebo así, cambias algo o quitas algún bloque?». **No ejecutes hasta que lo apruebe.**
+## Step 5 · Approval (gate)
+Show the plan **summarized**: goal, list of blocks with size and order, and the pending decisions. Ask: «Approve it as is, change something, or drop a block?». **Do not execute until they approve.**
 
-## Paso 6 · Ejecutar (ofrece opciones, el usuario elige)
-1. **Aquí**, bloque por bloque: construir, verificar, marcar la casilla, commit local (ver `jayka-git-rules`) y reportar. Un bloque a la vez.
-2. **Con Codex**: genera la tarea desde el bloque con `jayka-codex-low` (bloque simple) o `jayka-codex-high` (vista o flujo completo).
-3. **Mixto**: lo delicado aquí, lo mecánico con Codex.
-Mientras se ejecuta, mantén el plan **vivo**: casillas marcadas, cambios de alcance anotados con fecha, decisiones nuevas.
+## Step 6 · Execute (offer options, the user chooses)
+1. **Here**, block by block: build, verify, check the box, local commit (see `jayka-git-rules`) and report. One block at a time.
+2. **With Codex**: generate the task from the block with `jayka-codex-low` (simple block) or `jayka-codex-high` (complete view or flow).
+3. **Mixed**: the delicate part here, the mechanical part with Codex.
+While executing, keep the plan **alive**: boxes checked, scope changes noted with a date, new decisions.
 
-## Paso 7 · Cierre
-Al terminar todos los bloques: resumen de lo hecho y lo no hecho, resultado de pruebas, y siguiente paso. Sugiere `jayka-companion-tools` (auditoría y pulido) si hubo interfaz, y `jayka-continuity` para guardar el estado.
+## Step 7 · Closing
+When all blocks are finished: summary of what was done and not done, test results, and next step. Suggest `jayka-companion-tools` (audit and polish) if there was an interface, and `jayka-continuity` to save the state.
 
-## Qué NO hace
-- No ejecuta sin aprobación.
-- No decide por el usuario las decisiones de negocio.
-- No reemplaza a Superpowers: lo usa, o dice que no puede.
+## What it does NOT do
+- It does not execute without approval.
+- It does not decide business decisions for the user.
+- It does not replace Superpowers: it uses it, or says it cannot.
 
-## Terminado cuando
-- **Planear:** el archivo del plan existe; cada bloque tiene objetivo, pasos, verificación, dependencias y tamaño; lo no decidido está en «Decisiones pendientes»; el usuario lo aprobó en la compuerta del Paso 5; nada se ejecutó antes. Si se usó la versión reducida, el plan lo dice.
-- **Ejecutar:** cada bloque terminado tiene su casilla marcada, su verificación corrida con el resultado real y su commit local. El cierre del Paso 7 se entregó.
+## Done when
+- **Plan:** the plan file exists; every block has goal, steps, verification, dependencies and size; what is undecided is under «Pending decisions»; the user approved it at the Step 5 gate; nothing was executed before. If the reduced version was used, the plan says so.
+- **Execute:** every finished block has its box checked, its verification run with the real result and its local commit. The Step 7 closing was delivered.
 
-## Mis ajustes
-<!-- Cambia la carpeta de planes, el tamaño de bloque o el número máximo de preguntas de la versión reducida. -->
+## My settings
+<!-- Change the plans folder, the block size or the maximum number of questions of the reduced version. -->

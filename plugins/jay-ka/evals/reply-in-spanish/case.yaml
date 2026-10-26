@@ -1,0 +1,21 @@
+schema_version: "1.0"
+name: reply-in-spanish
+description: The skills are written in English but answer in the user's language. A Spanish-speaking user gets a Spanish answer, with the fixed tokens (the argument names close and open) kept in English.
+tags: [language, quick, no-shell]
+execution:
+  prompt: |
+    /jay-ka:jayka-continuity bailar
+
+    (Te escribo en español.)
+  max_turns: 4
+  timeout_seconds: 120
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: keeps-the-fixed-tokens
+    pattern: "close[\\s\\S]*open|open[\\s\\S]*close"
+    flags: i
+  - type: llm
+    name: answers-in-spanish
+    criteria: "The answer is written in Spanish (for example it says that the argument is not recognized and lists the options), not in English. The argument names `close` and `open` may stay in English because they are fixed tokens. It does nothing else."

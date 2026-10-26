@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-// Pruebas deterministas del pack: estructura de las skills y comportamiento de cada script.
-// No gastan tokens ni usan la red; los fixtures se crean en una carpeta temporal y se borran al final.
-// Las pruebas con navegador corren solo si Playwright está instalado (capture-live.mjs --check).
-// Uso: node tests/run.mjs [--solo <texto>] [--conservar]
+// Deterministic tests of the pack: structure of the skills and behavior of every script.
+// They spend no tokens and use no network; fixtures are created in a temporary folder and deleted at the end.
+// The browser tests run only if Playwright is installed (capture-live.mjs --check).
+// Usage: node tests/run.mjs [--only <text>] [--keep]
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
@@ -15,8 +15,8 @@ const SK = join(ROOT, 'plugins', 'jay-ka', 'skills');
 const S = (skill, script) => join(SK, skill, 'scripts', script);
 const TMP = mkdtempSync(join(tmpdir(), 'jayka-tests-'));
 const argv = process.argv.slice(2);
-const ONLY = argv.includes('--solo') ? argv[argv.indexOf('--solo') + 1] : null;
-// Secretos falsos armados en tiempo de ejecución, para que el repositorio no contenga ninguno literal.
+const ONLY = argv.includes('--only') ? argv[argv.indexOf('--only') + 1] : null;
+// Fake secrets built at run time, so the repository contains no literal one.
 const FAKE_STRIPE = ['sk', 'live', '51Hx' + 'ABCDEFGHIJKLMNOPQRSTUV'].join('_');
 const FAKE_AWS = 'AKIA' + 'ABCDEFGHIJKLMNOP';
 
@@ -28,8 +28,8 @@ async function test(name, fn) {
 }
 const skip = (msg) => Object.assign(new Error(msg), { skip: true });
 function assert(cond, msg) { if (!cond) throw new Error(msg); }
-const has = (out, s, label = s) => assert(out.includes(s), `falta «${label}» en la salida`);
-const hasNot = (out, s, label = s) => assert(!out.includes(s), `no debía aparecer «${label}»`);
+const has = (out, s, label = s) => assert(out.includes(s), `missing «${label}» in the output`);
+const hasNot = (out, s, label = s) => assert(!out.includes(s), `«${label}» should not appear`);
 const write = (base, files) => { for (const [p, c] of Object.entries(files)) { mkdirSync(dirname(join(base, p)), { recursive: true }); writeFileSync(join(base, p), c); } return base; };
 const fixture = (name, files) => write(join(TMP, name), files);
 function run(script, args, opts = {}) {
@@ -53,59 +53,68 @@ function serve(dir, extra = {}) {
       if (extra[path]) { const [status, type, body] = extra[path]; resp.writeHead(status, { 'content-type': type }); return resp.end(body); }
       const f = dir ? join(dir, path === '/' ? 'index.html' : path) : null;
       if (f && existsSync(f) && !f.endsWith('/')) { resp.writeHead(200, { 'content-type': f.endsWith('.html') ? 'text/html' : 'text/plain' }); return resp.end(readFileSync(f)); }
-      resp.writeHead(404, { 'content-type': 'text/plain' }); resp.end('no existe');
+      resp.writeHead(404, { 'content-type': 'text/plain' }); resp.end('not found');
     });
     srv.listen(0, '127.0.0.1', () => res({ url: `http://127.0.0.1:${srv.address().port}`, close: () => srv.close() }));
   });
 }
 
-// ───────────────────────── Estructura de las skills ─────────────────────────
-await test('estructura: frontmatter, argumentos, cierre y referencias', () => {
+// ───────────────────────── Structure of the skills ─────────────────────────
+await test('structure: frontmatter, arguments, closing and references', () => {
   const dirs = readdirSync(SK).filter((d) => existsSync(join(SK, d, 'SKILL.md')));
-  assert(dirs.length === 21, `se esperaban 21 skills, hay ${dirs.length}`);
+  assert(dirs.length === 21, `21 skills were expected, there are ${dirs.length}`);
   const automatic = ['jayka-communication', 'jayka-working-rules', 'jayka-git-rules'];
   const problems = [];
   for (const d of dirs) {
     const text = readFileSync(join(SK, d, 'SKILL.md'), 'utf8');
     const fm = text.split(/^---\s*$/m)[1] || '';
     const field = (k) => (fm.match(new RegExp(`^${k}:\\s*(.*)$`, 'm')) || [])[1];
-    if (field('name') !== d) problems.push(`${d}: name no coincide con la carpeta`);
-    if (!/^".*"$/.test(field('description') || '')) problems.push(`${d}: description sin comillas`);
+    if (!d.startsWith('jayka-')) problems.push(`${d}: the folder does not start with jayka-`);
+    if (field('name') !== d) problems.push(`${d}: name does not match the folder`);
+    if (!/^".*"$/.test(field('description') || '')) problems.push(`${d}: description without quotes`);
     const manual = !automatic.includes(d);
     if (manual) {
-      if (field('disable-model-invocation') !== 'true') problems.push(`${d}: falta disable-model-invocation`);
-      if (!field('argument-hint')) problems.push(`${d}: falta argument-hint`);
-      if (!text.includes('$ARGUMENTS')) problems.push(`${d}: falta $ARGUMENTS`);
-      if (!/Terminado cuando|\| 1 · Estático/.test(text)) problems.push(`${d}: falta «Terminado cuando»`);
-      if (!text.includes('../jayka-working-rules/reference/convenciones.md')) problems.push(`${d}: no apunta a las convenciones`);
+      if (field('disable-model-invocation') !== 'true') problems.push(`${d}: missing disable-model-invocation`);
+      if (!field('argument-hint')) problems.push(`${d}: missing argument-hint`);
+      if (!text.includes('$ARGUMENTS')) problems.push(`${d}: missing $ARGUMENTS`);
+      if (!/## Done when|\| 1 · Static/.test(text)) problems.push(`${d}: missing «Done when»`);
+      if (!text.includes('../jayka-working-rules/reference/conventions.md')) problems.push(`${d}: does not point to the conventions`);
+      if (!text.includes('Unknown argument')) problems.push(`${d}: missing the unknown-argument answer`);
     }
-    if (!text.includes('## Mis ajustes')) problems.push(`${d}: falta «Mis ajustes»`);
-    for (const m of text.matchAll(/`(reference\/[\w.-]+)`/g)) if (!existsSync(join(SK, d, m[1]))) problems.push(`${d}: no existe ${m[1]}`);
-    for (const m of text.matchAll(/\.\.\/(jayka-[\w-]+)\/((?:reference|scripts)\/[\w./-]+?\.(?:md|mjs|js|json))/g)) if (!existsSync(join(SK, m[1], m[2]))) problems.push(`${d}: no existe ../${m[1]}/${m[2]}`);
-    for (const m of text.matchAll(/<SKILL_DIR>\/scripts\/([\w.-]+)/g)) if (!existsSync(join(SK, d, 'scripts', m[1]))) problems.push(`${d}: no existe scripts/${m[1]}`);
+    if (!text.includes('## My settings')) problems.push(`${d}: missing «My settings»`);
+    for (const m of text.matchAll(/`(reference\/[\w.-]+)`/g)) if (!existsSync(join(SK, d, m[1]))) problems.push(`${d}: ${m[1]} does not exist`);
+    for (const m of text.matchAll(/\.\.\/(jayka-[\w-]+)\/((?:reference|scripts)\/[\w./-]+?\.(?:md|mjs|js|json))/g)) if (!existsSync(join(SK, m[1], m[2]))) problems.push(`${d}: ../${m[1]}/${m[2]} does not exist`);
+    for (const m of text.matchAll(/<SKILL_DIR>\/scripts\/([\w.-]+)/g)) if (!existsSync(join(SK, d, 'scripts', m[1]))) problems.push(`${d}: scripts/${m[1]} does not exist`);
   }
   assert(!problems.length, problems.join('\n   '));
-  return `${dirs.length} skills revisadas`;
+  return `${dirs.length} skills checked`;
 });
 
-await test('estructura: versiones de plugin.json y marketplace.json iguales', () => {
+await test('structure: no old Spanish paths or old names left', () => {
+  const bad = [];
+  const walk = (p) => { for (const e of readdirSync(p, { withFileTypes: true })) { const f = join(p, e.name); if (e.isDirectory()) { if (e.name !== 'results') walk(f); } else if (/\.(md|mjs|js|json|yaml|sh)$/.test(e.name)) { const t = readFileSync(f, 'utf8'); for (const old of ['docs/proyecto', '.claude/estado', 'CONTINUAR.md', 'jay-k-a-', '.claude/jay-k-a', 'docs/planes']) if (t.includes(old)) bad.push(`${f.replace(ROOT, '')}: «${old}»`); } } };
+  walk(join(ROOT, 'plugins')); walk(join(ROOT, 'scripts'));
+  assert(!bad.length, bad.join('\n   '));
+});
+
+await test('structure: plugin.json and marketplace.json versions are equal', () => {
   const a = JSON.parse(readFileSync(join(ROOT, 'plugins', 'jay-ka', '.claude-plugin', 'plugin.json'), 'utf8')).version;
   const m = JSON.parse(readFileSync(join(ROOT, '.claude-plugin', 'marketplace.json'), 'utf8'));
-  assert(a === m.metadata.version && a === m.plugins[0].version, `versiones distintas: ${a} / ${m.metadata.version} / ${m.plugins[0].version}`);
+  assert(a === m.metadata.version && a === m.plugins[0].version, `different versions: ${a} / ${m.metadata.version} / ${m.plugins[0].version}`);
   return `v${a}`;
 });
 
-await test('estructura: los scripts pasan node --check', () => {
+await test('structure: the scripts pass node --check', () => {
   const bad = [];
   for (const d of readdirSync(SK)) {
     const walk = (p) => { if (!existsSync(p)) return; for (const e of readdirSync(p, { withFileTypes: true })) { const f = join(p, e.name); if (e.isDirectory()) walk(f); else if (/\.mjs$/.test(e.name) && spawnSync(process.execPath, ['--check', f]).status !== 0) bad.push(f); } };
     walk(join(SK, d, 'scripts'));
   }
-  assert(!bad.length, `con errores de sintaxis: ${bad.join(', ')}`);
+  assert(!bad.length, `with syntax errors: ${bad.join(', ')}`);
 });
 
 // ───────────────────────── reverse ─────────────────────────
-await test('reverse · scan-repo detecta stack y omite secretos', () => {
+await test('reverse · scan-repo detects the stack and skips secrets', () => {
   const dir = fixture('repo', {
     'package.json': JSON.stringify({ name: 'demo', license: 'MIT', scripts: { postinstall: 'node setup.js' }, dependencies: { gsap: '^3.12.5', lenis: '^1.1.0' } }),
     '.env': `SECRET=${FAKE_STRIPE}\n`,
@@ -115,150 +124,150 @@ await test('reverse · scan-repo detecta stack y omite secretos', () => {
   });
   const r = run(S('jayka-reverse', 'scan-repo.mjs'), [dir, '--out', join(TMP, 'repo.json')]);
   has(r.out, 'GSAP'); has(r.out, 'Lenis'); has(r.out, 'GSAP ScrollTrigger'); has(r.out, 'postinstall');
-  has(r.out, 'secretos omitidos (sin abrir): 1');
-  hasNot(readFileSync(join(TMP, 'repo.json'), 'utf8'), FAKE_STRIPE, 'el secreto del .env');
+  has(r.out, 'secrets skipped (not opened): 1');
+  hasNot(readFileSync(join(TMP, 'repo.json'), 'utf8'), FAKE_STRIPE, 'the .env secret');
 });
 
-await test('reverse · ajuste de curvas reconoce power3.out y linear', async () => {
+await test('reverse · curve fitting recognizes power3.out and linear', async () => {
   const { fitCurve, CANDIDATES } = await import(pathToFileURL(S('jayka-reverse', 'lib/curves.mjs')).href);
-  const f = CANDIDATES.find((c) => c.nombre.startsWith('power3.out')).f;
+  const f = CANDIDATES.find((c) => c.name.startsWith('power3.out')).f;
   const curve = Array.from({ length: 50 }, (_, i) => f(i / 49));
-  assert(fitCurve(curve)[0].nombre.startsWith('power3.out'), `ajustó ${fitCurve(curve)[0].nombre}`);
-  assert(fitCurve(Array.from({ length: 50 }, (_, i) => i / 49))[0].nombre === 'linear', 'linear no se reconoció');
+  assert(fitCurve(curve)[0].name.startsWith('power3.out'), `it fitted ${fitCurve(curve)[0].name}`);
+  assert(fitCurve(Array.from({ length: 50 }, (_, i) => i / 49))[0].name === 'linear', 'linear was not recognized');
 });
 
-await test('reverse · compare-motion acepta igual y rechaza distinto', () => {
+await test('reverse · compare-motion accepts the same and rejects the different', () => {
   const curve = (f) => Array.from({ length: 50 }, (_, i) => +f(i / 49).toFixed(4));
-  const pista = (dur, f) => ({ tramos: [{ objetivo: '#a', canal: 'opacity', duracionMs: dur, desde: 0, hasta: 1, ligadoAlScroll: false, curva: curve(f) }] });
+  const track = (dur, f) => ({ segments: [{ target: '#a', channel: 'opacity', durationMs: dur, from: 0, to: 1, scrollLinked: false, curve: curve(f) }] });
   const q = (t) => 1 - (1 - t) ** 4;
-  writeFileSync(join(TMP, 'p-a.json'), JSON.stringify(pista(800, q)));
-  writeFileSync(join(TMP, 'p-b.json'), JSON.stringify(pista(790, q)));
-  writeFileSync(join(TMP, 'p-c.json'), JSON.stringify(pista(500, (t) => t)));
+  writeFileSync(join(TMP, 'p-a.json'), JSON.stringify(track(800, q)));
+  writeFileSync(join(TMP, 'p-b.json'), JSON.stringify(track(790, q)));
+  writeFileSync(join(TMP, 'p-c.json'), JSON.stringify(track(500, (t) => t)));
   const ok = run(S('jayka-reverse', 'compare-motion.mjs'), [join(TMP, 'p-a.json'), join(TMP, 'p-b.json')]);
   const bad = run(S('jayka-reverse', 'compare-motion.mjs'), [join(TMP, 'p-a.json'), join(TMP, 'p-c.json')]);
-  assert(ok.code === 0, `igual salió con ${ok.code}`); assert(bad.code === 1, `distinto salió con ${bad.code}`);
-  has(bad.out, 'duración'); has(bad.out, 'curva');
+  assert(ok.code === 0, `same exited with ${ok.code}`); assert(bad.code === 1, `different exited with ${bad.code}`);
+  has(bad.out, 'duration'); has(bad.out, 'curve');
 });
 
 // ───────────────────────── security ─────────────────────────
-await test('security-web · scan-security encuentra riesgos y no la consulta segura', () => {
-  const dir = fixture('riesgos', {
-    'app/Http/Controllers/PedidoController.php': "<?php\nclass P {\n  function a($request) { return Pedido::create($request->all()); }\n  function b($q) { return DB::select(\"SELECT * FROM p WHERE n = '$q'\"); }\n  function c($q) { return DB::select('SELECT * FROM p WHERE id = ?', [$q]); }\n}\n",
-    'src/app.js': `el.innerHTML = datos.nombre;\ndb.query(\`SELECT * FROM u WHERE id = \${id}\`);\nconst cfg = { origin: '*', credentials: true };\nconst k = "${FAKE_AWS}";\n`,
+await test('security-web · scan-security finds risks and not the safe query', () => {
+  const dir = fixture('risks', {
+    'app/Http/Controllers/OrderController.php': "<?php\nclass P {\n  function a($request) { return Order::create($request->all()); }\n  function b($q) { return DB::select(\"SELECT * FROM p WHERE n = '$q'\"); }\n  function c($q) { return DB::select('SELECT * FROM p WHERE id = ?', [$q]); }\n}\n",
+    'src/app.js': `el.innerHTML = data.name;\ndb.query(\`SELECT * FROM u WHERE id = \${id}\`);\nconst cfg = { origin: '*', credentials: true };\nconst k = "${FAKE_AWS}";\n`,
     'tests/app.test.js': 'el.innerHTML = x;\n',
   });
   const r = run(S('jayka-security-web', 'scan-security.mjs'), [dir]);
-  assert(r.code === 1, `código ${r.code}`);
-  for (const id of ['asignacion-masiva', 'sql-crudo-php', 'sql-concatenado-js', 'cors-comodin-con-credenciales', 'innerhtml', 'secreto:aws-access-key']) has(r.out, id);
-  hasNot(r.out, 'PedidoController.php:5', 'la consulta con parámetros');
-  hasNot(r.out, 'tests/app.test.js', 'los archivos de prueba');
-  hasNot(r.out, FAKE_AWS, 'la clave completa');
+  assert(r.code === 1, `code ${r.code}`);
+  for (const id of ['mass-assignment', 'raw-sql-php', 'sql-concat-js', 'cors-wildcard-credentials', 'innerhtml', 'secret:aws-access-key']) has(r.out, id);
+  hasNot(r.out, 'OrderController.php:5', 'the query with parameters');
+  hasNot(r.out, 'tests/app.test.js', 'the test files');
+  hasNot(r.out, FAKE_AWS, 'the full key');
 });
 
-await test('security-deploy · scan-git-secrets encuentra secretos borrados y enmascara', () => {
-  if (spawnSync('git', ['--version']).status !== 0) throw skip('git no está instalado');
-  const dir = fixture('git-secretos', { 'config.js': `const stripe = "${FAKE_STRIPE}";\nconst k = "your-api-key-here";\n`, '.env': 'DB_PASSWORD=x\n' });
+await test('security-deploy · scan-git-secrets finds deleted secrets and masks them', () => {
+  if (spawnSync('git', ['--version']).status !== 0) throw skip('git is not installed');
+  const dir = fixture('git-secrets', { 'config.js': `const stripe = "${FAKE_STRIPE}";\nconst k = "your-api-key-here";\n`, '.env': 'DB_PASSWORD=x\n' });
   const g = (...a) => spawnSync('git', ['-C', dir, ...a], { encoding: 'utf8' });
-  g('init', '-q'); g('config', 'user.email', 't@t'); g('config', 'user.name', 't'); g('add', '-A'); g('commit', '-qm', 'uno');
+  g('init', '-q'); g('config', 'user.email', 't@t'); g('config', 'user.name', 't'); g('add', '-A'); g('commit', '-qm', 'one');
   writeFileSync(join(dir, 'config.js'), 'const stripe = process.env.STRIPE;\n'); writeFileSync(join(dir, '.gitignore'), '.env\n');
-  g('rm', '-q', '--cached', '.env'); g('add', '-A'); g('commit', '-qm', 'dos');
+  g('rm', '-q', '--cached', '.env'); g('add', '-A'); g('commit', '-qm', 'two');
   const r = run(S('jayka-security-deploy', 'scan-git-secrets.mjs'), [dir]);
-  assert(r.code === 1, `código ${r.code}`);
-  has(r.out, 'stripe-live'); has(r.out, 'archivo-env-versionado');
-  hasNot(r.out, FAKE_STRIPE, 'la clave completa'); hasNot(r.out, 'your-api-key-here');
+  assert(r.code === 1, `code ${r.code}`);
+  has(r.out, 'stripe-live'); has(r.out, 'tracked-env-file');
+  hasNot(r.out, FAKE_STRIPE, 'the full key'); hasNot(r.out, 'your-api-key-here');
 });
 
-await test('security-deploy · check-deploy marca .env expuesto y respeta 404', async () => {
-  const srv = await serve(null, { '/': [200, 'text/html', '<html>Inicio</html>'], '/.env': [200, 'text/plain', 'APP_KEY=base64:x\nDB_PASSWORD=y\n'] });
+await test('security-deploy · check-deploy flags an exposed .env and respects 404', async () => {
+  const srv = await serve(null, { '/': [200, 'text/html', '<html>Home</html>'], '/.env': [200, 'text/plain', 'APP_KEY=base64:x\nDB_PASSWORD=y\n'] });
   try {
     const r = await runAsync(S('jayka-security-deploy', 'check-deploy.mjs'), [srv.url]);
-    assert(r.code === 1, `código ${r.code}`);
-    assert(/\/\.env \| ✗ falla/.test(r.out), '/.env no salió como falla');
-    assert(/\/\.git\/config \| ✓ bien/.test(r.out), '/.git/config no salió como bien');
-    assert(/Ruta inexistente \| ✓ bien/.test(r.out), 'la página de error no salió bien');
+    assert(r.code === 1, `code ${r.code}`);
+    assert(/\/\.env \| ✗ fail/.test(r.out), '/.env did not come out as a failure');
+    assert(/\/\.git\/config \| ✓ ok/.test(r.out), '/.git/config did not come out as ok');
+    assert(/Nonexistent path \| ✓ ok/.test(r.out), 'the error page did not come out ok');
   } finally { srv.close(); }
 });
 
 // ───────────────────────── style ─────────────────────────
-await test('style · contrast.mjs calcula WCAG', () => {
+await test('style · contrast.mjs calculates WCAG', () => {
   const ok = run(S('jayka-style-self-learning', 'contrast.mjs'), ['#26264F', '#FFF8EF']);
   const bad = run(S('jayka-style-self-learning', 'contrast.mjs'), ['#999', 'white']);
-  has(ok.out, '13.53:1'); has(ok.out, 'AAA'); assert(ok.code === 0, 'el par bueno falló');
-  has(bad.out, 'no cumple'); assert(bad.code === 1, 'el par malo pasó');
+  has(ok.out, '13.53:1'); has(ok.out, 'AAA'); assert(ok.code === 0, 'the good pair failed');
+  has(bad.out, 'fail'); assert(bad.code === 1, 'the bad pair passed');
 });
 
-await test('style · check-tokens valida el ejemplo y rechaza contrastes falsos', () => {
+await test('style · check-tokens validates the example and rejects false contrasts', () => {
   const ref = join(SK, 'jayka-style-self-learning', 'reference', 'tokens.schema.json');
-  assert(run(S('jayka-style-self-learning', 'check-tokens.mjs'), [ref]).code === 0, 'el ejemplo de referencia no valida');
-  writeFileSync(join(TMP, 'tokens-mal.json'), JSON.stringify({ proyecto: 'Mi Proyecto', fecha: '26/10/2026', color: { roles: { texto: '#26264F', fondo: '#FFF8EF', acento: 'azulito' }, contraste: [{ par: 'texto/fondo', ratio: 9, cumple: 'AAA' }] } }));
-  const r = run(S('jayka-style-self-learning', 'check-tokens.mjs'), [join(TMP, 'tokens-mal.json')]);
-  assert(r.code === 1, 'tokens malos pasaron'); has(r.out, 'declara 9'); has(r.out, 'azulito'); has(r.out, 'no es un slug');
+  assert(run(S('jayka-style-self-learning', 'check-tokens.mjs'), [ref]).code === 0, 'the reference example does not validate');
+  writeFileSync(join(TMP, 'tokens-bad.json'), JSON.stringify({ project: 'My Project', date: '26/10/2026', color: { roles: { text: '#26264F', background: '#FFF8EF', accent: 'bluish' }, contrast: [{ pair: 'text/background', ratio: 9, passes: 'AAA' }] } }));
+  const r = run(S('jayka-style-self-learning', 'check-tokens.mjs'), [join(TMP, 'tokens-bad.json')]);
+  assert(r.code === 1, 'bad tokens passed'); has(r.out, 'declares 9'); has(r.out, 'bluish'); has(r.out, 'is not a slug');
 });
 
 // ───────────────────────── real-data ─────────────────────────
-await test('real-data · find-demo-data encuentra demos y respeta seeders', () => {
+await test('real-data · find-demo-data finds demos and respects seeders', () => {
   const dir = fixture('demo', {
-    'src/pages/Pedidos.jsx': "const pedidos = [\n  { id: 1, nombre: 'A', precio: 1 },\n  { id: 2, nombre: 'B' },\n  { id: 3, nombre: 'C' },\n];\n// TODO: conectar con la API\nexport default () => <img src=\"https://picsum.photos/200\" />;\n",
-    'src/pages/Perfil.vue': '<template><p>Lorem ipsum dolor sit amet</p><p>juan@example.com</p></template>\n',
-    'src/pages/Real.jsx': 'export const Real = () => fetch("/api/pedidos");\n',
+    'src/pages/Orders.jsx': "const orders = [\n  { id: 1, name: 'A', price: 1 },\n  { id: 2, name: 'B' },\n  { id: 3, name: 'C' },\n];\n// TODO: connect to the API\nexport default () => <img src=\"https://picsum.photos/200\" />;\n",
+    'src/pages/Profile.vue': '<template><p>Lorem ipsum dolor sit amet</p><p>john@example.com</p></template>\n',
+    'src/pages/Real.jsx': 'export const Real = () => fetch("/api/orders");\n',
     'database/seeders/DemoSeeder.php': '<?php $this->faker->name(); // John Doe\n',
   });
   const r = run(S('jayka-real-data', 'find-demo-data.mjs'), [dir]);
-  assert(r.code === 1, `código ${r.code}`);
-  has(r.out, 'Pedidos.jsx'); has(r.out, 'arreglo-de-datos-a-mano'); has(r.out, 'Perfil.vue');
+  assert(r.code === 1, `code ${r.code}`);
+  has(r.out, 'Orders.jsx'); has(r.out, 'handwritten-data-array'); has(r.out, 'Profile.vue');
   hasNot(r.out, 'DemoSeeder'); hasNot(r.out, 'Real.jsx');
 });
 
-// ───────────────────────── Con navegador (opcional) ─────────────────────────
+// ───────────────────────── With a browser (optional) ─────────────────────────
 const pwReady = run(S('jayka-reverse', 'capture-live.mjs'), ['--check']).code === 0;
 const page = (ease, dur) => `<!doctype html><title>t</title><style>.card{animation:fade 600ms ease-out both}@keyframes fade{from{opacity:0}to{opacity:1}}#box{width:80px;height:80px;background:red}</style>
-<div class="card">Tarjeta</div><div id="box"></div><script>const e=${ease};const b=document.getElementById('box');setTimeout(()=>{const t0=performance.now();b.style.opacity='0';
+<div class="card">Card</div><div id="box"></div><script>const e=${ease};const b=document.getElementById('box');setTimeout(()=>{const t0=performance.now();b.style.opacity='0';
 function f(n){const p=Math.min(1,(n-t0)/${dur});b.style.opacity=String(e(p));if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)},300)</script>`;
 
-await test('navegador · capture-live mide easing y compara reproducción', async () => {
-  if (!pwReady) throw skip('Playwright no está instalado (capture-live.mjs --check)');
-  const dir = fixture('sitio', { 'index.html': page('(t)=>1-Math.pow(1-t,4)', 800), 'mal.html': page('(t)=>t', 500) });
+await test('browser · capture-live measures easing and compares a reproduction', async () => {
+  if (!pwReady) throw skip('Playwright is not installed (capture-live.mjs --check)');
+  const dir = fixture('site', { 'index.html': page('(t)=>1-Math.pow(1-t,4)', 800), 'bad.html': page('(t)=>t', 500) });
   const srv = await serve(dir);
   try {
-    const common = ['--viewports', '1280x800', '--steps', '0', '--hover', '0', '--no-reduced', '--sin-capturas', '--track', '#box'];
+    const common = ['--viewports', '1280x800', '--steps', '0', '--hover', '0', '--no-reduced', '--no-screenshots', '--track', '#box'];
     const a = await runAsync(S('jayka-reverse', 'capture-live.mjs'), [`${srv.url}/index.html`, '--out', join(TMP, 'cap-a'), ...common]);
-    has(a.out, 'power3.out', 'curva power3.out medida'); has(a.out, 'ease-out', 'curva del @keyframes');
-    const b = await runAsync(S('jayka-reverse', 'capture-live.mjs'), [`${srv.url}/mal.html`, '--out', join(TMP, 'cap-b'), ...common]);
-    const cmp = run(S('jayka-reverse', 'compare-motion.mjs'), [join(TMP, 'cap-a', 'live-1280x800', 'pistas.json'), join(TMP, 'cap-b', 'live-1280x800', 'pistas.json'), '--canal', 'opacity']);
-    assert(cmp.code === 1, 'la reproducción equivocada pasó la comparación');
-    return b.code === 0 ? '' : 'aviso: la segunda captura salió con código distinto de 0';
+    has(a.out, 'power3.out', 'measured curve power3.out'); has(a.out, 'ease-out', 'curve of the @keyframes');
+    const b = await runAsync(S('jayka-reverse', 'capture-live.mjs'), [`${srv.url}/bad.html`, '--out', join(TMP, 'cap-b'), ...common]);
+    const cmp = run(S('jayka-reverse', 'compare-motion.mjs'), [join(TMP, 'cap-a', 'live-1280x800', 'tracks.json'), join(TMP, 'cap-b', 'live-1280x800', 'tracks.json'), '--channel', 'opacity']);
+    assert(cmp.code === 1, 'the wrong reproduction passed the comparison');
+    return b.code === 0 ? '' : 'warning: the second capture exited with a non-zero code';
   } finally { srv.close(); }
 });
 
-await test('navegador · style-probe mide contraste real', async () => {
-  if (!pwReady) throw skip('Playwright no está instalado');
-  const dir = fixture('estilo', { 'index.html': '<!doctype html><style>body{background:#FFF8EF;color:#26264F}.s{color:#AAAAAA;background:#fff}</style><p>Texto</p><p class="s">Suave</p>' });
+await test('browser · style-probe measures real contrast', async () => {
+  if (!pwReady) throw skip('Playwright is not installed');
+  const dir = fixture('style', { 'index.html': '<!doctype html><style>body{background:#FFF8EF;color:#26264F}.s{color:#AAAAAA;background:#fff}</style><p>Text</p><p class="s">Soft</p>' });
   const srv = await serve(dir);
   try {
-    await runAsync(S('jayka-reverse', 'capture-live.mjs'), [srv.url, '--out', join(TMP, 'cap-e'), '--viewports', '1280x800', '--steps', '0', '--hover', '0', '--no-reduced', '--sin-capturas', '--eval', S('jayka-style-self-learning', 'style-probe.js')]);
+    await runAsync(S('jayka-reverse', 'capture-live.mjs'), [srv.url, '--out', join(TMP, 'cap-e'), '--viewports', '1280x800', '--steps', '0', '--hover', '0', '--no-reduced', '--no-screenshots', '--eval', S('jayka-style-self-learning', 'style-probe.js')]);
     const j = JSON.parse(readFileSync(join(TMP, 'cap-e', 'live-1280x800', 'eval-style-probe.json'), 'utf8'));
-    assert(j.contraste.queNoCumplen.some((p) => p.par.startsWith('#AAAAAA')), 'no detectó el par que no cumple');
+    assert(j.contrast.failing.some((p) => p.pair.startsWith('#AAAAAA')), 'it did not detect the failing pair');
   } finally { srv.close(); }
 });
 
-await test('navegador · capture-pair distingue igual de distinto', async () => {
-  if (!pwReady) throw skip('Playwright no está instalado');
-  const web = '<!doctype html><main><h1>Pedidos</h1><h2>Pendientes</h2><p>Tus pedidos en curso y su estado actual.</p><button>Filtrar</button><a href="/n">Nuevo</a></main>';
-  const app = '<!doctype html><main><h1>Pedidos</h1><p>Tus pedidos en curso y su estado actual.</p><button>Filtrar</button></main>';
-  const dir = fixture('paridad', { 'web.html': web, 'app.html': app, 'igual.html': web });
+await test('browser · capture-pair tells same from different', async () => {
+  if (!pwReady) throw skip('Playwright is not installed');
+  const web = '<!doctype html><main><h1>Orders</h1><h2>Pending</h2><p>Your orders in progress and their current status.</p><button>Filter</button><a href="/n">New</a></main>';
+  const app = '<!doctype html><main><h1>Orders</h1><p>Your orders in progress and their current status.</p><button>Filter</button></main>';
+  const dir = fixture('parity', { 'web.html': web, 'app.html': app, 'same.html': web });
   const srv = await serve(dir);
   try {
-    writeFileSync(join(TMP, 'rutas.txt'), `distinta | ${srv.url}/web.html | ${srv.url}/app.html\nigual | ${srv.url}/web.html | ${srv.url}/igual.html\n`);
-    const r = await runAsync(S('jayka-views-parity', 'capture-pair.mjs'), ['--rutas', join(TMP, 'rutas.txt'), '--out', join(TMP, 'par'), '--viewports', '1280x800']);
-    assert(/\| distinta \| 1280x800 \| difiere/.test(r.out), 'la pantalla distinta no salió como difiere');
-    assert(/\| igual \| 1280x800 \| igual/.test(r.out), 'la pantalla igual no salió como igual');
-    has(r.out, 'Pendientes');
+    writeFileSync(join(TMP, 'routes.txt'), `different | ${srv.url}/web.html | ${srv.url}/app.html\nsame | ${srv.url}/web.html | ${srv.url}/same.html\n`);
+    const r = await runAsync(S('jayka-views-parity', 'capture-pair.mjs'), ['--routes', join(TMP, 'routes.txt'), '--out', join(TMP, 'par'), '--viewports', '1280x800']);
+    assert(/\| different \| 1280x800 \| differs/.test(r.out), 'the different screen did not come out as differs');
+    assert(/\| same \| 1280x800 \| same/.test(r.out), 'the same screen did not come out as same');
+    has(r.out, 'Pending');
   } finally { srv.close(); }
 });
 
-// ───────────────────────── Resumen ─────────────────────────
-if (!argv.includes('--conservar')) rmSync(TMP, { recursive: true, force: true });
-else console.log(`Fixtures conservados en ${TMP}`);
+// ───────────────────────── Summary ─────────────────────────
+if (!argv.includes('--keep')) rmSync(TMP, { recursive: true, force: true });
+else console.log(`Fixtures kept at ${TMP}`);
 let fail = 0;
 for (const r of results) {
   const icon = r.ok === true ? '✓' : r.ok === null ? '–' : '✗';
@@ -266,5 +275,5 @@ for (const r of results) {
   console.log(`${icon} ${r.name}${r.note ? ` — ${r.note.replace(/\n/g, '\n   ')}` : ''}`);
 }
 const skipped = results.filter((r) => r.ok === null).length;
-console.log(`\n${results.length - fail - skipped} pasaron · ${fail} fallaron · ${skipped} omitidas`);
+console.log(`\n${results.length - fail - skipped} passed · ${fail} failed · ${skipped} skipped`);
 process.exit(fail ? 1 : 0);

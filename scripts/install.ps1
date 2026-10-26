@@ -1,25 +1,26 @@
-# Copia las skills jayka-* a ~/.claude/skills. No pisa las que ya existen (usa -Force para reemplazarlas).
+# Copies the jayka-* skills to ~/.claude/skills. It does not overwrite existing ones (use -Force to replace them).
+# The recommended way is the plugin (see README). Use this only if you want the commands without the /jay-ka: prefix.
 param([switch]$Force)
 
 $ErrorActionPreference = 'Stop'
-$raiz = Split-Path -Parent $PSScriptRoot
-$origen = Join-Path $raiz 'plugins\jay-ka\skills'
+$root = Split-Path -Parent $PSScriptRoot
+$source = Join-Path $root 'plugins\jay-ka\skills'
 $base = if ($env:CLAUDE_HOME) { $env:CLAUDE_HOME } else { Join-Path $HOME '.claude' }
-$destino = Join-Path $base 'skills'
+$target = Join-Path $base 'skills'
 
-New-Item -ItemType Directory -Force -Path $destino | Out-Null
-$copiadas = 0
-$saltadas = 0
-foreach ($skill in Get-ChildItem -Directory $origen) {
-    $objetivo = Join-Path $destino $skill.Name
-    if ((Test-Path $objetivo) -and -not $Force) {
-        Write-Host "Ya existe, se salta: $($skill.Name) (usa -Force para reemplazarla)"
-        $saltadas++
+New-Item -ItemType Directory -Force -Path $target | Out-Null
+$copied = 0
+$skipped = 0
+foreach ($skill in Get-ChildItem -Directory $source) {
+    $destination = Join-Path $target $skill.Name
+    if ((Test-Path $destination) -and -not $Force) {
+        Write-Host "Already exists, skipped: $($skill.Name) (use -Force to replace it)"
+        $skipped++
         continue
     }
-    if (Test-Path $objetivo) { Remove-Item -Recurse -Force $objetivo }
-    Copy-Item -Recurse $skill.FullName $objetivo
-    Write-Host "Instalada: $($skill.Name)"
-    $copiadas++
+    if (Test-Path $destination) { Remove-Item -Recurse -Force $destination }
+    Copy-Item -Recurse $skill.FullName $destination
+    Write-Host "Installed: $($skill.Name)"
+    $copied++
 }
-Write-Host "Listo: $copiadas instaladas, $saltadas saltadas. Carpeta: $destino"
+Write-Host "Done: $copied installed, $skipped skipped. Folder: $target"

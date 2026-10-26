@@ -1,38 +1,38 @@
-# Evitar el «aspecto de IA»
+# Avoiding the «AI look»
 
-Una página se ve «hecha por IA» cuando todas las decisiones son las más probables y ninguna parte de un punto de vista. Antes de proponer o construir, revisa esta lista.
+A page looks «made by AI» when every decision is the most probable one and none starts from a point of view. Before proposing or building, check this list.
 
-## Señales que delatan una página genérica
-- Degradado azul-violeta o morado-rosa en el héroe, con brillos y desenfoques.
-- Todo centrado: título, subtítulo y dos botones, sin asimetría ni ritmo.
-- Una sola familia tipográfica en una sola variante (la típica sans neutra) sin contraste de peso ni tamaño.
-- Tres tarjetas iguales con ícono, título y dos líneas («Rápido, Seguro, Flexible»).
-- Vidrio esmerilado (glassmorphism) y sombras suaves en todo.
-- Esquinas redondeadas del mismo radio en todos los elementos, bordes finos grises y fondos blanco puro.
-- Emojis como íconos, ilustraciones 3D genéricas, fotos de banco de imágenes sin relación con el producto.
-- Textos vacíos: «Bienvenido a…», «Soluciones innovadoras», «Lorem ipsum».
-- Animaciones de aparición idénticas en todo (fade-up con retraso escalonado) y brillos que siguen al cursor.
-- Gris claro sobre blanco para «sutileza» (contraste insuficiente).
-- Dashboards con 4 tarjetas de cifras con ícono, una gráfica de línea azul y una tabla, sin jerarquía.
+## Signs of a generic page
+- Blue-violet or purple-pink gradient in the hero, with glows and blurs.
+- Everything centered: title, subtitle and two buttons, with no asymmetry or rhythm.
+- A single font family in a single variant (the typical neutral sans) with no contrast of weight or size.
+- Three identical cards with icon, title and two lines («Fast, Secure, Flexible»).
+- Frosted glass (glassmorphism) and soft shadows on everything.
+- Rounded corners of the same radius on every element, thin gray borders and pure white backgrounds.
+- Emojis as icons, generic 3D illustrations, stock photos unrelated to the product.
+- Empty texts: «Welcome to…», «Innovative solutions», «Lorem ipsum».
+- Identical entrance animations on everything (fade-up with staggered delay) and glows that follow the cursor.
+- Light gray on white for «subtlety» (insufficient contrast).
+- Dashboards with 4 number cards with an icon, a blue line chart and a table, with no hierarchy.
 
-## Qué hacer en su lugar
-1. **Un punto de vista.** Escribe en una frase qué sensación y qué idea defiende la interfaz, y que cada decisión responda a ella.
-2. **Paleta con disciplina de roles:** pocos colores, cada uno con una función; neutros teñidos; un acento que se use poco para que pese.
-3. **Contraste tipográfico real:** dos familias o una familia con pesos muy distintos; una escala con saltos claros; títulos con personalidad (peso, espaciado, subrayado, mayúsculas).
-4. **Un motivo propio** que solo esta marca tendría (una forma, una franja, un tipo de recorte de foto, un patrón). Úsalo con moderación y de forma repetida.
-5. **Asimetría y ritmo:** alterna secciones densas y respiradas; rompe la rejilla en un punto a propósito.
-6. **Contenido real y específico:** títulos que digan algo concreto, cifras plausibles, nombres y textos del dominio.
-7. **Movimiento con función:** anima para explicar un cambio o dar retroalimentación, no para decorar. Pocas animaciones, bien hechas, con curvas con carácter; respeta el movimiento reducido.
-8. **Estados cuidados:** vacío, carga y error con personalidad, no solo «No hay datos».
-9. **Densidad según el uso:** el dashboard puede ser denso y legible; la vista del cliente, aireada. No uses el mismo tratamiento en ambos.
-10. **Imágenes con criterio:** mismo tratamiento (recorte, color, luz) en todas; si no hay fotos propias, usa ilustración o forma antes que banco de imágenes genérico.
-11. **Detalles de oficio:** estados `:hover` y `:focus-visible` pensados, selección de texto con color propio, cursores, favicon, meta tema.
+## What to do instead
+1. **A point of view.** Write in one sentence what feeling and what idea the interface defends, and make every decision answer to it.
+2. **Palette with role discipline:** few colors, each with a function; tinted neutrals; an accent used sparingly so it carries weight.
+3. **Real typographic contrast:** two families or one family with very different weights; a scale with clear jumps; titles with personality (weight, spacing, underline, uppercase).
+4. **An own motif** that only this brand would have (a shape, a stripe, a type of photo crop, a pattern). Use it moderately and repeatedly.
+5. **Asymmetry and rhythm:** alternate dense and airy sections; break the grid at one point on purpose.
+6. **Real, specific content:** titles that say something concrete, plausible figures, names and texts from the domain.
+7. **Motion with a function:** animate to explain a change or give feedback, not to decorate. Few animations, well made, with curves that have character; respect reduced motion.
+8. **Cared-for states:** empty, loading and error with personality, not just «No data».
+9. **Density according to use:** the dashboard can be dense and readable; the client view, airy. Do not use the same treatment in both.
+10. **Images with criteria:** the same treatment (crop, color, light) on all of them; if there are no own photos, use illustration or shape before a generic stock library.
+11. **Craft details:** thought-out `:hover` and `:focus-visible` states, text selection with its own color, cursors, favicon, theme meta.
 
-## Prueba rápida antes de entregar
-- ¿Si tapo el logo, se sabe de qué marca es? Si no, falta identidad.
-- ¿Hay al menos una decisión que alguien más no tomaría por defecto?
-- ¿Hay un lugar donde el ojo sabe a dónde ir primero?
-- ¿Cada color, tamaño y radio sale de los tokens?
+## Quick test before delivering
+- If I cover the logo, can you tell which brand it is? If not, identity is missing.
+- Is there at least one decision that someone else would not take by default?
+- Is there a place where the eye knows where to go first?
+- Does every color, size and radius come from the tokens?
 
-## Herramientas que ayudan (se sugieren, no se reemplazan)
-`impeccable`, `design-taste-frontend`, `emil-design-eng`, `ui-ux-pro-max`, `high-end-visual-design`, `minimalist-ui`, `redesign-existing-projects`. Ver `jayka-companion-tools`.
+## Tools that help (suggested, not replaced)
+`impeccable`, `design-taste-frontend`, `emil-design-eng`, `ui-ux-pro-max`, `high-end-visual-design`, `minimalist-ui`, `redesign-existing-projects`. See `jayka-companion-tools`.

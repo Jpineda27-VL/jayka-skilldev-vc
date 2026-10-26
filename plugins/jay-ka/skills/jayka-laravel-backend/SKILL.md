@@ -1,109 +1,109 @@
 ---
 name: jayka-laravel-backend
-description: "Patrón de backend Laravel probado en producción: controladores delgados, reglas de negocio en servicios, errores de negocio con código estable, una acción por POST, bitácora de cambios, varias cuentas con guards separados, pruebas por regla y seeders locales. Invócala con /jayka-laravel-backend nuevo, modulo <nombre> o revisar."
-argument-hint: "nuevo | modulo <nombre> | revisar [<sección>]"
+description: "Laravel backend pattern proven in production: thin controllers, business rules in services, business errors with a stable code, one action per POST, change log, several account types with separate guards, one test per rule and local seeders. Invoke it with /jayka-laravel-backend new, module <name> or review."
+argument-hint: "new | module <name> | review [<section>]"
 disable-model-invocation: true
 ---
 
-# JayKA · Tech · Laravel Backend
+# JayKA · Laravel Backend
 
-Orden para construir un backend Laravel que **crece sin enredarse**: dónde vive cada cosa, cómo se nombran los errores, cómo se prueba. Los ejemplos de código están en `reference/patterns.md`. Los nombres de ejemplo están en español; usa el idioma del proyecto.
+Order for building a Laravel backend that **grows without tangling**: where each thing lives, how errors are named, how it is tested. The code examples are in `reference/patterns.md`. Example names are in English; use the project's language where it differs.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| `nuevo` | `new` | Arranque de un backend nuevo: sección 10 |
-| `modulo <nombre>` | `module` | Módulo nuevo en un backend existente: sección 9 |
-| `revisar [<sección>]` | `audit` | Revisa el backend actual contra las secciones 1 a 8 (o solo la indicada, por número) y entrega **Bien / Falta / No aplica** con origen. No cambia código |
-| *(vacío)* | | Si existe `artisan` en la carpeta: pregunta «¿Módulo nuevo o revisar?». Si no: `nuevo` |
+| `new` | `nuevo` | Start of a new backend: section 10 |
+| `module <name>` | `modulo` | New module in an existing backend: section 9 |
+| `review [<section>]` | `audit`, `revisar` | Reviews the current backend against sections 1 to 8 (or only the given one, by number) and delivers **Good / Missing / Not applicable** with origin. It changes no code |
+| *(empty)* | | If `artisan` exists in the folder: ask «New module or review?». If not: `new` |
 
-## Preparación (siempre)
-- Versión: lee `laravel/framework` en `composer.json` y `php --version`. Si el proyecto no es Laravel, dilo y detente.
-- Comando de pruebas: `php artisan test` (o el script `test` de `composer.json` si existe). Córrelo una vez al empezar para conocer el punto de partida y anota el resultado.
+## Preparation (always)
+- Version: read `laravel/framework` in `composer.json` and `php --version`. If the project is not Laravel, say so and stop.
+- Test command: `php artisan test` (or the `test` script of `composer.json` if there is one). Run it once at the start to know the starting point and note the result.
 
-## Reglas de esta skill
-- Cumple `jayka-working-rules`: plan antes de construir y un módulo a la vez.
-- **Permisos:** instalar paquetes (`composer require`), crear el proyecto (`composer create-project`), tocar la base real o cambiar configuración de producción requieren permiso explícito. Antes de migrar en una base con datos, respaldo con fecha.
-- Nunca claves ni `.env` reales: solo `.env.example` y variables que el usuario completa.
+## Rules of this skill
+- Follow `jayka-working-rules`: plan before building and one module at a time.
+- **Permissions:** installing packages (`composer require`), creating the project (`composer create-project`), touching the real database or changing production configuration require explicit permission. Before migrating on a database with data, a dated backup.
+- Never real keys or `.env`: only `.env.example` and variables the user fills in.
 
-## 1. Dónde vive cada cosa
-| Capa | Responsabilidad | NO debe |
+## 1. Where each thing lives
+| Layer | Responsibility | Must NOT |
 |---|---|---|
-| **Ruta** | Dirección, método, guard, límite de peticiones | Tener lógica |
-| **Controlador** | Recibir la petición, llamar al servicio, devolver JSON o redirección | Decidir reglas, consultar tablas a mano |
-| **Servicio** (`app/Servicios/`) | **Todas las reglas de negocio** y los cambios de datos, dentro de transacciones | Conocer la petición HTTP ni la vista |
-| **Modelo / consulta** | Acceso a datos | Reglas de negocio |
-| **Vista / app** | Mostrar y enviar | Calcular, validar como única defensa |
+| **Route** | Address, method, guard, request limit | Have logic |
+| **Controller** | Receive the request, call the service, return JSON or a redirect | Decide rules, query tables by hand |
+| **Service** (`app/Services/`) | **All business rules** and data changes, inside transactions | Know the HTTP request or the view |
+| **Model / query** | Data access | Business rules |
+| **View / app** | Show and send | Calculate, validate as the only defense |
 
-La pantalla (Blade, React, app móvil) solo muestra y envía. **Todo se valida otra vez en el servidor.**
+The screen (Blade, React, mobile app) only shows and sends. **Everything is validated again on the server.**
 
-## 2. Errores de negocio con código estable
-- Una excepción propia (`ErrorDeNegocio`) con tres datos: **código** corto y estable (`motivo_requerido`, `no_existe`), **mensaje** para la persona, y **estado HTTP** (422, 404, 409…).
-- Los servicios la lanzan; el controlador la atrapa y responde `{ ok:false, codigo, mensaje }` (JSON) o vuelve con el error (Blade).
-- Los códigos son un contrato: las apps y las pruebas dependen de ellos. No los renombres sin migrar a los clientes.
-- Mensajes **claros y sin jerga técnica**; nunca filtres detalles internos.
+## 2. Business errors with a stable code
+- An own exception (`BusinessError`) with three pieces: a short, stable **code** (`reason_required`, `not_found`), a **message** for the person, and an **HTTP status** (422, 404, 409…).
+- Services throw it; the controller catches it and answers `{ ok:false, code, message }` (JSON) or goes back with the error (Blade).
+- Codes are a contract: apps and tests depend on them. Do not rename them without migrating the clients.
+- Messages **clear and free of technical jargon**; never leak internal details.
 
-## 3. Una acción por POST
-Para paneles con muchas operaciones, en lugar de una ruta por cada una:
-- Una ruta `POST /area/accion/{accion}` con `whereIn('accion', LISTA)`.
-- Cada servicio declara sus `ACCIONES` (constante). El controlador las junta y despacha con `match`.
-- Ventajas: una sola puerta para autorizar, auditar y limitar; las acciones nuevas no tocan las rutas.
-- Las **lecturas** van aparte, como `GET /api/<area>/...` con el guard correspondiente y JSON estable.
+## 3. One action per POST
+For panels with many operations, instead of a route for each one:
+- A single route `POST /area/action/{action}` with `whereIn('action', LIST)`.
+- Each service declares its `ACTIONS` (constant). The controller gathers them and dispatches with `match`.
+- Advantages: one single door to authorize, audit and limit; new actions do not touch the routes.
+- **Reads** go apart, as `GET /api/<area>/...` with the corresponding guard and stable JSON.
 
-## 4. Bitácora de cambios
-- Toda acción de un administrador o un cambio sensible se registra: **quién**, **qué**, **sobre qué objeto**, **antes**, **después**, **motivo** y **cuándo**.
-- Las intervenciones (cancelar, suspender, reasignar, reembolsar) **exigen motivo**: si falta, error de negocio.
+## 4. Change log
+- Every administrator action or sensitive change is recorded: **who**, **what**, **on which object**, **before**, **after**, **reason** and **when**.
+- Interventions (cancel, suspend, reassign, refund) **require a reason**: if missing, a business error.
 
-## 5. Cuentas y permisos
-- Tipos de cuenta distintos en **tablas separadas** y un **guard** por tipo (`config/auth.php`). Una sesión de un tipo no abre el área de otro.
-- Cada recurso se comprueba contra quien lo pide (nunca solo por el número de la dirección): evita acceso a datos ajenos.
-- Lista explícita de rutas públicas; todo lo demás exige sesión.
-- Detalle de seguridad en `jayka-security-web`.
+## 5. Accounts and permissions
+- Different account types in **separate tables** and one **guard** per type (`config/auth.php`). A session of one type does not open the area of another.
+- Every resource is checked against whoever asks (never only by the number in the address): this prevents access to other people's data.
+- Explicit list of public routes; everything else requires a session.
+- Security detail in `jayka-security-web`.
 
-## 6. Datos
-- **Migraciones:** solo se agregan; nunca se editan las aplicadas. Nombre `AAAA_MM_DD_NNNNNN_descripcion`. Comentarios en columnas con reglas no obvias. Claves foráneas con comportamiento explícito (`cascadeOnDelete`, `nullOnDelete`, restrictivo).
-- **Dinero:** decimales (`decimal(10,2)`), nunca `float`. Redondeos en un solo lugar y documentados.
-- **Concurrencia:** transacción con `lockForUpdate()` donde dos personas puedan competir (stock, asignaciones, saldos).
-- **Idempotencia:** repetir una acción (doble clic, reintento) no duplica el resultado.
-- **Zona horaria** definida en `config/app.php` y usada igual en toda la app.
-- **Reglas ajustables** (tarifas, plazos, límites): en una tabla de configuración con un servicio, con bitácora al cambiarlas; no escondidas en el código.
-- **Seeders:** repetibles (no duplican) y **solo en local** (`abort_unless(app()->environment('local'))`). Ver `jayka-real-data`.
+## 6. Data
+- **Migrations:** only added; the applied ones are never edited. Name `YYYY_MM_DD_NNNNNN_description`. Comments on columns with non-obvious rules. Foreign keys with explicit behavior (`cascadeOnDelete`, `nullOnDelete`, restrictive).
+- **Money:** decimals (`decimal(10,2)`), never `float`. Rounding in one place and documented.
+- **Concurrency:** transaction with `lockForUpdate()` wherever two people can compete (stock, assignments, balances).
+- **Idempotency:** repeating an action (double click, retry) does not duplicate the result.
+- **Time zone** defined in `config/app.php` and used the same way across the app.
+- **Adjustable rules** (rates, deadlines, limits): in a configuration table with a service, with a log when changed; not hidden in the code.
+- **Seeders:** repeatable (they do not duplicate) and **local only** (`abort_unless(app()->environment('local'))`). See `jayka-real-data`.
 
-## 7. Tareas programadas
-- `routes/console.php` con las tareas y un **latido** cada minuto para saber si el cron sigue vivo.
-- Lo crítico tiene también una **ruta perezosa** (se corrige al leer) por si el cron falla.
-- En local el cron no corre: el panel debe poder mostrarlo («Cron caído») sin romper nada.
+## 7. Scheduled tasks
+- `routes/console.php` with the tasks and a **heartbeat** every minute to know whether cron is alive.
+- What is critical also has a **lazy route** (corrected when read) in case cron fails.
+- Locally cron does not run: the panel must be able to show it («Cron down») without breaking anything.
 
-## 8. Pruebas
-- PHPUnit con `RefreshDatabase` y SQLite en memoria.
-- **Una prueba por cada regla importante**, con nombre que cuente la regla (`test_cancelar_exige_motivo`).
-- Un `trait` o ayudante que arma el «mundo» de prueba (comercio, cuenta, cliente…) para no repetir.
-- Verifica **código de error y estado HTTP**, no solo que «falla».
-- Prueba también lo negativo: sin sesión, sesión de otro tipo, recurso ajeno, valores inválidos, doble envío.
-- Antes de decir «listo»: corre la suite completa y reporta el resultado real.
+## 8. Tests
+- PHPUnit with `RefreshDatabase` and in-memory SQLite.
+- **One test per important rule**, with a name that tells the rule (`test_cancel_requires_a_reason`).
+- A `trait` or helper that builds the test «world» (shop, account, client…) so it is not repeated.
+- Check the **error code and HTTP status**, not just that it «fails».
+- Also test the negatives: no session, session of another type, someone else's resource, invalid values, double submit.
+- Before saying «done»: run the whole suite and report the real result.
 
-## 9. Cómo trabajar un módulo nuevo
-1. **Aclara** (corto): entidades, roles que lo usan, reglas ya decididas y pendientes. No inventes reglas.
-2. **Plan** de 4 a 6 pasos; para algo grande, `jayka-plan-builder`.
-3. **Migración** (con respaldo si hay datos) → **servicio** con sus reglas y errores → **controlador y rutas** → **lecturas JSON** → **pruebas**.
-4. Corre las pruebas. Si hay pantalla, revísala en navegador (celular y escritorio).
-5. Resumen: qué reglas implementó, qué códigos de error expone, qué decisiones quedan pendientes.
+## 9. How to work a new module
+1. **Clarify** (short): entities, roles that use it, rules already decided and pending. Do not invent rules.
+2. **Plan** of 4 to 6 steps; for something big, `jayka-plan-builder`.
+3. **Migration** (with a backup if there is data) → **service** with its rules and errors → **controller and routes** → **JSON reads** → **tests**.
+4. Run the tests. If there is a screen, review it in a browser (mobile and desktop).
+5. Summary: which rules it implemented, which error codes it exposes, which decisions remain pending.
 
-## 10. Arranque de un backend nuevo (checklist)
-- [ ] Proyecto Laravel creado (con permiso) y base de datos configurada en `.env.example`.
-- [ ] `ErrorDeNegocio`, `Bitacora` y el controlador de acciones base.
-- [ ] Guards y tablas de cuentas por tipo.
-- [ ] Middleware de encabezados de seguridad y límites de peticiones (`jayka-security-web`).
-- [ ] Trait de pruebas con el «mundo» base y la primera prueba verde.
-- [ ] `docs/` con reglas de negocio y estado (`jayka-continuity`).
+## 10. Start of a new backend (checklist)
+- [ ] Laravel project created (with permission) and database configured in `.env.example`.
+- [ ] `BusinessError`, `AuditLog` and the base action controller.
+- [ ] Guards and account tables per type.
+- [ ] Security headers middleware and request limits (`jayka-security-web`).
+- [ ] Test trait with the base «world» and the first green test.
+- [ ] `docs/` with business rules and state (`jayka-continuity`).
 
-## Terminado cuando
-- **`nuevo`:** cada casilla de la sección 10 está marcada o anotada como pendiente con su motivo, y `php artisan test` pasa (salida real en el resumen).
-- **`modulo`:** existen migración, servicio, controlador y rutas, lecturas JSON y una prueba por regla (incluidas las negativas de la sección 8); la suite completa pasa; el resumen lista las reglas implementadas, los códigos de error y las decisiones pendientes.
-- **`revisar`:** cada punto revisado tiene clasificación y origen (`Código` con `archivo:línea` o `Medido`), y no se cambió código.
+## Done when
+- **`new`:** every box of section 10 is checked or noted as pending with its reason, and `php artisan test` passes (real output in the summary).
+- **`module`:** migration, service, controller and routes, JSON reads and one test per rule (including the negatives of section 8) exist; the whole suite passes; the summary lists the rules implemented, the error codes and the pending decisions.
+- **`review`:** every point reviewed has a classification and origin (`Code` with `file:line` or `Measured`), and no code was changed.
 
-## Mis ajustes
-<!-- Nombres de carpetas y clases, versión de Laravel, base de datos, estilo de pruebas. -->
+## My settings
+<!-- Folder and class names, Laravel version, database, test style. -->

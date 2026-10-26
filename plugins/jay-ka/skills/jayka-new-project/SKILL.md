@@ -1,124 +1,124 @@
 ---
 name: jayka-new-project
-description: "Arranca un proyecto nuevo con una entrevista guiada de 42 preguntas (objetivo, usuarios, tecnología, datos, identidad visual, seguridad y publicación), cada una respondida o saltada a mano, y entrega un informe de lo definido y lo que falta. Invócala con /jayka-new-project (o con «retomar» para seguir una entrevista guardada)."
-argument-hint: "[retomar | informe]"
+description: "Starts a new project with a guided 42-question interview (goal, users, technology, data, visual identity, security and publishing), each one answered or skipped by hand, and delivers a report of what is defined and what is missing. Invoke it with /jayka-new-project (or with «resume» to continue a saved interview)."
+argument-hint: "[resume | report]"
 disable-model-invocation: true
 ---
 
 # JayKA · New Project
 
-Orquesta el arranque de un proyecto: entrevista, informe y archivos base. Trabaja **sin inventar**: todo lo que no responda el usuario queda como pendiente.
+Orchestrates the start of a project: interview, report and base files. It works **without inventing**: whatever the user does not answer stays pending.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| *(vacío)* | `nuevo`, `new` | **Por defecto.** Entrevista desde la pregunta 1. Si ya existe `docs/proyecto/entrevista.md`, pregunta antes: «Ya hay una entrevista guardada. ¿La retomo o empiezo una nueva (la anterior se guarda con fecha)?» |
-| `retomar` | `continuar`, `resume` | Lee `docs/proyecto/entrevista.md` y sigue desde el primer bloque con preguntas `pendiente`. Si no existe, lo dice y ofrece empezar. Si está en un formato anterior (sin claves), primero lo convierte al de la plantilla, pasando cada respuesta a su clave según el número, guarda el original como `entrevista.<AAAA-MM-DD>.md` y lo dice. Si solo tiene algunas entradas (por ejemplo, las del mini-cuestionario de `style-build`), crea las que faltan como `pendiente` |
-| `informe` | `report` | No pregunta nada: vuelve a escribir `docs/proyecto/informe-inicial.md` desde la entrevista guardada |
+| *(empty)* | `new`, `nuevo` | **Default.** Interview from question 1. If `docs/project/interview.md` already exists, ask first: «There is a saved interview. Resume it, or start a new one (the old one is saved with its date)?» |
+| `resume` | `continue`, `retomar`, `continuar` | Reads `docs/project/interview.md` and continues from the first block that has `pending` questions. If it does not exist, say so and offer to start. If it is in an older format (without keys), first convert it to the template's format, moving each answer to its key by number, save the original as `interview.<YYYY-MM-DD>.md` and say so. If it only has some entries (for example those of `style-build`'s mini-questionnaire), create the missing ones as `pending` |
+| `report` | `informe` | Asks nothing: rewrites `docs/project/initial-report.md` from the saved interview |
 
-## Reglas de la entrevista (obligatorias)
-1. **Cada pregunta se resuelve a mano.** El usuario la responde escribiendo, o escribe él mismo `saltar`. Ninguna se salta sola, ninguna se rellena por tu cuenta y ninguna queda en blanco sin que él lo diga.
-2. Responder y saltar son igual de válidos. No presiones ni insistas en las saltadas.
-3. «No sé» es una respuesta escrita y válida: se anota como duda. En la parte de identidad significa que después se le sugerirán opciones.
-4. Haz las preguntas en **bloques de 4 a 6**, numeradas, con el nombre del bloque. El usuario contesta por número (`7: ...`, `8: saltar`). Si faltan números por resolver, vuelve a mostrarlos (solo esos) antes de pasar al siguiente bloque.
-5. No saltes de bloque con preguntas sin resolver. Si el usuario quiere dejar un bloque entero para después, que lo escriba (`saltar bloque`), y se anotan todas como saltadas.
-6. Al empezar, crea `docs/proyecto/entrevista.md` con `reference/entrevista-template.md`: las 42 entradas, todas «pendiente» (la carpeta se crea según las convenciones). Actualiza cada entrada **apenas llega** su respuesta, y el progreso del encabezado al cerrar cada bloque. Si la conversación se corta, se retoma con `retomar`.
-7. No pidas claves, tokens ni datos de cuentas. Si el usuario menciona servicios externos (pagos, correo, mapas), solo anota cuáles son. Las claves las maneja él (ver `jayka-working-rules`).
-8. Colores: **no se piden códigos exactos**. Basta con tonos («rojo, azul y verde», «cálido», «sobrio»). Es solo para sondear; las paletas concretas se sugieren o se integran después. Si ya tiene una paleta exacta, la anotas, pero no la pidas.
+## Interview rules (mandatory)
+1. **Every question is resolved by hand.** The user answers by writing, or writes `skip` themselves (`saltar` also works). None is skipped on its own, none is filled in by you and none stays blank unless they say so.
+2. Answering and skipping are equally valid. Do not pressure or insist on skipped ones.
+3. «I don't know» is a valid written answer: it is recorded as `unsure`. In the identity part it means options will be suggested to them later.
+4. Ask the questions in **blocks of 4 to 6**, numbered, with the block name. The user answers by number (`7: ...`, `8: skip`). If numbers are left unresolved, show them again (only those) before moving to the next block.
+5. Do not move to another block with unresolved questions. If the user wants to leave a whole block for later, they write `skip block` (`saltar bloque`), and all its questions are recorded as skipped.
+6. At the start, create `docs/project/interview.md` from `reference/interview-template.md`: the 42 entries, all `pending` (the folder is created following the conventions). Update each entry **as soon as** its answer arrives, and the progress line of the header when each block closes. If the conversation is cut, it is resumed with `resume`.
+7. Do not ask for keys, tokens or account data. If the user mentions external services (payments, email, maps), only note which ones. The user handles the keys (see `jayka-working-rules`).
+8. Colors: **do not ask for exact codes**. Tones are enough («red, blue and green», «warm», «sober»). It is only to probe; concrete palettes are suggested or integrated later. If they already have an exact palette, note it, but do not ask for it.
 
-## Preguntas (42)
-Cada pregunta tiene un **número** (para contestar en el chat: `7: …`) y una **clave estable** (entre comillas invertidas) que es la que se guarda en `entrevista.md` y la que usan otras skills. Las claves no cambian nunca: si en **Mis ajustes** agregas una pregunta, lleva una clave nueva con el prefijo `extra.`; si quitas una, su clave simplemente no aparece.
+## Questions (42)
+Each question has a **number** (to answer in the chat: `7: …`) and a **stable key** (in backticks) which is what gets saved in `interview.md` and what the other skills use. Keys never change: if you add a question in **My settings**, it takes a new key with the `extra.` prefix; if you remove one, its key simply does not appear. Ask the questions in the user's language.
 
-**A. El proyecto**
-1. `proyecto.nombre` ¿Cómo se llama el proyecto (aunque sea provisional)?
-2. `proyecto.frase` ¿Qué es, en una sola frase?
-3. `proyecto.problema` ¿Qué problema resuelve?
-4. `proyecto.usuario` ¿Quién lo va a usar? (describe a la persona)
-5. `proyecto.nombre-usuario` ¿Cómo se llama ese usuario dentro de la app? (cliente, paciente, socio…)
-6. `proyecto.referentes` ¿Conoces algo parecido? ¿Qué harías diferente?
+**A. The project**
+1. `project.name` What is the project called (even if provisional)?
+2. `project.sentence` What is it, in a single sentence?
+3. `project.problem` What problem does it solve?
+4. `project.user` Who will use it? (describe the person)
+5. `project.user-name` What is that user called inside the app? (client, patient, member…)
+6. `project.references` Do you know something similar? What would you do differently?
 
-**B. Alcance**
-7. `alcance.imprescindible` ¿Qué funciones son imprescindibles para la primera versión?
-8. `alcance.despues` ¿Qué funciones quedarían para después?
-9. `alcance.fuera` ¿Qué NO va a hacer este proyecto?
-10. `alcance.transacciones` ¿Hay pagos, ventas, reservas o pedidos? ¿Cómo funcionan (en línea, en efectivo, fuera de la app)?
-11. `alcance.idiomas` ¿En qué idioma o idiomas va?
-12. `alcance.region` ¿En qué país o zona se usa? (moneda, zona horaria, leyes)
+**B. Scope**
+7. `scope.must-have` Which features are essential for the first version?
+8. `scope.later` Which features would wait for later?
+9. `scope.out-of-scope` What will this project NOT do?
+10. `scope.transactions` Are there payments, sales, bookings or orders? How do they work (online, cash, outside the app)?
+11. `scope.languages` In which language or languages does it run?
+12. `scope.region` In which country or area is it used? (currency, time zone, laws)
 
-**C. Usuarios y roles**
-13. `usuarios.tipos` ¿Qué tipos de usuario habrá?
-14. `usuarios.permisos` ¿Qué puede hacer cada uno? (roles y permisos)
-15. `usuarios.acceso` ¿Cómo entran? (usuario y contraseña, Google, enlace, sin cuenta)
-16. `usuarios.alta` ¿Quién crea las cuentas? (ellos mismos, un administrador, por invitación)
-17. `usuarios.panel-admin` ¿Habrá un panel de administración? ¿Quién lo usa?
+**C. Users and roles**
+13. `users.types` What types of user will there be?
+14. `users.permissions` What can each one do? (roles and permissions)
+15. `users.access` How do they log in? (username and password, Google, link, no account)
+16. `users.onboarding` Who creates the accounts? (themselves, an administrator, by invitation)
+17. `users.admin-panel` Will there be an administration panel? Who uses it?
 
-**D. Tecnología**
-18. `tecnologia.frontend` ¿Qué tecnología quieres para lo que ve el usuario (frontend)? Si no sabes, escríbelo y se sugiere.
-19. `tecnologia.backend` ¿Y para el servidor (backend)?
-20. `tecnologia.base-de-datos` ¿Qué base de datos?
-21. `tecnologia.plataforma` ¿Será sitio web, app móvil o ambos? ¿Cuál es el principal?
-22. `tecnologia.hosting` ¿Dónde se va a publicar? (hosting o servidor)
-23. `tecnologia.dominio` ¿Ya tienes dominio?
-24. `tecnologia.servicios-externos` ¿Qué servicios externos usarías? (correo, mapas, pagos, notificaciones…). Solo cuáles, sin claves.
+**D. Technology**
+18. `tech.frontend` What technology do you want for what the user sees (frontend)? If you do not know, say so and it will be suggested.
+19. `tech.backend` And for the server (backend)?
+20. `tech.database` Which database?
+21. `tech.platform` Will it be a website, a mobile app or both? Which is the main one?
+22. `tech.hosting` Where will it be published? (hosting or server)
+23. `tech.domain` Do you already have a domain?
+24. `tech.external-services` Which external services would you use? (email, maps, payments, notifications…). Only which ones, no keys.
 
-**E. Datos y reglas**
-25. `datos.entidades` ¿Cuáles son las cosas principales que se guardan? (por ejemplo productos, pedidos, citas)
-26. `datos.reglas` ¿Qué reglas de negocio ya están decididas?
-27. `datos.personales` ¿Qué datos personales se guardan? (nombre, teléfono, documentos)
-28. `datos.archivos` ¿Se suben fotos o archivos? ¿De qué tipo y de quién?
-29. `datos.conservacion` ¿Cuánto tiempo se conservan los datos y cómo se respaldan?
+**E. Data and rules**
+25. `data.entities` What are the main things that get stored? (for example products, orders, appointments)
+26. `data.rules` Which business rules are already decided?
+27. `data.personal` What personal data is stored? (name, phone, documents)
+28. `data.files` Are photos or files uploaded? Of what kind and by whom?
+29. `data.retention` How long is data kept and how is it backed up?
 
-**F. Identidad visual**
-30. `identidad.sensacion` ¿Qué sensación debe dar? (cálida, sobria, festiva, técnica, juvenil, elegante…)
-31. `identidad.tonos` ¿Qué tonos de color imaginas? (solo familias: rojo, azul, verde…)
-32. `identidad.evitar` ¿Qué colores quieres evitar?
-33. `identidad.tipografia` ¿Qué tipo de letra te gusta? (con serifa, sin serifa, redondeada, manuscrita…) o «sugiere».
-34. `identidad.imagenes` ¿Qué estilo de imágenes? (fotos reales, ilustraciones, íconos, sin imágenes)
-35. `identidad.marca` ¿Existe un logo o una marca? ¿Se mantiene?
-36. `identidad.referencias` ¿Qué sitios o apps te gustan visualmente y qué te gusta de cada uno?
-37. `identidad.modo` ¿Modo claro, oscuro o ambos?
-38. `identidad.densidad` ¿Diseño aireado y espacioso, o compacto y con mucha información?
+**F. Visual identity**
+30. `identity.feeling` What feeling should it give? (warm, sober, festive, technical, youthful, elegant…)
+31. `identity.tones` What color tones do you imagine? (families only: red, blue, green…)
+32. `identity.avoid` Which colors do you want to avoid?
+33. `identity.typography` What kind of lettering do you like? (serif, sans-serif, rounded, handwritten…) or «suggest».
+34. `identity.imagery` What image style? (real photos, illustrations, icons, no images)
+35. `identity.brand` Is there a logo or a brand? Does it stay?
+36. `identity.references` Which sites or apps do you like visually, and what do you like about each?
+37. `identity.mode` Light mode, dark mode or both?
+38. `identity.density` Airy and spacious design, or compact and information-heavy?
 
-**G. Calidad y publicación**
-39. `calidad.sensibilidad` ¿Qué tan sensibles son los datos? ¿Hay datos de menores, salud o dinero?
-40. `calidad.dispositivos` ¿Desde qué dispositivos se usará más? (celular, escritorio, tableta)
-41. `calidad.fechas` ¿Hay fecha o etapas importantes?
-42. `calidad.forma-de-trabajo` ¿Cómo prefieres trabajar? (ritmo, cuánto quieres revisar, qué quieres aprobar antes de que se haga)
+**G. Quality and publishing**
+39. `quality.sensitivity` How sensitive is the data? Is there data on minors, health or money?
+40. `quality.devices` From which devices will it be used most? (phone, desktop, tablet)
+41. `quality.dates` Are there important dates or stages?
+42. `quality.working-style` How do you prefer to work? (pace, how much you want to review, what you want to approve before it is done)
 
-## Después de la entrevista
+## After the interview
 
-### 1. Informe de arranque
-Escribe `docs/proyecto/informe-inicial.md` con `reference/informe-inicial-template.md` y muéstralo resumido. Cada dato cita su clave, para que se pueda rastrear hasta la respuesta:
-- **Definido:** lo que ya está claro, en pocas líneas por tema.
-- **Saltado:** las preguntas que el usuario saltó.
-- **Dudas:** las que respondió «no sé».
-- **Falta para arrancar bien:** lo que conviene resolver antes de construir, ordenado por importancia, y qué pasa si no se resuelve.
-- **Riesgos:** por ejemplo datos sensibles sin plan de seguridad, tecnología sin definir, reglas de negocio sin cerrar.
-- **Sugerencias de identidad:** si dio solo tonos o dijo «no sé», propón 2 o 3 direcciones (sensación, familias de color, tipo de letra) para que elija. Si existen fichas de `jayka-style-self-learning`, menciona cuál se parece y por qué.
+### 1. Kick-off report
+Write `docs/project/initial-report.md` from `reference/initial-report-template.md` and show it summarized. Every datum cites its key, so it can be traced back to the answer:
+- **Defined:** what is already clear, a few lines per topic.
+- **Skipped:** the questions the user skipped.
+- **Doubts:** those answered «I don't know».
+- **Missing to start well:** what is worth resolving before building, ordered by importance, and what happens if it is not resolved.
+- **Risks:** for example sensitive data without a security plan, undefined technology, unclosed business rules.
+- **Identity suggestions:** if they gave only tones or said «I don't know», propose 2 or 3 directions (feeling, color families, lettering) for them to choose. If there are profiles from `jayka-style-self-learning`, mention which one looks similar and why.
 
-### 2. Archivos base (solo con aprobación)
-Pregunta antes de crear cualquiera. Crea lo que apruebe:
-- `CLAUDE.md` en la raíz, con `reference/claude-md-template.md` (menos de 40 líneas; lo no definido dice «por definir»). Pregunta aparte si agregar el bloque de reglas base; si dice que sí, se agrega siguiendo «Instalar las reglas base» de `jayka-menu`.
-- `.claude/estado/CONTINUAR.md` con el estado inicial y los pendientes, usando la plantilla de `jayka-continuity` (`../jayka-continuity/reference/continuar-template.md`, ruta relativa a esta skill). Los pendientes son los de «Falta para arrancar bien».
-- La estructura de carpetas, con `jayka-project-structure`.
-- `git init` y primer commit, con `jayka-git-rules`.
-- Opcional: un **prompt de arranque** (texto para pegar en otro chat) armado con las respuestas.
+### 2. Base files (only with approval)
+Ask before creating any. Create what they approve:
+- `CLAUDE.md` at the root, from `reference/claude-md-template.md` (under 40 lines; what is undefined says «to be defined»). Ask separately whether to add the base rules block; if yes, add it following «Install the base rules» of `jayka-menu`.
+- `.claude/state/CONTINUE.md` with the initial state and the pending items, using the template of `jayka-continuity` (`../jayka-continuity/reference/continue-template.md`, path relative to this skill). The pending items are those of «Missing to start well».
+- The folder structure, with `jayka-project-structure`.
+- `git init` and a first commit, with `jayka-git-rules`.
+- Optional: a **starter prompt** (text to paste into another chat) built from the answers.
 
-### 3. Siguientes pasos que sugieres (sin ejecutarlos)
-- `jayka-style-build`, para el estilo visual del prototipo.
-- `jayka-plan-builder`, para planear el primer bloque grande.
-- `jayka-security-web`, si hay login, formularios o subidas.
-- `jayka-companion-tools`, para auditorías y pulido.
-Solo menciona las que estén instaladas; si no lo están, dilo.
+### 3. Next steps you suggest (without running them)
+- `jayka-style-build`, for the prototype's visual style.
+- `jayka-plan-builder`, to plan the first big block.
+- `jayka-security-web`, if there is login, forms or uploads.
+- `jayka-companion-tools`, for audits and polish.
+Only mention the ones that are installed; if they are not, say so.
 
-## Terminado cuando
-- Las 42 entradas de `docs/proyecto/entrevista.md` siguen el formato de la plantilla y tienen estado `respondida`, `saltada` o `no-sé`. Ninguna queda en `pendiente`, y el progreso del encabezado suma 42.
-- `docs/proyecto/informe-inicial.md` existe con sus seis secciones y se mostró resumido.
-- Los archivos base creados son **solo** los que el usuario aprobó, y se dijo cuáles no se crearon.
-- Los siguientes pasos se sugirieron sin ejecutarlos.
+## Done when
+- The 42 entries of `docs/project/interview.md` follow the template's format and have status `answered`, `skipped` or `unsure`. None stays `pending`, and the progress line of the header adds up to 42.
+- `docs/project/initial-report.md` exists with its six sections and was shown summarized.
+- The base files created are **only** those the user approved, and it was said which were not created.
+- The next steps were suggested without running them.
 
-## Mis ajustes
-<!-- Agrega, quita o cambia preguntas aquí. Ejemplo: «agrega una pregunta sobre accesibilidad», «quita las de identidad». Mantén la regla: responder o saltar, siempre a mano. -->
+## My settings
+<!-- Add, remove or change questions here. Example: «add a question about accessibility», «remove the identity ones». Keep the rule: answer or skip, always by hand. -->

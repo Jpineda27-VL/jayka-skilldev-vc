@@ -1,49 +1,49 @@
-# Guía de extracción (solo lectura)
+# Extraction guide (read-only)
 
-Usa las herramientas de búsqueda de archivos del entorno (no modifiques nada). Los patrones son expresiones regulares. Adáptalos al framework que encuentres.
+Use the environment's file search tools (do not modify anything). The patterns are regular expressions. Adapt them to the framework you find.
 
-## 1. Tecnología
-- `package.json` (y `composer.json`, `pubspec.yaml`, `requirements.txt` si hay): dependencias de interfaz.
-- Archivos de configuración: `tailwind.config.*`, `postcss.config.*`, `vite.config.*`, `next.config.*`, `astro.config.*`, `app.json` (Expo), `components.json` (shadcn).
-- **Animación y scroll:** busca estos nombres en dependencias e importaciones: `gsap`, `ScrollTrigger`, `framer-motion`, `motion`, `lenis`, `locomotive-scroll`, `aos`, `lottie`, `three`, `react-spring`, `@react-spring`, `anime`, `swiper`, `embla`. En CSS: `@keyframes`, `animation:`, `transition:`, `scroll-behavior`, `scroll-snap`, `view-transition`, `animation-timeline`.
-- **Íconos:** `lucide`, `heroicons`, `phosphor`, `tabler`, `fontawesome`, `material-icons`, `react-icons`, o SVG sueltos / un archivo de íconos propio.
-- **Gráficas:** `recharts`, `chart.js`, `d3`, `echarts`, `apexcharts`, `visx`, o SVG a mano.
-- **Fuentes:** `@font-face`, `fonts.googleapis.com`, `next/font`, `@fontsource`, `font-family`.
+## 1. Technology
+- `package.json` (and `composer.json`, `pubspec.yaml`, `requirements.txt` if present): interface dependencies.
+- Configuration files: `tailwind.config.*`, `postcss.config.*`, `vite.config.*`, `next.config.*`, `astro.config.*`, `app.json` (Expo), `components.json` (shadcn).
+- **Animation and scroll:** look for these names in dependencies and imports: `gsap`, `ScrollTrigger`, `framer-motion`, `motion`, `lenis`, `locomotive-scroll`, `aos`, `lottie`, `three`, `react-spring`, `@react-spring`, `anime`, `swiper`, `embla`. In CSS: `@keyframes`, `animation:`, `transition:`, `scroll-behavior`, `scroll-snap`, `view-transition`, `animation-timeline`.
+- **Icons:** `lucide`, `heroicons`, `phosphor`, `tabler`, `fontawesome`, `material-icons`, `react-icons`, or loose SVGs / an own icons file.
+- **Charts:** `recharts`, `chart.js`, `d3`, `echarts`, `apexcharts`, `visx`, or hand-made SVG.
+- **Fonts:** `@font-face`, `fonts.googleapis.com`, `next/font`, `@fontsource`, `font-family`.
 
-## 2. Tokens en el código
-- Variables CSS: `^\s*--[\w-]+\s*:`  (en `*.css`, `*.scss`).
-- Tema de Tailwind: la clave `theme.extend` en `tailwind.config.*`.
-- Variables SCSS/Less: `^\s*[\$@][\w-]+\s*:`.
-- Colores sueltos (para medir frecuencia): `#[0-9a-fA-F]{3,8}\b`, `rgba?\(`, `hsla?\(`. Normaliza `#abc` a `#aabbcc` y agrupa. Descarta negro y blanco puros al buscar la paleta, pero anótalos.
-- Tamaños de texto: `font-size\s*:`; pesos: `font-weight\s*:`.
-- Espaciados: `(margin|padding|gap)\s*:` y clases de utilidad (`p-4`, `gap-6`…).
-- Radios, sombras, bordes: `border-radius\s*:`, `box-shadow\s*:`, `border\s*:`.
-- Puntos de corte: `@media\s*\(`.
-- Modo oscuro: `prefers-color-scheme`, `[data-theme`, `.dark`.
-- Movimiento reducido: `prefers-reduced-motion`.
+## 2. Tokens in the code
+- CSS variables: `^\s*--[\w-]+\s*:`  (in `*.css`, `*.scss`).
+- Tailwind theme: the `theme.extend` key in `tailwind.config.*`.
+- SCSS/Less variables: `^\s*[\$@][\w-]+\s*:`.
+- Loose colors (to measure frequency): `#[0-9a-fA-F]{3,8}\b`, `rgba?\(`, `hsla?\(`. Normalize `#abc` to `#aabbcc` and group. Leave out pure black and white when looking for the palette, but note them.
+- Text sizes: `font-size\s*:`; weights: `font-weight\s*:`.
+- Spacing: `(margin|padding|gap)\s*:` and utility classes (`p-4`, `gap-6`…).
+- Radii, shadows, borders: `border-radius\s*:`, `box-shadow\s*:`, `border\s*:`.
+- Breakpoints: `@media\s*\(`.
+- Dark mode: `prefers-color-scheme`, `[data-theme`, `.dark`.
+- Reduced motion: `prefers-reduced-motion`.
 
-## 3. Componentes y vistas
-- Carpetas típicas: `components/`, `ui/`, `partials/`, `views/`, `resources/views`, `app/`, `pages/`, `screens/`.
-- Para cada componente repetido, anota variantes (props o clases `--variante`) y estados (`:hover`, `:focus-visible`, `[disabled]`, `aria-*`).
-- Layouts: busca el archivo de layout principal (`layout`, `_app`, `app.blade.php`, `RootLayout`).
+## 3. Components and views
+- Typical folders: `components/`, `ui/`, `partials/`, `views/`, `resources/views`, `app/`, `pages/`, `screens/`.
+- For each repeated component, note variants (props or `--variant` classes) and states (`:hover`, `:focus-visible`, `[disabled]`, `aria-*`).
+- Layouts: find the main layout file (`layout`, `_app`, `app.blade.php`, `RootLayout`).
 
-## 4. Contraste (WCAG 2.x)
-Luminancia relativa: `L = 0.2126·R + 0.7152·G + 0.0722·B`, con cada canal `c = C/255` convertido a `c <= 0.03928 ? c/12.92 : ((c+0.055)/1.055)^2.4`.
-Razón de contraste: `(L1 + 0.05) / (L2 + 0.05)` con `L1` la mayor.
-Umbrales: texto normal AA 4.5:1 (AAA 7:1); texto grande (≥ 24 px, o ≥ 18.66 px en negrita) AA 3:1; componentes e íconos 3:1.
-Calcula con `scripts/contrast.mjs` (por ejemplo `node scripts/contrast.mjs "#26264F" "#FFF8EF"`). No uses sitios externos con datos del proyecto.
+## 4. Contrast (WCAG 2.x)
+Relative luminance: `L = 0.2126·R + 0.7152·G + 0.0722·B`, with each channel `c = C/255` converted to `c <= 0.03928 ? c/12.92 : ((c+0.055)/1.055)^2.4`.
+Contrast ratio: `(L1 + 0.05) / (L2 + 0.05)` with `L1` the larger.
+Thresholds: normal text AA 4.5:1 (AAA 7:1); large text (≥ 24 px, or ≥ 18.66 px bold) AA 3:1; components and icons 3:1.
+Calculate with `scripts/contrast.mjs` (for example `node scripts/contrast.mjs "#26264F" "#FFF8EF"`). Do not use external sites with the project's data.
 
-## 5. Medición en el navegador (opcional, solo lectura)
-La sonda está en `scripts/style-probe.js` y se corre con el capturador de `jayka-reverse` (ver Paso 5 de `SKILL.md`). Mide fondos, colores de texto, bordes, familias, tamaño/peso/interlineado, radios, rellenos, separaciones, sombras, variables de `:root`, fuentes cargadas y el contraste real de cada par texto/fondo visible.
+## 5. Browser measurement (optional, read-only)
+The probe is in `scripts/style-probe.js` and runs with the capture tool of `jayka-reverse` (see Step 5 of `SKILL.md`). It measures backgrounds, text colors, borders, families, size/weight/line height, radii, paddings, gaps, shadows, `:root` variables, loaded fonts and the real contrast of every visible text/background pair.
 
-Notas:
-- Los colores salen en hex; con transparencia se muestran como `#RRGGBB / alfa`.
-- Se mide en escritorio (1280 px) y en celular (375 px); anota las diferencias.
-- Mide también un estado interactivo clave (foco de un botón o campo) si es posible, a mano con la herramienta de navegador.
-- Si una librería no aparece en `window`, no significa que no se use (puede venir empaquetada): confírmalo en `package.json`.
+Notes:
+- Colors come out in hex; with transparency they are shown as `#RRGGBB / alpha`.
+- Measure on desktop (1280 px wide) and on mobile (375 px); note the differences.
+- Also measure a key interactive state (focus of a button or field) if possible, by hand with the browser tool.
+- If a library does not appear on `window`, it does not mean it is unused (it may be bundled): confirm in `package.json`.
 
-## 6. Qué NO hacer
-- No abrir ni copiar `.env` o credenciales.
-- No iniciar sesión con cuentas reales ni enviar formularios.
-- No guardar capturas con datos personales de clientes: pide al usuario una cuenta de pruebas o recorta.
-- No copiar textos, logos ni fotos propios del proyecto a la ficha.
+## 6. What NOT to do
+- Do not open or copy `.env` or credentials.
+- Do not log in with real accounts or submit forms.
+- Do not save screenshots with clients' personal data: ask the user for a test account or crop.
+- Do not copy the project's own texts, logos or photos into the profile.

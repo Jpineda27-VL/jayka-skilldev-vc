@@ -1,0 +1,35 @@
+schema_version: "1.0"
+name: new-project-interview
+description: On start it creates interview.md with the 42 pending entries and their keys, asks the first block and does not answer for the user.
+tags: [new-project, no-shell]
+execution:
+  prompt: |
+    /jay-ka:jayka-new-project
+
+    You have permission to create the docs/project folder. (I write in English.)
+  max_turns: 15
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Write, Edit]
+runs: 1
+graders:
+  - type: file_exists
+    name: creates-the-interview
+    path: "docs/project/interview.md"
+  - type: regex
+    name: forty-two-pending
+    target: { source: file, path: "docs/project/interview.md" }
+    pattern: "\\*\\*Status:\\*\\*\\s*pending[ \\t]*$"
+    flags: m
+    match: "count:42"
+  - type: regex
+    name: uses-stable-keys
+    target: { source: file, path: "docs/project/interview.md" }
+    pattern: "`identity\\.tones`"
+  - type: regex
+    name: does-not-answer-for-the-user
+    target: { source: file, path: "docs/project/interview.md" }
+    pattern: "\\*\\*Status:\\*\\*\\s*(answered|skipped|unsure)"
+    match: not_contains
+  - type: llm
+    name: asks-the-first-block
+    criteria: "The final answer presents the questions of block A (The project), numbered, explains that they are answered by number or with «skip», and waits for the user. It does not invent answers or move on to other blocks."

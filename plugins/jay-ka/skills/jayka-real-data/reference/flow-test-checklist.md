@@ -1,43 +1,43 @@
-# Prueba de flujo completo entre roles
+# Complete flow test across roles
 
-Objetivo: comprobar que un dato creado por un rol **llega** al siguiente y se refleja en el panel. Se prueba **en el servidor** (respuestas reales), no solo mirando pantallas.
+Goal: check that a datum created by one role **reaches** the next one and shows in the panel. It is tested **on the server** (real responses), not only by looking at screens.
 
-## Antes
-- [ ] Respaldo de la base con fecha.
-- [ ] Servidor local en marcha con la configuración de desarrollo (por ejemplo límites de subida).
-- [ ] Cuentas de prueba por rol listas (usuarios documentados; contraseña desde variable de entorno).
-- [ ] Datos sembrados en los estados necesarios.
+## Before
+- [ ] Dated backup of the database.
+- [ ] Local server running with the development configuration (for example upload limits).
+- [ ] Test accounts per role ready (documented users; password from an environment variable).
+- [ ] Data seeded in the states needed.
 
-## Cómo ejecutarlo
-Con una herramienta de navegador (por ejemplo Playwright) o llamadas HTTP con la sesión de cada rol:
-1. Entra con cada rol en su propio contexto (host o perfil distinto) para no mezclar sesiones.
-2. Cada paso hace la acción **por la misma vía que la app** (la misma petición, con su token CSRF) y comprueba la **respuesta** (estado HTTP y datos).
-3. Después de cada paso, **lee desde el rol siguiente** para confirmar que el dato llegó.
+## How to run it
+With a browser tool (for example Playwright) or HTTP calls with each role's session:
+1. Log in with each role in its own context (different host or profile) so sessions do not mix.
+2. Each step performs the action **through the same route as the app** (the same request, with its CSRF token) and checks the **response** (HTTP status and data).
+3. After each step, **read from the next role** to confirm the datum arrived.
 
-## Ejemplo de flujo (adáptalo a tu producto)
-| # | Rol | Acción | Comprobar |
+## Example flow (adapt it to your product)
+| # | Role | Action | Check |
 |---|---|---|---|
-| 1 | Operario / repartidor | Conectarse y reportar posición | Estado «disponible» |
-| 2 | Cliente | Vaciar carrito, agregar producto, elegir entrega y pago, confirmar | Pedido creado con código |
-| 3 | Comercio | Ve el pedido en «nuevos», lo acepta, lo pasa a cocina | Estados correctos |
-| 4 | Operario / repartidor | Recibe la oferta y la acepta | Oferta con tiempo, luego «entrega en curso» |
-| 5 | Administrador | Ve el pedido en el panel y su historial | Aparece con su estado |
-| 6 | Cualquiera | Casos negativos | Errores con el código esperado |
+| 1 | Operator / courier | Connect and report position | Status «available» |
+| 2 | Client | Empty cart, add product, choose delivery and payment, confirm | Order created with a code |
+| 3 | Shop | Sees the order under «new», accepts it, moves it to the kitchen | Correct states |
+| 4 | Operator / courier | Receives the offer and accepts it | Offer with time, then «delivery in progress» |
+| 5 | Administrator | Sees the order in the panel and its history | It appears with its status |
+| 6 | Anyone | Negative cases | Errors with the expected code |
 
-## Casos negativos que no se deben olvidar
-- [ ] Sin sesión: 401.
-- [ ] Sesión de otro tipo de cuenta: sin acceso.
-- [ ] Recurso de otro usuario: 404 o 403.
-- [ ] Datos inválidos: 422 con el código de error de negocio esperado.
-- [ ] Repetir la misma acción (doble clic): no duplica.
+## Negative cases not to forget
+- [ ] No session: 401.
+- [ ] Session of another account type: no access.
+- [ ] Another user's resource: 404 or 403.
+- [ ] Invalid data: 422 with the expected business error code.
+- [ ] Repeat the same action (double click): it does not duplicate.
 
-## Después (dejar todo como estaba)
-- [ ] Cancelar o cerrar los pedidos de prueba (por la vía del panel, con motivo, que también prueba la bitácora).
-- [ ] Desconectar a los operarios y cerrar turnos de prueba.
-- [ ] Vaciar carritos y sesiones de prueba.
-- [ ] Volver a correr el seeder de estados si hace falta.
-- [ ] Confirmar que los conteos coinciden con lo acordado.
-- [ ] Borrar de la carpeta de trabajo los scripts y las capturas de la prueba si no se guardarán.
+## After (leave everything as it was)
+- [ ] Cancel or close the test orders (through the panel, with a reason, which also tests the log).
+- [ ] Disconnect the operators and close test shifts.
+- [ ] Empty test carts and sessions.
+- [ ] Run the states seeder again if needed.
+- [ ] Confirm that the counts match what was agreed.
+- [ ] Delete from the working folder the scripts and screenshots of the test if they will not be kept.
 
-## Reporte
-Por paso: **hecho / falló / no probado**, con el dato real (código de respuesta, identificadores). Lista de lo que falló y de lo que quedó sin probar. Resumen en tres líneas.
+## Report
+Per step: **done / failed / not tested**, with the real datum (response code, identifiers). A list of what failed and of what was left untested. A summary in three lines.

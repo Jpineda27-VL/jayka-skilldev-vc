@@ -1,0 +1,18 @@
+schema_version: "1.0"
+name: reverse-live-github-asks
+description: "reverse with «live» and a github.com URL must ask whether to study the code or the page (rule 3) instead of starting. Without Bash or network, so it can only answer."
+tags: [reverse, conventions, quick, no-shell]
+execution:
+  prompt: "/jay-ka:jayka-reverse live https://github.com/user/template"
+  max_turns: 4
+  timeout_seconds: 120
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: asks-repo-or-live
+    pattern: "(repo|code)[\\s\\S]{0,160}(live|page)[\\s\\S]{0,120}\\?|(live|page)[\\s\\S]{0,160}(repo|code)[\\s\\S]{0,120}\\?"
+    flags: i
+  - type: llm
+    name: does-not-start-the-study
+    criteria: "The answer is limited to asking whether to study the repository code or the published page. It does not announce a step plan, and it does not say it is going to clone or open the page."

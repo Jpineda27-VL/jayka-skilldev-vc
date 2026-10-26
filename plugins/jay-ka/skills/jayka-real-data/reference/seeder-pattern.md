@@ -1,8 +1,8 @@
-# Patrón de seeders de ejemplo (Laravel)
+# Sample seeder pattern (Laravel)
 
-Adapta a tu stack. La idea es la misma en cualquier framework: **repetible, solo local, por clave natural, sin secretos reales**.
+Adapt it to your stack. The idea is the same in any framework: **repeatable, local only, by natural key, no real secrets**.
 
-## Seeder de catálogo
+## Catalog seeder
 ```php
 <?php
 
@@ -11,30 +11,30 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CatalogoInicialSeeder extends Seeder
+class InitialCatalogSeeder extends Seeder
 {
     public function run(): void
     {
-        abort_unless(app()->environment('local'), 403, 'El catálogo de ejemplo solo se crea en local.');
+        abort_unless(app()->environment('local'), 403, 'The sample catalog is only created locally.');
 
-        $ahora = now();
-        $negocios = [
-            1 => ['Negocio Uno', 'Descripción corta.', ['Producto A', 'Producto B', 'Producto C', 'Producto D', 'Producto E']],
+        $now = now();
+        $shops = [
+            1 => ['Shop One', 'Short description.', ['Product A', 'Product B', 'Product C', 'Product D', 'Product E']],
             // …
         ];
 
-        foreach ($negocios as $id => [$nombre, $descripcion, $productos]) {
-            // Si el id ya existe (tiene historial), se ACTUALIZA; si no, se crea.
-            if (DB::table('negocios')->where('id', $id)->exists()) {
-                DB::table('negocios')->where('id', $id)->update(['nombre' => $nombre, 'descripcion' => $descripcion, 'updated_at' => $ahora]);
+        foreach ($shops as $id => [$name, $description, $products]) {
+            // If the id already exists (it has history), it is UPDATED; otherwise it is created.
+            if (DB::table('shops')->where('id', $id)->exists()) {
+                DB::table('shops')->where('id', $id)->update(['name' => $name, 'description' => $description, 'updated_at' => $now]);
             } else {
-                DB::table('negocios')->insert(['id' => $id, 'nombre' => $nombre, 'descripcion' => $descripcion, 'created_at' => $ahora, 'updated_at' => $ahora]);
+                DB::table('shops')->insert(['id' => $id, 'name' => $name, 'description' => $description, 'created_at' => $now, 'updated_at' => $now]);
             }
-            foreach ($productos as $i => $producto) {
-                // Clave natural: (negocio, nombre). Repetir el seeder no duplica.
-                DB::table('productos')->updateOrInsert(
-                    ['negocio_id' => $id, 'nombre' => $producto],
-                    ['orden' => $i + 1, 'updated_at' => $ahora, 'created_at' => $ahora]
+            foreach ($products as $i => $product) {
+                // Natural key: (shop, name). Repeating the seeder does not duplicate.
+                DB::table('products')->updateOrInsert(
+                    ['shop_id' => $id, 'name' => $product],
+                    ['position' => $i + 1, 'updated_at' => $now, 'created_at' => $now]
                 );
             }
         }
@@ -42,40 +42,40 @@ class CatalogoInicialSeeder extends Seeder
 }
 ```
 
-## Cuentas de prueba (sin secretos reales)
+## Test accounts (no real secrets)
 ```php
-$clave = Hash::make(env('CLAVE_DEMO', 'clave-solo-para-local'));   // la clave real de nadie; solo desarrollo
-foreach (['usuario-uno', 'usuario-dos'] as $usuario) {
-    DB::table('cuentas')->updateOrInsert(
-        ['usuario' => $usuario],
-        ['contrasena' => $clave, 'estado' => 'activa', 'updated_at' => now(), 'created_at' => now()]
+$password = Hash::make(env('DEMO_PASSWORD', 'local-only-password'));   // nobody's real password; development only
+foreach (['user-one', 'user-two'] as $username) {
+    DB::table('accounts')->updateOrInsert(
+        ['username' => $username],
+        ['password' => $password, 'status' => 'active', 'updated_at' => now(), 'created_at' => now()]
     );
 }
 ```
-Documenta **los usuarios** y el **nombre de la variable**; no escribas la contraseña en documentos compartidos ni en el repositorio público.
+Document **the users** and the **variable name**; do not write the password in shared documents or in the public repository.
 
-## Identidad nueva sobre datos con historial
-Si ya hay filas con relaciones (pedidos de un repartidor, por ejemplo) y quieres «reemplazarlas»:
-1. **No borres.** Actualiza la fila (mismo `id`) con la identidad nueva.
-2. Cierra o limpia lo transitorio (turnos activos, sesiones, ofertas abiertas).
-3. Si faltan filas, créalas con los ids siguientes.
+## New identity over data with history
+If there are already rows with relations (a courier's orders, for example) and you want to «replace» them:
+1. **Do not delete.** Update the row (same `id`) with the new identity.
+2. Close or clean what is transient (active shifts, sessions, open offers).
+3. If rows are missing, create them with the next ids.
 
-## Seeder maestro
+## Master seeder
 ```php
 class DatabaseSeeder extends Seeder
 {
-    /** Solo en local, en orden de dependencias. */
+    /** Local only, in dependency order. */
     public function run(): void
     {
-        $this->call(BaseSeeder::class);            // zonas, categorías, ajustes
-        $this->call(CatalogoInicialSeeder::class); // negocios y productos
-        $this->call(CuentasSeeder::class);         // cuentas de prueba
+        $this->call(BaseSeeder::class);            // zones, categories, settings
+        $this->call(InitialCatalogSeeder::class);  // shops and products
+        $this->call(AccountsSeeder::class);        // test accounts
     }
 }
 ```
 
-## Comprobaciones tras sembrar
-- Contar filas por tabla y comparar con lo planeado.
-- Abrir las pantallas con los datos nuevos (sin errores ni imágenes rotas).
-- Correr el seeder **otra vez** y verificar que los conteos no cambian.
-- Correr las pruebas automáticas (usan su propia base, no la sembrada).
+## Checks after seeding
+- Count rows per table and compare with the plan.
+- Open the screens with the new data (no errors or broken images).
+- Run the seeder **again** and verify that the counts do not change.
+- Run the automated tests (they use their own database, not the seeded one).

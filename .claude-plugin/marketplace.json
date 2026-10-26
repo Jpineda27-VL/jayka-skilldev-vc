@@ -4,14 +4,14 @@
     "name": "Jpineda27-VL"
   },
   "metadata": {
-    "description": "Skills de JayKA para Claude Code: comunicación, reglas de trabajo, Git, seguridad, estructura de proyectos y estilo visual. Genéricas, para cualquier proyecto.",
-    "version": "0.9.0"
+    "description": "Optional helper skills for Claude Code: keep order while you build with AI. Working rules, Git, security, project structure, visual style, reverse engineering of sites and more. Generic, editable, in English with answers in your language.",
+    "version": "0.10.0"
   },
   "plugins": [
     {
       "name": "jay-ka",
-      "description": "Skills jayka-*: forma de trabajar, Git, seguridad, nuevo proyecto y aprendizaje/construcción de estilo.",
-      "version": "0.9.0",
+      "description": "jayka-* skills: working rules, Git, security, new project, style learning and building, reverse engineering and techniques. Optional helpers for developers who build with AI.",
+      "version": "0.10.0",
       "author": {
         "name": "Jpineda27-VL"
       },

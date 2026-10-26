@@ -1,60 +1,60 @@
 ---
 name: jayka-continuity
-description: "Continuidad entre sesiones: «cerrar» guarda el estado (hecho, pendiente, decisiones), actualiza memoria y grafo si existen y deja un commit; «abrir» lee ese estado y dice en pocas líneas dónde quedó el trabajo. Invócala con /jayka-continuity cerrar o /jayka-continuity abrir."
-argument-hint: "cerrar | abrir"
+description: "Continuity between sessions: «close» saves the state (done, pending, decisions), updates memory and the code graph if they exist and leaves a commit; «open» reads that state and says in a few lines where the work stands. Invoke it with /jayka-continuity close or /jayka-continuity open."
+argument-hint: "close | open"
 disable-model-invocation: true
 ---
 
 # JayKA · Continuity
 
-Para no perder el hilo cuando se corta una sesión. Dos modos: **cerrar** y **abrir**.
+So the thread is not lost when a session is cut. Two modes: **close** and **open**.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| `cerrar` | `guardar`, `close`, `save` | Modo cerrar |
-| `abrir` | `retomar`, `open`, `resume` | Modo abrir |
-| *(vacío)* | | Si es el primer mensaje de la sesión → `abrir`. Si no → pregunta: «¿Cierro (guardo el estado) o abro (retomo)?» |
+| `close` | `save`, `cerrar`, `guardar` | Close mode |
+| `open` | `resume`, `abrir`, `retomar` | Open mode |
+| *(empty)* | | If it is the first message of the session → `open`. Otherwise ask: «Close (save the state) or open (resume)?» |
 
-## Modo cerrar
+## Close mode
 
-1. **Reúne lo que pasó** con estos comandos, sin modificar nada: `git status --short`, `git log --oneline -15`, `git diff --stat` y `git stash list`. Súmale lo hablado en la sesión. Distingue lo hecho y verificado, lo hecho sin verificar y lo que quedó a medias.
-2. **Escribe el estado** en `.claude/estado/CONTINUAR.md` con la plantilla `reference/continuar-template.md`. Si no existe, la carpeta se crea según las convenciones. Si existe, actualízalo: conserva las decisiones tomadas y lo pendiente que siga vigente, y borra lo que ya no aplica. Las ocho secciones son:
-   - **Encabezado:** fecha de hoy, rama y último commit.
-   - **Dónde quedamos:** 3 a 6 líneas.
-   - **Hecho:** cada punto dice si está verificado y cómo, o «sin verificar».
-   - **Pendiente:** tabla ordenada por prioridad, cada punto con su siguiente paso concreto y lo que lo bloquea.
-   - **Decisiones tomadas:** con fecha, para no volver a preguntarlas.
-   - **Decisiones por tomar:** las preguntas abiertas para el usuario.
-   - **Cómo arrancar y probar:** comandos y direcciones (nunca claves reales).
-   - **Archivos clave** y **cambios sin commitear al cerrar**.
-3. **Memoria.** Si el entorno tiene memoria persistente, guarda ahí lo que sirva para otras sesiones (decisiones, preferencias, pendientes) y avisa con una línea corta y 👍. No repitas lo que ya está en el repositorio.
-4. **Grafo o índice del código.** Si el proyecto usa una herramienta que lo mantiene (por ejemplo `graphify`), actualízalo. Si no existe, no lo inventes.
-5. **Commit local** de los documentos de estado, siguiendo `jayka-git-rules`. Sin push.
-6. **Cierra con tres líneas:** qué quedó, qué falta y qué decisión necesitas del usuario.
+1. **Gather what happened** with these commands, without modifying anything: `git status --short`, `git log --oneline -15`, `git diff --stat` and `git stash list`. Add what was said in the session. Tell apart what is done and verified, done but unverified, and left half-way.
+2. **Write the state** to `.claude/state/CONTINUE.md` with the template `reference/continue-template.md`. If it does not exist, the folder is created following the conventions. If it exists, update it: keep the decisions made and the pending items that still hold, and delete what no longer applies. The sections are:
+   - **Header:** today's date, branch and last commit.
+   - **Where we stand:** 3 to 6 lines.
+   - **Done:** each item says whether it is verified and how, or «unverified».
+   - **Pending:** table ordered by priority, each item with its concrete next step and what blocks it.
+   - **Decisions made:** with date, so they are not asked again.
+   - **Open decisions:** the open questions for the user.
+   - **How to run and test:** commands and addresses (never real keys).
+   - **Key files** and **uncommitted changes at close**.
+3. **Memory.** If the environment has persistent memory, save there what helps other sessions (decisions, preferences, pending items) and say so with one short line and 👍. Do not repeat what is already in the repository.
+4. **Code graph or index.** If the project uses a tool that maintains one (for example `graphify`), update it. If none exists, do not invent it.
+5. **Local commit** of the state documents, following `jayka-git-rules`. No push.
+6. **Close with three lines:** what got done, what is missing and what decision you need from the user.
 
-## Modo abrir
+## Open mode
 
-1. Lee, en este orden y sin modificar nada: `CLAUDE.md`, `.claude/estado/CONTINUAR.md`, la memoria si existe, `git status --short`, `git log --oneline -10` y `git branch --show-current`. Si `CONTINUAR.md` no existe, dilo y resume solo desde git.
-2. Responde en **8 líneas o menos**:
-   - Dónde quedó el trabajo.
-   - Qué está pendiente (máximo 3 puntos, el primero con su siguiente paso).
-   - Qué decisión espera el usuario.
-   - Algo que haya cambiado fuera de sesión (cambios sin commitear, ramas, archivos nuevos).
-3. Pregunta: «¿Seguimos con [primer pendiente] o prefieres otra cosa?». **No empieces a trabajar sin que lo confirme.**
-4. Si el estado y el repositorio no coinciden (por ejemplo, el documento dice «hecho» pero el código no lo tiene), dilo y pregunta; no asumas.
+1. Read, in this order and without modifying anything: `CLAUDE.md`, `.claude/state/CONTINUE.md`, memory if it exists, `git status --short`, `git log --oneline -10` and `git branch --show-current`. If `CONTINUE.md` does not exist, say so and summarize only from git.
+2. Answer in **8 lines or fewer**:
+   - Where the work stands.
+   - What is pending (at most 3 items, the first with its next step).
+   - What decision the user owes.
+   - Anything that changed outside the session (uncommitted changes, branches, new files).
+3. Ask: «Do we continue with [first pending item] or do you prefer something else?». **Do not start working until they confirm.**
+4. If the state and the repository do not match (for example the document says «done» but the code does not have it), say so and ask; do not assume.
 
-## Reglas
-- No inventes estado: si no lo comprobaste, escríbelo como «sin verificar».
-- No guardes secretos, claves ni datos personales en los documentos de estado.
-- Un documento de estado corto y vigente vale más que uno largo y viejo: si una sección ya no aplica, bórrala.
+## Rules
+- Do not invent state: if you did not check it, write it as «unverified».
+- Do not save secrets, keys or personal data in the state documents.
+- A short, current state document beats a long, old one: if a section no longer applies, delete it.
 
-## Terminado cuando
-- **Cerrar:** `CONTINUAR.md` sigue la plantilla, tiene la fecha de hoy y sus secciones completas; lo no comprobado dice «sin verificar»; hay commit local de los documentos de estado (o se dijo por qué no); se cerró con tres líneas.
-- **Abrir:** la respuesta tiene 8 líneas o menos, señala cualquier diferencia entre el documento y el repositorio, termina con la pregunta y no se modificó nada.
+## Done when
+- **Close:** `CONTINUE.md` follows the template, has today's date and complete sections; what was not checked says «unverified»; there is a local commit of the state documents (or it was said why not); it closed with three lines.
+- **Open:** the answer has 8 lines or fewer, points out any difference between the document and the repository, ends with the question and nothing was modified.
 
-## Mis ajustes
-<!-- Cambia el nombre o la ubicación del archivo de estado, o agrega secciones que uses. -->
+## My settings
+<!-- Change the name or location of the state file, or add sections you use. -->

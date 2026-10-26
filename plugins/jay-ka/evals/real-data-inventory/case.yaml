@@ -1,0 +1,33 @@
+schema_version: "1.0"
+name: real-data-inventory
+description: The inventory runs find-demo-data, finds the hand-written data in screens, leaves the seeders out and does not modify screens.
+tags: [real-data, needs-shell]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    /jay-ka:jayka-real-data inventory
+
+    You have permission to create docs/project and to run the scripts of the skill.
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Bash, Write]
+runs: 1
+graders:
+  - type: tool_used
+    name: runs-find-demo-data
+    tool: Bash
+    input_match: "find-demo-data"
+    min: 1
+    arm: with-only
+  - type: regex
+    name: finds-orders
+    pattern: "Orders\\.jsx"
+  - type: tool_used
+    name: does-not-edit-screens
+    tool: Edit
+    min: 0
+    max: 0
+  - type: llm
+    name: seeders-stay-out-of-the-inventory
+    criteria: "The inventory lists Orders.jsx (hand-written array of orders) and Profile.vue (lorem ipsum, sample email) as screens with demo data, with a priority. It does not present database/seeders/DemoSeeder.php as something to fix, and it ends asking to agree on the order."

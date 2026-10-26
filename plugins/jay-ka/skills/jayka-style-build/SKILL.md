@@ -1,94 +1,94 @@
 ---
 name: jayka-style-build
-description: "Construye prototipos con tu propio estilo: toma la identidad de la entrevista de new-project y las fichas de style-self-learning, propone una base con razones (o tres direcciones nuevas si no hay nada), la aprueba contigo, la convierte en tokens y construye pantallas verificadas en celular y escritorio. Invócala con /jayka-style-build, opcionalmente diciendo qué construir."
-argument-hint: "[<qué construir>]"
+description: "Builds prototypes in your own style: takes the identity from the new-project interview and the style-self-learning profiles, proposes a base with reasons (or three new directions if there is nothing), gets your approval, turns it into tokens and builds screens verified on mobile and desktop. Invoke it with /jayka-style-build, optionally saying what to build."
+argument-hint: "[<what to build>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Style Build
 
-Modo **construcción** de la pareja de estilo. Usa lo aprendido por `jayka-style-self-learning` (fichas) y lo definido en `jayka-new-project` (identidad y tecnología) para que los prototipos nuevos salgan **coherentes con tu estilo y sin cara de «hecho por IA»**.
+The **building** half of the style pair. It uses what `jayka-style-self-learning` learned (profiles) and what `jayka-new-project` defined (identity and technology) so new prototypes come out **consistent with your style and without an «AI-made» look**.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Qué hace |
+| Argument | What it does |
 |---|---|
-| *(vacío)* | **Por defecto.** Empieza en el Paso 0 y pregunta qué se va a construir |
-| `<qué construir>` | Texto libre (por ejemplo «inicio del cliente y panel de pedidos»). Se usa como alcance propuesto del Paso 4, que igual se confirma |
+| *(empty)* | **Default.** Starts at Step 0 and asks what is going to be built |
+| `<what to build>` | Free text (for example «client home and orders panel»). It is used as the proposed scope of Step 4, which is still confirmed |
 
-## Reglas que no se rompen
-1. **El usuario decide el estilo.** Propones con razones; nada se aplica sin su aprobación.
-2. **No inventes la identidad.** Si no hay entrevista ni fichas, dilo y propón direcciones, o haz el mini-cuestionario (paso 0). Nunca presentes una suposición como si fuera una decisión suya.
-3. **Dependencias, fuentes y servicios externos** (paquetes, CDN, Google Fonts, librerías de animación) **requieren permiso**, cada vez. Explica qué son y qué cuestan (peso, privacidad, dependencia). Prefiere pilas de fuentes del sistema o fuentes ya incluidas en el proyecto si el usuario no autoriza descargas.
-4. Cumple `jayka-working-rules`: plan antes de construir, grupos pequeños, nada de claves, verificar antes de decir «listo».
-5. Si el proyecto ya tiene un sistema de diseño aprobado, **no lo reemplazas en silencio**: lo extiendes o preguntas.
+## Rules that are never broken
+1. **The user decides the style.** You propose with reasons; nothing is applied without their approval.
+2. **Do not invent the identity.** If there is no interview and no profiles, say so and propose directions, or run the mini-questionnaire (step 0). Never present an assumption as if it were their decision.
+3. **Dependencies, fonts and external services** (packages, CDNs, Google Fonts, animation libraries) **require permission**, every time. Explain what they are and what they cost (weight, privacy, dependency). Prefer system font stacks or fonts already included in the project if the user does not authorize downloads.
+4. Follow `jayka-working-rules`: plan before building, small groups, no keys, verify before saying «done».
+5. If the project already has an approved design system, **do not replace it silently**: extend it or ask.
 
-## Paso 0 · Reunir entradas
-Busca, en este orden, y di qué encontraste y qué no:
-1. `docs/proyecto/informe-inicial.md` y `docs/proyecto/entrevista.md` (de `jayka-new-project`). Lee la entrevista **por clave**, nunca por número:
-   - Tecnología y plataforma: `tecnologia.frontend`, `tecnologia.backend`, `tecnologia.base-de-datos`, `tecnologia.plataforma`.
-   - Identidad: todas las claves `identidad.*` (sensación, tonos, evitar, tipografía, imágenes, marca, referencias, modo, densidad).
-   - Datos sensibles: `calidad.sensibilidad`. Dispositivos: `calidad.dispositivos`.
-   - Solo cuentan las entradas con estado `respondida`. Las `no-sé` activan el Paso 2 para ese rasgo; las `saltada` y las que no existan se tratan como «sin dato» y se dice cuáles faltaron.
-   - Si la entrevista no tiene claves (formato anterior a la v0.6), dilo y pide correr `/jayka-new-project retomar` (con el plugin: `/jay-ka:` delante, convenciones §2b) para convertirla, o sigue con el mini-cuestionario.
-2. La biblioteca personal: `~/.claude/jay-k-a/estilos/<slug>/ficha.md`, `tokens.json` y `estilo-base.md`.
-3. Un estilo ya definido en el proyecto (`docs/proyecto/estilo.md`, tokens existentes).
-4. Lo que el usuario pida ahora: **qué se va a construir** (pantallas o flujo del prototipo).
+## Step 0 · Gather inputs
+Look, in this order, and say what you found and what you did not:
+1. `docs/project/initial-report.md` and `docs/project/interview.md` (from `jayka-new-project`). Read the interview **by key**, never by number:
+   - Technology and platform: `tech.frontend`, `tech.backend`, `tech.database`, `tech.platform`.
+   - Identity: all the `identity.*` keys (feeling, tones, avoid, typography, imagery, brand, references, mode, density).
+   - Sensitive data: `quality.sensitivity`. Devices: `quality.devices`.
+   - Only entries with status `answered` count. `unsure` ones trigger Step 2 for that trait; `skipped` ones and those that do not exist are treated as «no data» and you say which were missing.
+   - If the interview has no keys (a format from before v0.6), say so and ask to run `/jayka-new-project resume` (as a plugin: `/jay-ka:` in front, conventions §2b) to convert it, or go on with the mini-questionnaire.
+2. The personal library: `~/.claude/jayka/styles/<slug>/profile.md`, `tokens.json` and `base-style.md`.
+3. A style already defined in the project (`docs/project/style.md`, existing tokens).
+4. What the user asks now: **what is going to be built** (screens or prototype flow).
 
-Si **faltan** la entrevista y las fichas: recomienda correr `jayka-new-project` (identidad) y/o `jayka-style-self-learning` (fichas). Si el usuario prefiere seguir, haz un **mini-cuestionario** de 6 preguntas (sensación, tonos de color, tipo de letra, densidad, modo claro u oscuro, referencias). Cada una se responde o se salta a mano, igual que en `new-project`. «No sé» es válido y activa el paso 2. Las seis usan las claves de la entrevista (`identidad.sensacion`, `identidad.tonos`, `identidad.tipografia`, `identidad.densidad`, `identidad.modo`, `identidad.referencias`) y se guardan en `docs/proyecto/entrevista.md` con el formato de `jayka-new-project` (si el archivo no existe, se crea solo con esas entradas).
+If the interview and the profiles are **both missing**: recommend running `jayka-new-project` (identity) and/or `jayka-style-self-learning` (profiles). If the user prefers to go on, run a **mini-questionnaire** of 6 questions (feeling, color tones, lettering, density, light or dark mode, references). Each one is answered or skipped by hand, as in `new-project`. «I don't know» is valid and triggers step 2. The six use the interview keys (`identity.feeling`, `identity.tones`, `identity.typography`, `identity.density`, `identity.mode`, `identity.references`) and are saved to `docs/project/interview.md` in the format of `jayka-new-project` (if the file does not exist, it is created with only those entries).
 
-## Paso 1 · Emparejar con las fichas
-Sigue `reference/matching.md`. Entrega **hasta 3 candidatas** (o ninguna, y lo dices):
-- Qué ficha, **por qué encaja** (qué respuesta del usuario coincide con qué rasgo de la ficha).
-- **Qué tomarías** de ella (tokens, patrones, animación) y **qué dejarías**.
-- Qué **funcionó o falló** según su sección «Resultado y lecciones».
-- Compatibilidad técnica: si los tokens se portan tal cual a la tecnología elegida o hay que traducirlos.
-El usuario elige: **una**, **mezclar** (por ejemplo «colores de A, tipografía de B») o **ninguna**.
+## Step 1 · Match with the profiles
+Follow `reference/matching.md`. Deliver **up to 3 candidates** (or none, and say so):
+- Which profile, **why it fits** (which user answer matches which trait of the profile).
+- **What you would take** from it (tokens, patterns, motion) and **what you would leave**.
+- What **worked or failed** according to its «Results and lessons» section.
+- Technical compatibility: whether the tokens carry over as they are to the chosen technology or need translating.
+The user chooses: **one**, **mix** (for example «colors of A, typography of B») or **none**.
 
-## Paso 2 · Direcciones nuevas (si no hay ficha, o el usuario dice «no sé»)
-Propón **3 direcciones distintas entre sí**, no tres variaciones de lo mismo. Cada una, en pocas líneas:
-- Nombre y sensación en 5 palabras.
-- Paleta con roles y valores concretos (derivada con la receta de `reference/matching.md`, con el contraste ya verificado).
-- Pareja tipográfica y escala.
-- Forma (radios, bordes, sombras) y densidad.
-- Movimiento (qué se anima y cómo).
-- Un **motivo distintivo** (algo reconocible que no sea genérico).
-- Un riesgo honesto de esa dirección.
-Si el usuario dio solo tonos (por ejemplo «rojo, azul y verde»), las tres direcciones **parten de esos tonos**. Si ya tiene paletas exactas, se integran tal cual. Revisa `reference/anti-slop.md` antes de proponer.
+## Step 2 · New directions (if there is no profile, or the user says «I don't know»)
+Propose **3 directions that differ from each other**, not three variations of the same thing. Each one, in a few lines:
+- Name and feeling in 5 words.
+- Palette with roles and concrete values (derived with the recipe in `reference/matching.md`, with the contrast already verified).
+- Type pairing and scale.
+- Shape (radii, borders, shadows) and density.
+- Motion (what is animated and how).
+- A **distinctive motif** (something recognizable that is not generic).
+- An honest risk of that direction.
+If the user gave only tones (for example «red, blue and green»), the three directions **start from those tones**. If they already have exact palettes, they are integrated as they are. Check `reference/anti-slop.md` before proposing.
 
-## Paso 3 · Briefing de estilo (puerta de aprobación)
-Con lo elegido, escribe el **briefing** (`reference/style-brief-template.md`) en `docs/proyecto/estilo.md`, con los tokens en el formato del proyecto (variables CSS, tema de Tailwind, archivo de tema…). Muéstralo resumido y pregunta: «¿Lo apruebo así o cambias algo?». **No construyas hasta que lo apruebe.** Si cambia algo, actualiza el briefing y vuelve a mostrar solo lo cambiado.
+## Step 3 · Style brief (approval gate)
+With what was chosen, write the **brief** (`reference/style-brief-template.md`) to `docs/project/style.md`, with the tokens in the project's format (CSS variables, Tailwind theme, theme file…). Show it summarized and ask: «Approve it as is, or change something?». **Do not build until they approve.** If they change something, update the brief and show only what changed.
 
-## Paso 4 · Construir
-1. Confirma el **alcance del prototipo**. Recomienda lo mínimo que muestre el estilo: una pantalla clave del cliente y la principal del dashboard, si hay ambos.
-2. Plan corto por grupos (tokens y base → componentes → pantallas). Para trabajo grande, sugiere `jayka-plan-builder`.
-3. Construye con los tokens aprobados: cero colores, tamaños o radios «sueltos» fuera del sistema. Contenido realista, no «Lorem ipsum» ni «Welcome to…».
-4. Respeta estas bases (cámbialas en **Mis ajustes** si prefieres otras):
-   - Texto en `rem`, no en `px`.
-   - Contraste AA como mínimo; foco visible; áreas táctiles de 44 px o más.
-   - `prefers-reduced-motion` respetado.
-   - Estados reales: vacío, cargando, error, desactivado.
-   - Celular primero si el usuario lo usa más (`calidad.dispositivos`).
+## Step 4 · Build
+1. Confirm the **prototype scope**. Recommend the minimum that shows the style: one key client screen and the main dashboard screen, if there are both.
+2. Short plan by groups (tokens and base → components → screens). For big work, suggest `jayka-plan-builder`.
+3. Build with the approved tokens: zero «loose» colors, sizes or radii outside the system. Realistic content, not «Lorem ipsum» or «Welcome to…».
+4. Respect these bases (change them in **My settings** if you prefer others):
+   - Text in `rem`, not `px`.
+   - AA contrast at least; visible focus; touch targets of 44 px or more.
+   - `prefers-reduced-motion` respected.
+   - Real states: empty, loading, error, disabled.
+   - Mobile first if the user uses it most (`quality.devices`).
 
-## Paso 5 · Verificar (una sola ronda acotada)
-No entres en un ciclo de pulido infinito: **una ronda completa y, si hace falta, una de confirmación.**
-1. Abre el prototipo en navegador a **1280 px** y **375 px** y mira todas las pantallas construidas.
-2. Revisa: textos cortados o montados, contraste de los pares importantes, foco, áreas táctiles, desbordes horizontales, imágenes, estados vacíos.
-3. Corrige todo lo encontrado **en un solo lote**, y confirma una vez.
-4. Reporta lo que quedó sin verificar.
+## Step 5 · Verify (a single bounded round)
+Do not enter an endless polishing loop: **one full round and, if needed, one confirmation round.**
+1. Open the prototype in a browser at **1280 px** and **375 px** and look at all the screens built.
+2. Check: cut-off or overlapping text, contrast of the important pairs, focus, touch targets, horizontal overflow, images, empty states.
+3. Fix everything found **in a single batch**, and confirm once.
+4. Report what was left unverified.
 
-## Paso 6 · Entrega y siguientes pasos
-Resume: estilo aplicado (de qué ficha o dirección), archivos creados, tokens, y qué no se hizo. Cierra sugiriendo, sin ejecutarlas:
-- `jayka-companion-tools`: auditoría y pulido (por ejemplo `impeccable audit` y `polish`) y las herramientas contra el «aspecto de IA».
-- `jayka-style-self-learning`, **cuando el proyecto esté terminado**, para guardar su ficha y enriquecer la biblioteca.
+## Step 6 · Delivery and next steps
+Summarize: style applied (from which profile or direction), files created, tokens, and what was not done. Close by suggesting, without running them:
+- `jayka-companion-tools`: audit and polish (for example `impeccable audit` and `polish`) and the tools against the «AI look».
+- `jayka-style-self-learning`, **when the project is finished**, to save its profile and enrich the library.
 
-## Terminado cuando
-- `docs/proyecto/estilo.md` existe y el usuario lo aprobó en la compuerta del Paso 3.
-- Las pantallas del alcance confirmado están construidas, y fuera del archivo de tokens no hay colores sueltos: una búsqueda de `#[0-9a-fA-F]{3,8}\b`, `rgb(` y `hsl(` en los archivos del prototipo no encuentra ninguno (o cada uno está justificado).
-- Se revisaron todas las pantallas a 1280 px y 375 px, con una ronda de correcciones y una de confirmación como máximo.
-- La entrega dice qué quedó sin verificar.
+## Done when
+- `docs/project/style.md` exists and the user approved it at the Step 3 gate.
+- The screens of the confirmed scope are built, and outside the tokens file there are no loose colors: a search for `#[0-9a-fA-F]{3,8}\b`, `rgb(` and `hsl(` in the prototype files finds none (or each one is justified).
+- All screens were reviewed at 1280 px and 375 px, with one round of fixes and one of confirmation at most.
+- The delivery says what was left unverified.
 
-## Mis ajustes
-<!-- Cambia bases (por ejemplo «texto en px», «siempre modo oscuro»), pesos de tus preferencias o qué pantallas se construyen por defecto. -->
+## My settings
+<!-- Change bases (for example «text in px», «always dark mode»), the weights of your preferences or which screens are built by default. -->

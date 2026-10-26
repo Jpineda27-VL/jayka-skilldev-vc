@@ -1,90 +1,90 @@
 ---
 name: jayka-real-data
-description: "Deja de trabajar con pantallas de demostración: datos de ejemplo guardados en la base con seeders repetibles y solo en local, cuentas de prueba sin secretos reales, inventario de lo que sigue en demostración y prueba del flujo completo de punta a punta entre roles. Invócala con /jayka-real-data, o con una fase (inventario, plan, sembrar, conectar, flujo)."
-argument-hint: "[inventario | plan | sembrar | conectar | flujo]"
+description: "Stop working with demo screens: sample data stored in the database with repeatable, local-only seeders, test accounts without real secrets, an inventory of what is still demo and a complete end-to-end flow test across roles. Invoke it with /jayka-real-data, or with a phase (inventory, plan, seed, connect, flow)."
+argument-hint: "[inventory | plan | seed | connect | flow]"
 disable-model-invocation: true
 ---
 
-# JayKA · Tech · Real Data
+# JayKA · Real Data
 
-Para pasar de «pantallas que parecen funcionar» a **datos reales de ejemplo** que viajan por todo el sistema: se crean en la base, los ve el siguiente rol y aparecen en el panel. Así se detectan errores de conexión que una demo esconde.
+To go from «screens that seem to work» to **real sample data** that travels through the whole system: it is created in the database, the next role sees it and it shows up in the panel. That way the connection errors a demo hides are detected.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Paso |
-|---|---|
-| *(vacío)* | **Por defecto.** Del Paso 1 al 6, en orden, con sus compuertas |
-| `inventario` | Paso 1 |
-| `plan` | Paso 2 |
-| `sembrar` | Paso 3 |
-| `conectar` | Paso 4 |
-| `flujo` | Paso 5 |
+| Argument | Aliases | Step |
+|---|---|---|
+| *(empty)* | | **Default.** From Step 1 to 6, in order, with their gates |
+| `inventory` | `inventario` | Step 1 |
+| `plan` | | Step 2 |
+| `seed` | `sembrar` | Step 3 |
+| `connect` | `conectar` | Step 4 |
+| `flow` | `flujo` | Step 5 |
 
-Al empezar en una fase, comprueba que lo anterior existe (por ejemplo, `sembrar` necesita el plan del Paso 2). Si falta, dilo y ofrece hacerlo primero.
+When starting at a phase, check that what comes before exists (for example, `seed` needs the plan from Step 2). If it is missing, say so and offer to do it first.
 
-## Principios
-1. **Los datos de ejemplo viven en la base**, sembrados por seeders. Nunca escritos a mano dentro de las pantallas.
-2. **Lo que no tiene datos reales se rotula** («Demostración») hasta que se conecte, o se elimina. Nada finge ser real.
-3. **Solo en local.** Los seeders de ejemplo se niegan a correr fuera de entornos de desarrollo.
-4. **Nada de secretos reales.** Las cuentas de prueba usan una contraseña de desarrollo definida en una variable de entorno (con valor por defecto solo para local); jamás una contraseña real de nadie.
-5. **Repetibles.** Correr el seeder dos veces no duplica; actualiza.
-6. **Un flujo vale más que mil pantallas:** se prueba que un dato creado por un rol llega al siguiente.
+## Principles
+1. **Sample data lives in the database**, seeded by seeders. Never written by hand inside the screens.
+2. **What has no real data is labeled** («Demo») until it is connected, or removed. Nothing pretends to be real.
+3. **Local only.** The sample seeders refuse to run outside development environments.
+4. **No real secrets.** Test accounts use a development password defined in an environment variable (with a default only for local); never anybody's real password.
+5. **Repeatable.** Running the seeder twice does not duplicate; it updates.
+6. **A flow is worth a thousand screens:** it is tested that a datum created by one role reaches the next.
 
-## Reglas de esta skill
-- **Respaldo primero:** antes de sembrar o limpiar datos en una base que ya tenga información, haz un respaldo con fecha. Sin respaldo, no se borra ni se sobrescribe nada.
-- **Permisos:** borrar o reemplazar datos existentes, cambiar el entorno o instalar herramientas requiere permiso explícito. Lo que ya existe se **conserva** si hay historial (se reutilizan los mismos identificadores con la identidad nueva, en vez de borrar y romper relaciones).
-- **Sin claves:** nunca pongas ni leas credenciales reales. Las pruebas usan cuentas de ejemplo.
-- Los datos deben ser **verosímiles** para el lugar donde se usará el proyecto (nombres, monedas, direcciones, teléfonos de ejemplo). No uses datos de personas reales.
+## Rules of this skill
+- **Backup first:** before seeding or cleaning data in a database that already has information, make a dated backup. Without a backup, nothing is deleted or overwritten.
+- **Permissions:** deleting or replacing existing data, changing the environment or installing tools requires explicit permission. What already exists is **kept** if there is history (the same identifiers are reused with the new identity, instead of deleting and breaking relations).
+- **No keys:** never put or read real credentials. Tests use sample accounts.
+- The data must be **plausible** for the place where the project will be used (names, currencies, addresses, sample phones). Do not use data of real people.
 
-## Paso 1 · Inventario de lo que sigue en demostración
-1. Corre `node "<SKILL_DIR>/scripts/find-demo-data.mjs" . --out docs/proyecto/demo-candidatos.json` (`SKILL_DIR` es el directorio base de esta skill; hace falta Node 18 o más). Encuentra lorem ipsum, nombres, correos y teléfonos de ejemplo, imágenes de relleno, constantes demo/mock, faker fuera de seeders, `TODO: conectar…` y arreglos de 3 o más objetos escritos a mano. Ignora seeders, factories, pruebas, fixtures y stories. Son **candidatos**: abre cada archivo y confirma. Después recorre las pantallas para lo que el script no ve (por ejemplo, números fijos en una gráfica).
-2. Arma una tabla: **pantalla · fuente actual (a mano / base) · qué falta para conectarla · prioridad**.
-3. Muéstrala al usuario y acuerda **el orden**. Marca lo que no tenga reglas de negocio decididas como «pendiente de decisión»: no se conecta inventando reglas.
+## Step 1 · Inventory of what is still demo
+1. Run `node "<SKILL_DIR>/scripts/find-demo-data.mjs" . --out docs/project/demo-candidates.json` (`SKILL_DIR` is the base directory of this skill; it needs Node 18 or newer). It finds lorem ipsum, sample names, emails and phones, placeholder images, demo/mock constants, faker outside seeders, `TODO: connect…` and arrays of 3 or more hand-written objects. It ignores seeders, factories, tests, fixtures and stories. They are **candidates**: open each file and confirm. Then go through the screens for what the script does not see (for example, fixed numbers in a chart).
+2. Build a table: **screen · current source (by hand / database) · what is missing to connect it · priority**.
+3. Show it to the user and agree on **the order**. Mark what has no decided business rules as «pending decision»: it is not connected by inventing rules.
 
-## Paso 2 · Plan de datos de ejemplo
-Pregunta lo mínimo (y propone valores por defecto):
-- ¿Cuántos de cada cosa? (por ejemplo 5 comercios con 5 o más productos cada uno; 5 repartidores; 10 clientes).
-- ¿Qué estados deben existir para probar? (nuevo, en proceso, terminado, cancelado; cuentas activas, suspendidas, inactivas).
-- ¿Qué cuentas de prueba por rol, con qué usuarios? (se documentan; la contraseña se define en una variable de entorno).
-- ¿Fotos de ejemplo? Que pasen por **el mismo servicio de subida** que usan los usuarios (`jayka-photos`).
-Guarda el plan; para algo grande, `jayka-plan-builder`.
+## Step 2 · Sample data plan
+Ask the minimum (and propose default values):
+- How many of each thing? (for example 5 shops with 5 or more products each; 5 couriers; 10 clients).
+- Which states must exist to test? (new, in progress, finished, cancelled; active, suspended, inactive accounts).
+- Which test accounts per role, with which users? (they are documented; the password is defined in an environment variable).
+- Sample photos? Have them go through **the same upload service** the users use (`jayka-photos`).
+Save the plan; for something big, `jayka-plan-builder`.
 
-## Paso 3 · Seeders
-Sigue `reference/seeder-pattern.md`:
-- `abort_unless` entorno local.
-- Actualizar o insertar por una **clave natural** (no por el número).
-- Orden por dependencias (primero lo que no depende de nadie).
-- Cuentas con contraseña desde variable de entorno.
-- Un seeder por tema (catálogo, cuentas, historial) y uno que los llame en orden.
-- Cuidado con la base real de pruebas: **respaldo antes**, y no borrar lo que tiene relaciones.
-- **Comprobar que se pueden repetir** (medido, no supuesto): anota el conteo de filas por tabla, corre los seeders, vuelve a contar, córrelos otra vez y vuelve a contar. La segunda corrida no debe cambiar ningún conteo.
-  - Laravel: `php artisan db:show --counts` antes y después de cada `php artisan db:seed --class=<SeederPrincipal>`.
-  - Otros: una consulta `SELECT COUNT(*)` por tabla sembrada, con la herramienta de base de datos del proyecto.
-- **Comprobar el candado de entorno:** corre el seeder con el entorno puesto en `production` **solo contra una base local o desechable** (por ejemplo, `APP_ENV=production php artisan db:seed --class=<Seeder>` con la base local). Debe negarse a correr. Nunca contra la base real.
+## Step 3 · Seeders
+Follow `reference/seeder-pattern.md`:
+- `abort_unless` local environment.
+- Update or insert by a **natural key** (not by the number).
+- Order by dependencies (first what depends on nobody).
+- Accounts with the password from an environment variable.
+- One seeder per topic (catalog, accounts, history) and one that calls them in order.
+- Care with the real test database: **backup before**, and do not delete what has relations.
+- **Check that they can be repeated** (measured, not assumed): note the row count per table, run the seeders, count again, run them once more and count again. The second run must not change any count.
+  - Laravel: `php artisan db:show --counts` before and after each `php artisan db:seed --class=<MainSeeder>`.
+  - Others: a `SELECT COUNT(*)` query per seeded table, with the project's database tool.
+- **Check the environment lock:** run the seeder with the environment set to `production` **only against a local or disposable database** (for example, `APP_ENV=production php artisan db:seed --class=<Seeder>` with the local database). It must refuse to run. Never against the real database.
 
-## Paso 4 · Conectar las pantallas
-Para cada pantalla del inventario, en el orden acordado: quitar los datos escritos a mano, leer del servicio o API, cuidar los estados vacío y de error, y probarla con los datos sembrados. Si hay dos frontends, `jayka-views-parity`.
+## Step 4 · Connect the screens
+For each screen of the inventory, in the agreed order: remove the hand-written data, read from the service or API, take care of the empty and error states, and test it with the seeded data. If there are two frontends, `jayka-views-parity`.
 
-## Paso 5 · Prueba del flujo completo
-Sigue `reference/flow-test-checklist.md`. En resumen: recorrer, con cuentas de prueba, el camino completo entre roles (por ejemplo: cliente pide → comercio acepta → repartidor recibe → administrador lo ve), comprobando **cada paso en el servidor** y no solo en la pantalla. Al terminar, **limpiar o devolver a su estado** lo que la prueba cambió (cancelar el pedido de prueba, desconectar a los repartidores, vaciar carritos) para dejar los datos como se acordó.
+## Step 5 · Complete flow test
+Follow `reference/flow-test-checklist.md`. In short: walk through, with test accounts, the complete path across roles (for example: client orders → shop accepts → courier receives → administrator sees it), checking **every step on the server** and not only on the screen. When done, **clean up or restore** what the test changed (cancel the test order, disconnect the couriers, empty the carts) to leave the data as agreed.
 
-## Paso 6 · Documentar
-Deja en `docs/proyecto/datos-de-prueba.md` (sin contraseñas): cuentas de prueba por rol (usuarios), dónde se define la contraseña de desarrollo (nombre de la variable), cómo reiniciar los datos y qué sigue en demostración. Actualiza el estado del proyecto (`jayka-continuity`).
+## Step 6 · Document
+Leave in `docs/project/test-data.md` (without passwords): test accounts per role (users), where the development password is defined (variable name), how to reset the data and what is still demo. Update the project state (`jayka-continuity`).
 
-## Qué NO hacer
-- No «arreglar» una pantalla de demostración con más datos escritos a mano.
-- No borrar historial para que el seeder quede bonito.
-- No sembrar en producción jamás.
-- No dejar la prueba de flujo con datos de prueba mezclados con lo real.
+## What NOT to do
+- Do not «fix» a demo screen with more hand-written data.
+- Do not delete history to make the seeder look nice.
+- Never seed in production.
+- Do not leave the flow test with test data mixed with the real.
 
-## Terminado cuando
-- **Inventario:** `find-demo-data.mjs` se corrió y cada candidato quedó confirmado o descartado; cada pantalla tiene su fuente (a mano o base) y prioridad, y el orden quedó acordado.
-- **Sembrar:** los seeders corren **dos veces seguidas** sin duplicar (el conteo de filas de cada tabla sembrada es igual después de la primera y de la segunda corrida, **medido**), y se niegan a correr fuera de local (comprobado).
-- **Conectar:** al volver a correr `find-demo-data.mjs`, los únicos candidatos que quedan son los rotulados «Demostración» o los descartados con motivo.
-- **Flujo:** cada paso del recorrido entre roles se comprobó en el servidor, y los datos quedaron como se acordó.
-- `docs/proyecto/datos-de-prueba.md` está escrito, sin contraseñas.
+## Done when
+- **Inventory:** `find-demo-data.mjs` was run and each candidate ended confirmed or discarded; each screen has its source (by hand or database) and priority, and the order was agreed.
+- **Seed:** the seeders run **twice in a row** without duplicating (the row count of each seeded table is equal after the first and the second run, **measured**), and they refuse to run outside local (checked).
+- **Connect:** when running `find-demo-data.mjs` again, the only candidates left are those labeled «Demo» or discarded with a reason.
+- **Flow:** every step of the walk across roles was checked on the server, and the data was left as agreed.
+- `docs/project/test-data.md` is written, without passwords.
 
-## Mis ajustes
-<!-- Cantidades por defecto, nombre de la variable de contraseña, zona y estilo de nombres de ejemplo. -->
+## My settings
+<!-- Default quantities, name of the password variable, region and style of sample names. -->

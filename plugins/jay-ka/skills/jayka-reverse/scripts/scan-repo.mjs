@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Escanea un repositorio en SOLO LECTURA: no ejecuta nada, no instala nada, no abre archivos de secretos.
-// Uso: node scan-repo.mjs <carpeta> [--out hallazgos-repo.json]
+// Scans a repository READ-ONLY: it runs nothing, installs nothing and opens no secret files.
+// Usage: node scan-repo.mjs <folder> [--out repo-findings.json]
 import { readdirSync, readFileSync, statSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join, relative, extname, basename, dirname, resolve } from 'node:path';
 import {
@@ -12,7 +12,7 @@ const root = args.find((a) => !a.startsWith('--'));
 const outIdx = args.indexOf('--out');
 const out = outIdx >= 0 ? args[outIdx + 1] : null;
 if (!root) {
-  console.error('Uso: node scan-repo.mjs <carpeta> [--out archivo.json]');
+  console.error('Usage: node scan-repo.mjs <folder> [--out file.json]');
   process.exit(2);
 }
 const ROOT = resolve(root);
@@ -31,14 +31,14 @@ const MAX_FILES = 20000;
 const MAX_BYTES = 1_500_000;
 
 const signatures = loadSignatures();
-const detections = new Map(); // id -> { id, name, category, evidencia: [] }
+const detections = new Map(); // id -> { id, name, category, evidence: [] }
 const addEvidence = (sig, ev) => {
-  if (!detections.has(sig.id)) detections.set(sig.id, { id: sig.id, nombre: sig.name, categoria: sig.category, evidencia: [] });
+  if (!detections.has(sig.id)) detections.set(sig.id, { id: sig.id, name: sig.name, category: sig.category, evidence: [] });
   const d = detections.get(sig.id);
-  if (d.evidencia.length < 8) d.evidencia.push(ev);
+  if (d.evidence.length < 8) d.evidence.push(ev);
 };
 
-const meta = { raiz: ROOT, fecha: new Date().toISOString(), archivosLeidos: 0, secretosOmitidos: [], grandesOmitidos: 0, truncado: false };
+const meta = { root: ROOT, date: new Date().toISOString(), filesRead: 0, secretsSkipped: [], largeSkipped: 0, truncated: false };
 const packages = [];
 const lockfiles = [];
 const configs = [];
@@ -48,18 +48,18 @@ const jsAcc = emptyJsMotion();
 const files = [];
 
 function walk(dir) {
-  if (files.length >= MAX_FILES) { meta.truncado = true; return; }
+  if (files.length >= MAX_FILES) { meta.truncated = true; return; }
   let entries;
   try { entries = readdirSync(dir, { withFileTypes: true }); } catch { return; }
   for (const e of entries) {
     const full = join(dir, e.name);
-    if (e.isSymbolicLink()) continue; // no seguir enlaces: pueden apuntar fuera del repo
+    if (e.isSymbolicLink()) continue; // do not follow links: they may point outside the repo
     if (e.isDirectory()) {
       if (IGNORED_DIRS.has(e.name)) continue;
       walk(full);
     } else if (e.isFile()) {
       files.push(full);
-      if (files.length >= MAX_FILES) { meta.truncado = true; return; }
+      if (files.length >= MAX_FILES) { meta.truncated = true; return; }
     }
   }
 }
@@ -69,7 +69,7 @@ const rel = (p) => relative(ROOT, p).replace(/\\/g, '/');
 
 for (const file of files) {
   const name = basename(file);
-  if (SECRET_FILE.test(name) && !ALLOWED_ENV_EXAMPLES.test(name)) { meta.secretosOmitidos.push(rel(file)); continue; }
+  if (SECRET_FILE.test(name) && !ALLOWED_ENV_EXAMPLES.test(name)) { meta.secretsSkipped.push(rel(file)); continue; }
   if (/^(package-lock\.json|pnpm-lock\.yaml|yarn\.lock|bun\.lockb?|composer\.lock)$/.test(name)) { lockfiles.push(rel(file)); continue; }
   if (CONFIG_RE.test(name)) configs.push(rel(file));
   if (LICENSE_RE.test(name)) licenseFiles.push(rel(file));
@@ -79,21 +79,21 @@ for (const file of files) {
   if (!isPkg && !CODE_EXT.has(ext) && !STYLE_EXT.has(ext)) continue;
   let size;
   try { size = statSync(file).size; } catch { continue; }
-  if (size > MAX_BYTES) { meta.grandesOmitidos++; continue; }
+  if (size > MAX_BYTES) { meta.largeSkipped++; continue; }
   let text;
   try { text = readFileSync(file, 'utf8'); } catch { continue; }
-  meta.archivosLeidos++;
+  meta.filesRead++;
 
   if (isPkg) {
     let pkg;
     try { pkg = JSON.parse(text); } catch { continue; }
     const deps = { ...(pkg.dependencies || {}), ...(pkg.devDependencies || {}), ...(pkg.peerDependencies || {}) };
     const scripts = pkg.scripts || {};
-    const riesgos = ['preinstall', 'install', 'postinstall', 'prepare', 'prepublish'].filter((k) => k in scripts)
-      .map((k) => ({ script: k, comando: scripts[k] }));
-    packages.push({ ruta: rel(file), nombre: pkg.name || null, licencia: pkg.license || null, packageManager: pkg.packageManager || null, scripts, scriptsDeInstalacion: riesgos, totalDependencias: Object.keys(deps).length });
+    const risks = ['preinstall', 'install', 'postinstall', 'prepare', 'prepublish'].filter((k) => k in scripts)
+      .map((k) => ({ script: k, command: scripts[k] }));
+    packages.push({ path: rel(file), name: pkg.name || null, license: pkg.license || null, packageManager: pkg.packageManager || null, scripts, installScripts: risks, totalDependencies: Object.keys(deps).length });
     for (const sig of signatures) {
-      for (const n of sig.npm || []) if (deps[n]) addEvidence(sig, { fuente: 'package.json', archivo: rel(file), paquete: n, version: deps[n] });
+      for (const n of sig.npm || []) if (deps[n]) addEvidence(sig, { source: 'package.json', file: rel(file), package: n, version: deps[n] });
     }
     continue;
   }
@@ -102,21 +102,21 @@ for (const file of files) {
   if (isStyle) analyzeCss(text, cssAcc, rel(file));
   else {
     analyzeJs(text, jsAcc);
-    // CSS embebido en componentes y plantillas (<style> de Vue/Svelte/Astro/HTML)
+    // CSS embedded in components and templates (<style> of Vue/Svelte/Astro/HTML)
     for (const m of text.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)) analyzeCss(m[1], cssAcc, rel(file));
   }
   for (const sig of signatures) {
     for (const re of sig.importsRe) {
       const m = re.exec(text);
-      if (m) { addEvidence(sig, { fuente: 'codigo', archivo: rel(file), linea: lineAt(text, m.index), coincidencia: m[0].slice(0, 80) }); break; }
+      if (m) { addEvidence(sig, { source: 'code', file: rel(file), line: lineAt(text, m.index), match: m[0].slice(0, 80) }); break; }
     }
   }
 }
 
-// View Transitions y scroll nativo por CSS también cuentan como detección
+// View Transitions and native CSS scroll also count as detections
 if (cssAcc.viewTransitions > 0) {
   const sig = signatures.find((s) => s.id === 'view-transitions');
-  addEvidence(sig, { fuente: 'css', detalle: `${cssAcc.viewTransitions} reglas de view-transition` });
+  addEvidence(sig, { source: 'css', detail: `${cssAcc.viewTransitions} view-transition rules` });
 }
 
 const pm = lockfiles.some((l) => l.endsWith('pnpm-lock.yaml')) ? 'pnpm'
@@ -126,13 +126,13 @@ const pm = lockfiles.some((l) => l.endsWith('pnpm-lock.yaml')) ? 'pnpm'
 
 const result = {
   meta,
-  licencia: { archivos: licenseFiles, enPackageJson: [...new Set(packages.map((p) => p.licencia).filter(Boolean))] },
-  gestorDePaquetes: pm,
+  license: { files: licenseFiles, inPackageJson: [...new Set(packages.map((p) => p.license).filter(Boolean))] },
+  packageManager: pm,
   lockfiles,
-  configuraciones: configs,
-  paquetes: packages,
-  detecciones: [...detections.values()].sort((a, b) => a.categoria.localeCompare(b.categoria)),
-  movimiento: { css: summarizeCss(cssAcc), codigo: summarizeJs(jsAcc) },
+  configs,
+  packages,
+  detections: [...detections.values()].sort((a, b) => a.category.localeCompare(b.category)),
+  motion: { css: summarizeCss(cssAcc), code: summarizeJs(jsAcc) },
 };
 
 const json = JSON.stringify(result, null, 2);
@@ -141,27 +141,27 @@ if (out) {
   writeFileSync(out, json);
 }
 
-// Resumen legible en la salida estándar
+// Readable summary on standard output
 const lines = [];
-lines.push(`Raíz: ${ROOT}`);
-lines.push(`Archivos leídos: ${meta.archivosLeidos}${meta.truncado ? ' (TRUNCADO en ' + MAX_FILES + ')' : ''} · grandes omitidos: ${meta.grandesOmitidos} · secretos omitidos (sin abrir): ${meta.secretosOmitidos.length}`);
-lines.push(`Licencia: ${licenseFiles.join(', ') || 'sin archivo'} · package.json: ${result.licencia.enPackageJson.join(', ') || 'sin campo'}`);
-lines.push(`Gestor de paquetes: ${pm || 'no detectado'} · lockfiles: ${lockfiles.join(', ') || 'ninguno'}`);
+lines.push(`Root: ${ROOT}`);
+lines.push(`Files read: ${meta.filesRead}${meta.truncated ? ' (TRUNCATED at ' + MAX_FILES + ')' : ''} · large skipped: ${meta.largeSkipped} · secrets skipped (not opened): ${meta.secretsSkipped.length}`);
+lines.push(`License: ${licenseFiles.join(', ') || 'no file'} · package.json: ${result.license.inPackageJson.join(', ') || 'no field'}`);
+lines.push(`Package manager: ${pm || 'not detected'} · lockfiles: ${lockfiles.join(', ') || 'none'}`);
 for (const p of packages) {
-  if (p.scriptsDeInstalacion.length) lines.push(`⚠ ${p.ruta} tiene scripts de instalación: ${p.scriptsDeInstalacion.map((r) => r.script + ' → ' + r.comando).join(' | ')}`);
+  if (p.installScripts.length) lines.push(`⚠ ${p.path} has install scripts: ${p.installScripts.map((r) => r.script + ' → ' + r.command).join(' | ')}`);
 }
-lines.push('Detecciones:');
-for (const d of result.detecciones) {
-  const ev = d.evidencia[0];
-  const where = ev.fuente === 'package.json' ? `${ev.paquete}@${ev.version}` : ev.archivo ? `${ev.archivo}:${ev.linea ?? ''}` : ev.detalle;
-  lines.push(`  [${d.categoria}] ${d.nombre} — ${where}${d.evidencia.length > 1 ? ` (+${d.evidencia.length - 1})` : ''}`);
+lines.push('Detections:');
+for (const d of result.detections) {
+  const ev = d.evidence[0];
+  const where = ev.source === 'package.json' ? `${ev.package}@${ev.version}` : ev.file ? `${ev.file}:${ev.line ?? ''}` : ev.detail;
+  lines.push(`  [${d.category}] ${d.name} — ${where}${d.evidence.length > 1 ? ` (+${d.evidence.length - 1})` : ''}`);
 }
-const c = result.movimiento.css;
-const j = result.movimiento.codigo;
-lines.push(`CSS: ${c.totalKeyframes} @keyframes · reduced-motion: ${c.movimientoReducido} · view-transition: ${c.viewTransitions} · scroll-driven: ${c.scrollDriven}`);
-lines.push(`CSS duraciones: ${c.duraciones.slice(0, 6).map((d) => `${d.valor}×${d.veces}`).join(', ') || '—'}`);
-lines.push(`CSS curvas: ${c.curvas.slice(0, 6).map((d) => `${d.valor}×${d.veces}`).join(', ') || '—'}`);
-lines.push(`Código: gsap ${JSON.stringify(j.llamadasGsap)} · scrollTrigger: ${j.scrollTrigger} · springs: ${j.springs} · startViewTransition: ${j.viewTransitionJs} · IntersectionObserver: ${j.intersectionObserver}`);
-lines.push(`Código curvas: ${j.curvas.slice(0, 6).map((d) => `${d.valor}×${d.veces}`).join(', ') || '—'}`);
-if (out) lines.push(`JSON completo: ${resolve(out)}`);
+const c = result.motion.css;
+const j = result.motion.code;
+lines.push(`CSS: ${c.totalKeyframes} @keyframes · reduced-motion: ${c.reducedMotion} · view-transition: ${c.viewTransitions} · scroll-driven: ${c.scrollDriven}`);
+lines.push(`CSS durations: ${c.durations.slice(0, 6).map((d) => `${d.value}×${d.count}`).join(', ') || '—'}`);
+lines.push(`CSS easings: ${c.easings.slice(0, 6).map((d) => `${d.value}×${d.count}`).join(', ') || '—'}`);
+lines.push(`Code: gsap ${JSON.stringify(j.gsapCalls)} · scrollTrigger: ${j.scrollTrigger} · springs: ${j.springs} · startViewTransition: ${j.viewTransitionJs} · IntersectionObserver: ${j.intersectionObserver}`);
+lines.push(`Code easings: ${j.easings.slice(0, 6).map((d) => `${d.value}×${d.count}`).join(', ') || '—'}`);
+if (out) lines.push(`Full JSON: ${resolve(out)}`);
 console.log(lines.join('\n'));

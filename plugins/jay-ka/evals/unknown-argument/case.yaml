@@ -1,0 +1,19 @@
+schema_version: "1.0"
+name: unknown-argument
+description: An argument the skill does not accept is rejected showing the valid options, doing nothing else (conventions §1). Without write tools, so it can only answer.
+tags: [conventions, quick, no-shell]
+execution:
+  prompt: "/jay-ka:jayka-continuity dance"
+  max_turns: 4
+  timeout_seconds: 120
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: says-it-is-unknown
+    pattern: "unknown argument"
+    flags: i
+  - type: regex
+    name: shows-close-and-open
+    pattern: "close[\\s\\S]*open|open[\\s\\S]*close"
+    flags: i

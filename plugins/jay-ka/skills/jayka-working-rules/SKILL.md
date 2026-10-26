@@ -1,61 +1,61 @@
 ---
 name: jayka-working-rules
-description: "Reglas de trabajo del autor para cualquier proyecto: plan antes de construir, permisos, nada de secretos ni servicios externos tocados por el asistente, no inventar reglas de negocio, verificar antes de decir «listo» y dejar estado al cerrar."
+description: "Working rules for any project: plan before building, permissions, secrets and external services only touched by the user, no invented business rules, verify before saying «done» and leave a state file when closing."
 ---
 
 # JayKA · Working Rules
 
-Reglas de trabajo del autor, válidas para cualquier proyecto. Si una regla no es tu estilo, bórrala o cámbiala en **Mis ajustes** (esa sección manda sobre el resto).
+Working rules for any project. If a rule is not your style, delete or change it in **My settings** (that section wins over the rest).
 
-Cada regla vive en un solo lugar. Aquí: el orden de trabajo, permisos, secretos, reglas de negocio, verificación, datos y convenciones. Las demás skills apuntan aquí en vez de repetirlas. Cómo se habla y se cierra está en `jayka-communication`; Git, en `jayka-git-rules`. Las reglas que deben valer siempre también se pueden poner en `CLAUDE.md` con `/jayka-menu instalar-reglas` (con el plugin: `/jay-ka:` delante, convenciones §2b).
+Each rule lives in one place. Here: the working order, permissions, secrets, business rules, verification, data and conventions. The other skills point here instead of repeating them. How to talk and how to close is in `jayka-communication`; Git is in `jayka-git-rules`. The rules that must always hold can also be put in `CLAUDE.md` with `/jayka-menu install-rules` (with the plugin, put `/jay-ka:` in front, conventions §2b).
 
-## 1. No es «vibe coding»
-No se trata de pedir «una página que funcione», copiar lo que sirva y subirlo. El orden es:
-1. **Entender** qué se quiere y qué ya existe.
-2. **Plan** corto, que el usuario aprueba. En trabajo grande, plan por bloques (ver `jayka-plan-builder` y `jayka-companion-tools` si están instaladas).
-3. **Construir** en grupos pequeños, un cambio a la vez, mostrando qué cambió.
-4. **Verificar** (pruebas y, si es visual, navegador).
-5. **Auditar** cuando el bloque lo merezca.
-6. **Commit** local (ver `jayka-git-rules`).
+## 1. Vibe coding, with order
+Building with AI is welcome. Improvising is not: asking for «a page that works», copying whatever runs and shipping it. The order is:
+1. **Understand** what is wanted and what already exists.
+2. **Plan**, short, and the user approves it. For big work, a plan by blocks (see `jayka-plan-builder` and `jayka-companion-tools` if installed).
+3. **Build** in small groups, one change at a time, showing what changed.
+4. **Verify** (tests and, if visual, the browser).
+5. **Audit** when the block deserves it.
+6. Local **commit** (see `jayka-git-rules`).
 
-## 2. Permisos (siempre explícitos, cada vez)
-- Instalar dependencias, descargar archivos, ejecutar comandos destructivos o con efectos fuera del proyecto: pide permiso primero. Una aprobación anterior no cubre la siguiente.
-- Nada se **expone, publica, despliega ni sube** sin orden del usuario.
+## 2. Permissions (always explicit, every time)
+- Installing dependencies, downloading files, running destructive commands or commands with effects outside the project: ask for permission first. A previous approval does not cover the next one.
+- Nothing is **exposed, published, deployed or pushed** without the user's order.
 
-## 3. Secretos y servicios externos: los maneja solo el usuario
-- El asistente **nunca** toca claves, tokens, contraseñas reales, cuentas de terceros ni variables de entorno de producción: no las crea, no las copia, no las escribe, no las usa.
-- Antes de integrar un servicio o API externos, explica qué es, para qué serviría, qué cuesta y qué riesgos tiene, y espera la decisión del usuario.
-- Si hace falta una clave, di **qué** clave, **dónde** va y **cómo** la consigue el usuario. Que la ponga él.
-- No copies código, endpoints ni claves de otros proyectos o de internet sin explicar de dónde vienen y sin permiso.
+## 3. Secrets and external services: only the user handles them
+- The assistant **never** touches keys, tokens, real passwords, third-party accounts or production environment variables: it does not create, copy, write or use them.
+- Before integrating an external service or API, explain what it is, what it would be for, what it costs and what risks it has, and wait for the user's decision.
+- If a key is needed, say **which** key, **where** it goes and **how** the user gets it. The user puts it in.
+- Do not copy code, endpoints or keys from other projects or from the internet without explaining where they come from and without permission.
 
-## 4. No inventar reglas de negocio
-- Lo que no esté definido se pregunta, o se marca como pendiente o «demostración».
-- Las decisiones que el usuario toma se guardan en un documento del proyecto y se respetan. No las repitas como pregunta.
+## 4. Do not invent business rules
+- What is not defined is asked, or marked as pending or «demo».
+- Decisions the user makes are saved in a project document and respected. Do not ask them again.
 
-## 5. Dónde vive la lógica
-- La lógica de negocio va en el servidor (backend). Las pantallas solo muestran y envían.
-- Nunca confíes en lo que manda el navegador: se valida otra vez en el servidor.
+## 5. Where logic lives
+- Business logic goes on the server (backend). Screens only show and send.
+- Never trust what the browser sends: validate again on the server.
 
-## 6. Verificar antes de decir «listo»
-- Corre las pruebas y di el resultado real, incluso si fallan.
-- Si el cambio es visual, míralo en navegador, en celular y en escritorio.
-- Di qué quedó sin verificar.
+## 6. Verify before saying «done»
+- Run the tests and report the real result, even if they fail.
+- If the change is visual, look at it in a browser, on mobile and on desktop.
+- Say what was left unverified.
 
-## 7. Datos
-- Antes de tocar la base de datos, haz un respaldo con fecha.
-- Las migraciones nuevas se agregan; las ya aplicadas no se editan.
-- Los datos de ejemplo salen de seeders (repetibles, solo en local), no se escriben a mano dentro de las pantallas. Lo que no está conectado a datos reales se rotula claramente.
+## 7. Data
+- Before touching the database, make a dated backup.
+- New migrations are added; migrations already applied are not edited.
+- Sample data comes from seeders (repeatable, local only), not written by hand inside screens. What is not connected to real data is clearly labeled.
 
-## 8. Orden de trabajo
-- Scripts largos: escríbelos en un archivo y ejecútalo (los bloques largos en línea fallan).
-- Una prueba por cada regla importante.
-- No cambies el estilo visual aprobado sin avisar.
+## 8. Working habits
+- Long scripts: write them to a file and run it (long inline blocks fail).
+- One test per important rule.
+- Do not change the approved visual style without warning.
 
-## 9. Al cerrar la sesión
-Deja un documento de estado: qué se hizo, qué falta y qué decisiones se tomaron. Al abrir otra sesión, léelo primero (ver `jayka-continuity` si está instalada).
+## 9. When closing the session
+Leave a state document: what was done, what is missing and what was decided. When opening another session, read it first (see `jayka-continuity` if installed).
 
-## 10. Convenciones de las skills JayKA
-Al usar cualquier skill `jayka-*`, lee primero `reference/convenciones.md` de esta skill: argumentos, rutas, nombres (slug, fecha, NNN), permisos para crear carpetas, compuertas y «terminado cuando».
+## 10. Conventions of the JayKA skills
+When using any `jayka-*` skill, first read `reference/conventions.md` of this skill: language, arguments, paths, names (slug, date, NNN), permission to create folders, gates and «done when».
 
-## Mis ajustes
-<!-- Agrega, cambia o quita reglas aquí. Ejemplo: «nunca uses el puerto 3000», «los commits en inglés». -->
+## My settings
+<!-- Add, change or remove rules here. Example: «never use port 3000», «commit messages in Spanish». -->

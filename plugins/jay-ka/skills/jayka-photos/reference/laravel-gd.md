@@ -1,149 +1,149 @@
-# Servicio de fotos (Laravel + GD)
+# Photo service (Laravel + GD)
 
-Referencia genérica. Cambia nombres, tablas y mensajes a tu proyecto. Requiere la extensión GD con soporte WebP (`imagewebp`).
+Generic reference. Change names, tables and messages to your project. It needs the GD extension with WebP support (`imagewebp`).
 
 ```php
 <?php
 
-namespace App\Servicios;
+namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class Fotos
+class Photos
 {
-    public const MAX_BYTES = 5 * 1024 * 1024;   // peso máximo de subida
-    public const LADO_MAX = 1200;               // lado largo máximo, en píxeles
-    public const CALIDAD = 82;                  // calidad inicial de WebP
-    public const CALIDAD_MIN = 60;              // hasta aquí se baja
-    public const OBJETIVO_BYTES = 220 * 1024;   // si pasa de esto, se baja la calidad
+    public const MAX_BYTES = 5 * 1024 * 1024;   // maximum upload size
+    public const MAX_SIDE = 1200;               // maximum long side, in pixels
+    public const QUALITY = 82;                  // initial WebP quality
+    public const QUALITY_MIN = 60;              // it goes down to here
+    public const TARGET_BYTES = 220 * 1024;     // above this, the quality is lowered
 
-    private const TIPOS = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp'];
+    private const TYPES = ['image/jpeg' => 'imagecreatefromjpeg', 'image/png' => 'imagecreatefrompng', 'image/webp' => 'imagecreatefromwebp'];
 
-    /** Ruta lista para mostrar: una guardada lleva su versión (?v=) para que un cambio se vea al instante. */
-    public static function ruta(?string $valor, ?string $respaldo = 'imagen-base'): string
+    /** Path ready to display: a stored one carries its version (?v=) so a change shows at once. */
+    public static function path(?string $value, ?string $fallback = 'base-image'): string
     {
-        $valor = $valor ?: $respaldo;
-        if ($valor === null) {
+        $value = $value ?: $fallback;
+        if ($value === null) {
             return '';
         }
-        if (! str_contains($valor, '/')) {
-            return $valor;            // clave de ejemplo, no un archivo guardado
+        if (! str_contains($value, '/')) {
+            return $value;            // sample key, not a stored file
         }
-        $archivo = Storage::disk('public')->path($valor);
+        $file = Storage::disk('public')->path($value);
 
-        return is_file($archivo) ? $valor.'?v='.filemtime($archivo) : (string) $respaldo;
+        return is_file($file) ? $value.'?v='.filemtime($file) : (string) $fallback;
     }
 
-    /** Nombre de archivo: img-<dueño>-<rol>.webp (sin acentos ni espacios). */
-    public static function rutaDe(int $duenoId, string $duenoNombre, string $rol, ?string $elemento = null): string
+    /** File name: img-<owner>-<role>.webp (no accents or spaces). */
+    public static function pathFor(int $ownerId, string $ownerName, string $role, ?string $item = null): string
     {
-        $base = 'img-'.Str::slug($duenoNombre).'-'.$rol.($elemento ? '-'.Str::slug($elemento) : '').'.webp';
+        $base = 'img-'.Str::slug($ownerName).'-'.$role.($item ? '-'.Str::slug($item) : '').'.webp';
 
-        return "duenos/{$duenoId}/".($elemento ? 'elementos/' : '').$base;
+        return "owners/{$ownerId}/".($item ? 'items/' : '').$base;
     }
 
-    /** Guarda una foto subida en $destino y borra la anterior si era otra. Devuelve la ruta relativa. */
-    public static function guardar(UploadedFile $archivo, string $destino, ?string $anterior = null): string
+    /** Saves an uploaded photo at $target and deletes the previous one if it was another. Returns the relative path. */
+    public static function save(UploadedFile $file, string $target, ?string $previous = null): string
     {
-        if (! $archivo->isValid()) {
-            // PHP rechaza el archivo antes de llegar aquí cuando pasa su propio límite (upload_max_filesize).
-            if (in_array($archivo->getError(), [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
-                throw new ErrorDeNegocio('foto_grande', 'La foto pesa más de 5 MB. Elige una más liviana.', 422);
+        if (! $file->isValid()) {
+            // PHP rejects the file before it gets here when it exceeds its own limit (upload_max_filesize).
+            if (in_array($file->getError(), [UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE], true)) {
+                throw new BusinessError('photo_too_large', 'The photo is over 5 MB. Choose a lighter one.', 422);
             }
-            throw new ErrorDeNegocio('foto_invalida', 'No se pudo leer la foto. Prueba con otra.', 422);
+            throw new BusinessError('photo_invalid', 'The photo could not be read. Try another one.', 422);
         }
-        if ($archivo->getSize() > self::MAX_BYTES) {
-            throw new ErrorDeNegocio('foto_grande', 'La foto pesa más de 5 MB. Elige una más liviana.', 422);
+        if ($file->getSize() > self::MAX_BYTES) {
+            throw new BusinessError('photo_too_large', 'The photo is over 5 MB. Choose a lighter one.', 422);
         }
-        self::procesar($archivo->getRealPath(), $destino);
-        if ($anterior && $anterior !== $destino && str_contains($anterior, '/')) {
-            Storage::disk('public')->delete($anterior);
+        self::process($file->getRealPath(), $target);
+        if ($previous && $previous !== $target && str_contains($previous, '/')) {
+            Storage::disk('public')->delete($previous);
         }
 
-        return $destino;
+        return $target;
     }
 
-    /** Lee, endereza, achica y guarda como WebP. También sirve para fotos de ejemplo que ya están en el servidor. */
-    public static function procesar(string $origen, string $destino): void
+    /** Reads, straightens, shrinks and saves as WebP. It also works for sample photos already on the server. */
+    public static function process(string $source, string $target): void
     {
-        $tipo = (string) @mime_content_type($origen);          // tipo REAL, por contenido
-        if (! isset(self::TIPOS[$tipo])) {
-            throw new ErrorDeNegocio('foto_formato', 'La foto debe ser JPG, PNG o WebP.', 422);
+        $type = (string) @mime_content_type($source);          // REAL type, by content
+        if (! isset(self::TYPES[$type])) {
+            throw new BusinessError('photo_format', 'The photo must be JPG, PNG or WebP.', 422);
         }
-        $crear = self::TIPOS[$tipo];
-        $imagen = @$crear($origen);
-        if (! $imagen) {
-            throw new ErrorDeNegocio('foto_invalida', 'No se pudo leer la foto. Prueba con otra.', 422);
+        $create = self::TYPES[$type];
+        $image = @$create($source);
+        if (! $image) {
+            throw new BusinessError('photo_invalid', 'The photo could not be read. Try another one.', 422);
         }
-        if ($tipo === 'image/jpeg') {
-            $imagen = self::enderezar($imagen, self::orientacion($origen));
+        if ($type === 'image/jpeg') {
+            $image = self::straighten($image, self::orientation($source));
         }
 
-        $ancho = imagesx($imagen);
-        $alto = imagesy($imagen);
-        $escala = min(1, self::LADO_MAX / max($ancho, $alto));  // nunca se agranda
-        if ($escala < 1) {
-            $nueva = imagescale($imagen, (int) round($ancho * $escala), (int) round($alto * $escala), IMG_BICUBIC);
-            imagedestroy($imagen);
-            $imagen = $nueva;
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $scale = min(1, self::MAX_SIDE / max($width, $height));  // never enlarged
+        if ($scale < 1) {
+            $resized = imagescale($image, (int) round($width * $scale), (int) round($height * $scale), IMG_BICUBIC);
+            imagedestroy($image);
+            $image = $resized;
         }
-        imagepalettetotruecolor($imagen);
-        imagealphablending($imagen, false);
-        imagesavealpha($imagen, true);
+        imagepalettetotruecolor($image);
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
 
-        $disco = Storage::disk('public');
-        $disco->makeDirectory(dirname($destino));
-        $final = $disco->path($destino);
-        $calidad = self::CALIDAD;
+        $disk = Storage::disk('public');
+        $disk->makeDirectory(dirname($target));
+        $final = $disk->path($target);
+        $quality = self::QUALITY;
         do {
-            imagewebp($imagen, $final, $calidad);
+            imagewebp($image, $final, $quality);
             clearstatcache(true, $final);
-            $calidad -= 6;
-        } while (filesize($final) > self::OBJETIVO_BYTES && $calidad >= self::CALIDAD_MIN);
-        imagedestroy($imagen);
+            $quality -= 6;
+        } while (filesize($final) > self::TARGET_BYTES && $quality >= self::QUALITY_MIN);
+        imagedestroy($image);
     }
 
-    /** Orientación EXIF de un JPG (1 = normal). Los celulares guardan la foto "de lado" y lo anotan aquí. */
-    private static function orientacion(string $archivo): int
+    /** EXIF orientation of a JPG (1 = normal). Phones store the photo "sideways" and note it here. */
+    private static function orientation(string $file): int
     {
         if (function_exists('exif_read_data')) {
-            $exif = @exif_read_data($archivo);
+            $exif = @exif_read_data($file);
 
             return (int) ($exif['Orientation'] ?? 1);
         }
 
-        return 1;   // sin la extensión exif: ver una lectura manual del encabezado JPEG si hace falta
+        return 1;   // without the exif extension: see a manual reading of the JPEG header if needed
     }
 
-    private static function enderezar(\GdImage $imagen, int $orientacion): \GdImage
+    private static function straighten(\GdImage $image, int $orientation): \GdImage
     {
-        $girada = match ($orientacion) {
-            3 => imagerotate($imagen, 180, 0),
-            6 => imagerotate($imagen, -90, 0),
-            8 => imagerotate($imagen, 90, 0),
+        $rotated = match ($orientation) {
+            3 => imagerotate($image, 180, 0),
+            6 => imagerotate($image, -90, 0),
+            8 => imagerotate($image, 90, 0),
             default => null,
         };
-        if ($girada) {
-            imagedestroy($imagen);
+        if ($rotated) {
+            imagedestroy($image);
 
-            return $girada;
+            return $rotated;
         }
 
-        return $imagen;
+        return $image;
     }
 }
 ```
 
-## Uso en un controlador
+## Use in a controller
 ```php
-$ruta = Fotos::guardar($peticion->file('foto') ?? throw new ErrorDeNegocio('foto_falta', 'Elige una foto para subir.', 422),
-    Fotos::rutaDe($dueno->id, $dueno->nombre, 'portada'), $dueno->foto);
-DB::table('duenos')->where('id', $dueno->id)->update(['foto' => $ruta, 'updated_at' => now()]);
-return response()->json(['ok' => true, 'foto' => Fotos::ruta($ruta)]);
+$path = Photos::save($request->file('photo') ?? throw new BusinessError('photo_missing', 'Choose a photo to upload.', 422),
+    Photos::pathFor($owner->id, $owner->name, 'cover'), $owner->photo);
+DB::table('owners')->where('id', $owner->id)->update(['photo' => $path, 'updated_at' => now()]);
+return response()->json(['ok' => true, 'photo' => Photos::path($path)]);
 ```
 
-## Nota sobre la orientación sin la extensión `exif`
-Si el hosting no tiene `exif`, el JPG se puede leer a mano: buscar el bloque `APP1` con la marca `Exif` y la etiqueta `0x0112`. Si no hace falta, deja la versión de arriba.
+## Note on orientation without the `exif` extension
+If the hosting does not have `exif`, the JPG can be read by hand: look for the `APP1` block with the `Exif` mark and the tag `0x0112`. If it is not needed, keep the version above.

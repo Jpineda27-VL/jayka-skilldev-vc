@@ -1,85 +1,85 @@
 ---
 name: jayka-menu
-description: "Muestra el catálogo de skills jayka-* con una línea por skill, cómo se invoca y si está instalada. Con un nombre, explica esa skill; con «buscar», sugiere cuál usar; con «instalar-reglas», pone las reglas base en CLAUDE.md. Invócala con /jayka-menu."
-argument-hint: "[<skill> | buscar <lo que necesitas> | instalar-reglas [global | proyecto]]"
+description: "Shows the catalog of jayka-* skills, one line per skill, how each is called and whether it is installed. With a name it explains that skill; with «search» it suggests which one to use; with «install-rules» it puts the base rules in CLAUDE.md. Invoke it with /jayka-menu."
+argument-hint: "[<skill> | search <what you need> | install-rules [global | project]]"
 disable-model-invocation: true
 ---
 
 # JayKA · Menu
 
-Muestra el catálogo. **Una línea por skill, sin explicaciones largas.**
+Shows the catalog. **One line per skill, no long explanations.**
 
-**Instalada o no:** comprueba si existe `../<nombre>/SKILL.md` (ruta relativa a esta skill) con Glob o Read. **No uses la lista de skills de la sesión**: las skills manuales (con `disable-model-invocation`) no aparecen ahí aunque estén instaladas.
+**Installed or not:** check whether `../<name>/SKILL.md` exists (path relative to this skill) with Glob or Read. **Do not use the session's skill list**: manual skills (with `disable-model-invocation`) do not appear there even when installed.
 
-**Cómo se invoca:** escribe cada nombre con el prefijo que corresponde a la instalación, según la sección 2b de las convenciones (con plugin, `/jay-ka:<nombre>`; copiada a `~/.claude/skills`, `/<nombre>`).
+**How it is called:** write each name with the prefix that matches the installation, following section 2b of the conventions (as a plugin, `/jay-ka:<name>`; copied to `~/.claude/skills`, `/<name>`).
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| *(vacío)* | `lista`, `list` | **Por defecto.** Catálogo completo |
-| `<skill>` | con o sin el prefijo `jayka-` | Lee su `SKILL.md` y la resume en 3 líneas: para qué sirve, cómo se invoca (sus argumentos) y qué entrega |
-| `buscar <texto>` | `search`, `cuál` | Sugiere la skill que mejor encaja con lo que describe el usuario, y una alternativa si la hay, con el motivo en una línea |
-| `instalar-reglas [global \| proyecto]` | `reglas` | Pone en un `CLAUDE.md` el bloque corto de reglas que deben valer siempre. Ver «Instalar las reglas base». Por defecto: `proyecto` |
+| *(empty)* | `list`, `lista` | **Default.** Full catalog |
+| `<skill>` | with or without the `jayka-` prefix | Reads its `SKILL.md` and summarizes it in 3 lines: what it is for, how it is called (its arguments) and what it delivers |
+| `search <text>` | `buscar`, `which` | Suggests the skill that best fits what the user describes, plus an alternative if there is one, with the reason in one line |
+| `install-rules [global \| project]` | `rules`, `instalar-reglas` | Puts in a `CLAUDE.md` the short block of rules that must always hold. See «Install the base rules». Default: `project` |
 
-## Instalar las reglas base
-Las skills automáticas se cargan cuando Claude las cree útiles; `CLAUDE.md` se lee **siempre**. Por eso las cinco reglas que no pueden fallar (no editar al conversar, secretos solo del usuario, permisos, no inventar negocio, verificar antes de «listo») también pueden ir en `CLAUDE.md`.
-1. Destino: `proyecto` → `CLAUDE.md` en la raíz del proyecto actual; `global` → `~/.claude/CLAUDE.md` (vale para todos los proyectos).
-2. Lee el bloque de `../jayka-working-rules/reference/bloque-claude-md.md` (ruta relativa a esta skill) y el archivo de destino, si existe.
-3. Muestra el bloque tal cual y dónde irá. Si el destino ya tiene reglas que se parecen (por ejemplo, de Git o de secretos), dilo: el bloque no las reemplaza ni las borra.
-4. Pregunta: «¿Agrego este bloque al final de `<destino>`?». Sin un «sí», no se toca nada.
-5. Con el sí:
-   - Si el archivo ya tiene las marcas `jay-k-a:reglas-base:inicio` y `…:fin`, reemplaza **solo** lo que está entre ellas.
-   - Si no las tiene, agrega el bloque al final, separado por una línea en blanco.
-   - Si el archivo no existe, créalo solo con el bloque.
-   - Nunca cambies nada fuera de las marcas.
-6. Muestra las líneas que cambiaron.
+## Install the base rules
+The automatic skills are loaded when Claude thinks they are useful; `CLAUDE.md` is read **always**. That is why the five rules that cannot fail (do not edit while chatting, secrets only the user's, permissions, no invented business rules, verify before «done») can also go in `CLAUDE.md`.
+1. Destination: `project` → `CLAUDE.md` at the root of the current project; `global` → `~/.claude/CLAUDE.md` (applies to every project).
+2. Read the block in `../jayka-working-rules/reference/claude-md-block.md` (path relative to this skill) and the destination file, if it exists.
+3. Show the block as is and where it will go. If the destination already has similar rules (for example about Git or secrets), say so: the block does not replace or delete them.
+4. Ask: «Add this block at the end of `<destination>`?». Without a «yes», touch nothing.
+5. With the yes:
+   - If the file already has the marks `jayka:base-rules:start` and `…:end`, replace **only** what is between them.
+   - If it does not, append the block at the end, separated by a blank line.
+   - If the file does not exist, create it with only the block.
+   - Never change anything outside the marks.
+6. Show the lines that changed.
 
-## Catálogo (21 skills)
-Formato de salida: grupo, y debajo `nombre <argumentos>: descripción corta [instalada / no instalada]`.
+## Catalog (21 skills)
+Output format: group, and below it `name <arguments>: short description [installed / not installed]`. Arguments shown are the canonical English ones; each skill lists its Spanish aliases.
 
-### Automáticas (Claude las carga cuando aplican; las reglas que deben valer siempre van con `instalar-reglas`)
-- `jayka-communication`: cómo conversar (español claro, resumen primero, sin editar al conversar).
-- `jayka-working-rules`: reglas de trabajo y convenciones comunes de las skills.
-- `jayka-git-rules`: commits locales, push y PR solo con tu orden.
+### Automatic (Claude loads them when they apply; the rules that must always hold go with `install-rules`)
+- `jayka-communication`: how to talk (clear language, summary first, no editing while chatting).
+- `jayka-working-rules`: working rules and the shared conventions of the skills.
+- `jayka-git-rules`: local commits; push and PR only on your order.
 
-### Empezar y continuar
-- `jayka-new-project [retomar | informe]`: proyecto nuevo con entrevista de 42 preguntas e informe.
-- `jayka-project-structure [nuevo | ordenar | ver]`: propone las carpetas según haya frontend, backend o ambos.
-- `jayka-continuity cerrar | abrir`: cierra y abre sesiones sin perder el hilo.
+### Start and continue
+- `jayka-new-project [resume | report]`: new project with a 42-question interview and a report.
+- `jayka-project-structure [new | tidy | show]`: proposes the folders depending on frontend, backend or both.
+- `jayka-continuity close | open`: closes and opens sessions without losing the thread.
 
-### Seguridad y publicación
-- `jayka-security-web construir | auditar [<área>]`: encabezados, cookies, CSRF, límites, permisos y subidas.
-- `jayka-security-deploy [<dominio>]`: checklist antes de publicar.
+### Security and publishing
+- `jayka-security-web build | audit [<area>]`: headers, cookies, CSRF, limits, permissions and uploads.
+- `jayka-security-deploy [<domain>]`: checklist before publishing.
 
-### Estilo visual
-- `jayka-style-self-learning [<ruta>] [--slug <nombre>]`: estudia un proyecto terminado y guarda su estilo en una ficha.
-- `jayka-style-build [<qué construir>]`: construye prototipos con tus fichas y la entrevista.
-- `jayka-style-library lista | ver | comparar | buscar | resumen | huecos | registro`: consulta las fichas; solo informa.
-- `jayka-companion-tools [<momento>]`: sugiere cuándo usar Impeccable, Superpowers y otras herramientas.
+### Visual style
+- `jayka-style-self-learning [<path>] [--slug <name>]`: studies a finished project and saves its style in a profile.
+- `jayka-style-build [<what to build>]`: builds prototypes with your profiles and the interview.
+- `jayka-style-library list | show | compare | search | summary | gaps | log`: queries the profiles; read-only.
+- `jayka-companion-tools [<moment>]`: suggests when to use Impeccable, Superpowers and other tools.
 
-### Planes y Codex
-- `jayka-plan-builder <qué se va a construir>`: plan por bloques en `.md` (usa Superpowers si está instalado).
-- `jayka-codex-low <tarea>`: tareas simples para Codex, en `.md`.
-- `jayka-codex-high [<plan> <bloque>]`: trabajo grande para Codex, con plan completo.
+### Plans and Codex
+- `jayka-plan-builder <what to build>`: plan by blocks in `.md` (uses Superpowers if installed).
+- `jayka-codex-low <task>`: simple tasks for Codex, in `.md`.
+- `jayka-codex-high [<plan> <block>]`: big work for Codex, with a full plan.
 
-### Técnicas
-- `jayka-laravel-backend nuevo | modulo <nombre> | revisar`: backend con servicios, errores de negocio y pruebas.
-- `jayka-photos [<qué fotos>]`: subida de fotos comprimidas a WebP con nombres claros.
-- `jayka-views-parity inventario | cambio <pantalla> | verificar [<pantalla>]`: dos frontends con las mismas pantallas.
-- `jayka-real-data [inventario | plan | sembrar | conectar | flujo]`: datos de ejemplo reales con seeders, sin demostración.
-- `jayka-reverse live <url> | repo <ruta-o-url-git>`: ingeniería inversa de un sitio o repo: stack, animaciones medidas e informe.
+### Techniques
+- `jayka-laravel-backend new | module <name> | review`: backend with services, business errors and tests.
+- `jayka-photos [<which photos>]`: compressed WebP photo uploads with clear names.
+- `jayka-views-parity inventory | change <screen> | verify [<screen>]`: two frontends with the same screens.
+- `jayka-real-data [inventory | plan | seed | connect | flow]`: real sample data with seeders, no demo.
+- `jayka-reverse live <url> | repo <path-or-git-url>`: reverse engineering of a site or repo: stack, measured animations and a report.
 
-## Al terminar
-Pregunta una sola cosa: «¿Cuál quieres usar?».
+## At the end
+Ask only one thing: «Which one do you want to use?».
 
-## Terminado cuando
-- Catálogo: aparecen todas las skills de la lista, cada una con su estado de instalación **comprobado por archivo** (no supuesto) y con el prefijo de invocación correcto para esta instalación.
-- `<skill>`: el resumen sale de su `SKILL.md` leído en este momento. Si no está instalada, se dice y se resume desde este catálogo.
-- `buscar`: una sugerencia con motivo, o «ninguna encaja» y por qué.
-- `instalar-reglas`: el destino tiene el bloque una sola vez, entre sus marcas; nada fuera de ellas cambió; o, si el usuario no aprobó, nada cambió.
+## Done when
+- Catalog: every skill of the list appears, each with its installation status **checked by file** (not assumed) and with the right invocation prefix for this installation.
+- `<skill>`: the summary comes from its `SKILL.md` read right now. If it is not installed, say so and summarize from this catalog.
+- `search`: one suggestion with a reason, or «none fits» and why.
+- `install-rules`: the destination has the block exactly once, between its marks; nothing outside them changed; or, if the user did not approve, nothing changed.
 
-## Mis ajustes
-<!-- Agrega aquí tus propias skills o quita las que no uses. -->
+## My settings
+<!-- Add your own skills here or remove the ones you do not use. -->

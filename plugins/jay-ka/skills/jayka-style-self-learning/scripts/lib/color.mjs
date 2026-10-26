@@ -1,6 +1,6 @@
-// Colores y contraste WCAG 2.x. Sin dependencias.
+// Colors and WCAG 2.x contrast. No dependencies.
 
-// Devuelve { r, g, b, a } (0-255, a 0-1) o null si no se reconoce.
+// Returns { r, g, b, a } (0-255, a 0-1) or null if the color is not recognized.
 export function parseColor(input) {
   const s = String(input).trim().toLowerCase();
   let m = s.match(/^#([0-9a-f]{3,8})$/);
@@ -28,7 +28,7 @@ export function parseColor(input) {
   return null;
 }
 
-// Compone un color con transparencia sobre un fondo opaco.
+// Composites a color with transparency over an opaque background.
 export const over = (fg, bg) => ({ r: fg.r * fg.a + bg.r * (1 - fg.a), g: fg.g * fg.a + bg.g * (1 - fg.a), b: fg.b * fg.a + bg.b * (1 - fg.a), a: 1 });
 
 export function luminance({ r, g, b }) {
@@ -44,11 +44,11 @@ export function contrast(fgIn, bgIn) {
   return Math.round(((l1 + 0.05) / (l2 + 0.05)) * 100) / 100;
 }
 
-// Nivel WCAG para texto normal (o grande: ≥ 24 px, o ≥ 18.66 px en negrita).
+// WCAG level for normal text (or large: ≥ 24 px, or ≥ 18.66 px bold).
 export function level(ratio, large = false) {
   if (ratio >= (large ? 4.5 : 7)) return 'AAA';
   if (ratio >= (large ? 3 : 4.5)) return 'AA';
-  return 'no cumple';
+  return 'fail';
 }
 
 export const toHex = ({ r, g, b, a }) => '#' + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('').toUpperCase() + (a < 1 ? Math.round(a * 255).toString(16).padStart(2, '0').toUpperCase() : '');

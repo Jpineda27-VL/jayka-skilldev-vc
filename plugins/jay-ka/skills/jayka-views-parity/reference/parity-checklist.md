@@ -1,40 +1,40 @@
-# Checklist de paridad (por pantalla)
+# Parity checklist (per screen)
 
-Marca cada punto en **los dos** frontends.
+Check each point in **both** frontends.
 
-## Datos y reglas
-- [ ] Los datos salen del mismo servicio o API (misma forma).
-- [ ] No hay cálculos ni validaciones únicas en el frontend (todo se valida también en el servidor).
-- [ ] No quedan datos de demostración escritos a mano.
+## Data and rules
+- [ ] The data comes from the same service or API (same shape).
+- [ ] There are no calculations or validations that exist only in the frontend (everything is also validated on the server).
+- [ ] No hand-written demo data remains.
 
-## Contenido
-- [ ] Mismos títulos, subtítulos, botones y mensajes.
-- [ ] Mismo orden de secciones.
-- [ ] Mismos formatos (dinero, fechas, teléfonos, unidades).
+## Content
+- [ ] Same titles, subtitles, buttons and messages.
+- [ ] Same order of sections.
+- [ ] Same formats (money, dates, phones, units).
 
-## Estados
-- [ ] Vacío (con mensaje y acción).
-- [ ] Cargando (sin vaciar la pantalla al refrescar).
-- [ ] Error de red o servidor.
-- [ ] Error de validación (mensaje junto al campo).
-- [ ] Éxito (confirmación).
-- [ ] Desactivado y agotado, si aplica.
+## States
+- [ ] Empty (with a message and an action).
+- [ ] Loading (without emptying the screen when refreshing).
+- [ ] Network or server error.
+- [ ] Validation error (message next to the field).
+- [ ] Success (confirmation).
+- [ ] Disabled and sold out, if it applies.
 
-## Estilo
-- [ ] Mismos tokens: colores, tipografía, espaciados, radios, sombras.
-- [ ] Mismos nombres de rol de color (`primario`, `acento`…), no valores sueltos.
-- [ ] Textos en unidades relativas; sin textos cortados a 375 px.
-- [ ] Contraste AA; foco visible; áreas táctiles de 44 px.
+## Style
+- [ ] Same tokens: colors, typography, spacing, radii, shadows.
+- [ ] Same color role names (`primary`, `accent`…), not loose values.
+- [ ] Texts in relative units; no cut-off text at 375 px.
+- [ ] AA contrast; visible focus; 44 px touch targets.
 
-## Navegación y comportamiento
-- [ ] El enlace «volver» lleva al mismo sitio.
-- [ ] Las acciones llevan a la misma pantalla de destino.
-- [ ] Las fotos cargan por la misma regla de dirección.
-- [ ] Sin parpadeo al refrescar; sin recarga completa en uno y parcial en otro.
+## Navigation and behavior
+- [ ] The «back» link goes to the same place.
+- [ ] Actions lead to the same destination screen.
+- [ ] Photos load by the same address rule.
+- [ ] No flicker when refreshing; no full reload in one and partial in the other.
 
-## Verificación
-- [ ] Probado en escritorio (1280 px) y celular (375 px).
-- [ ] Recorrido con datos reales, vacío y error.
-- [ ] Si una app se exporta o compila: vuelta a exportar y probada la versión nueva.
-- [ ] Pruebas del servidor en verde.
-- [ ] Inventario actualizado.
+## Verification
+- [ ] Tested on desktop (1280 px) and mobile (375 px).
+- [ ] Walked through with real data, empty and error.
+- [ ] If an app is exported or compiled: exported again and the new version tested.
+- [ ] Server tests green.
+- [ ] Inventory updated.

@@ -1,104 +1,104 @@
 ---
 name: jayka-security-deploy
-description: "Checklist de seguridad antes de publicar un sitio o app (secretos, entorno, HTTPS, respaldos, cron, rutas que deben dar 404, prueba final). Invócala con /jayka-security-deploy antes de subir a producción, opcionalmente con tu dominio."
-argument-hint: "[<dominio>]"
+description: "Security checklist before publishing a site or app (secrets, environment, HTTPS, backups, cron, paths that must return 404, final test). Invoke it with /jayka-security-deploy before going to production, optionally with your domain."
+argument-hint: "[<domain>]"
 disable-model-invocation: true
 ---
 
 # JayKA · Security Deploy
 
-Revisión de seguridad **antes de publicar**. Funciona en modo auditoría: revisas, reportas y propones. **No cambias nada ni tocas secretos sin permiso** (ver `jayka-working-rules`).
+Security review **before publishing**. It works in audit mode: you review, report and propose. **You change nothing and touch no secrets without permission** (see `jayka-working-rules`).
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Qué hace |
+| Argument | What it does |
 |---|---|
-| *(vacío)* | **Por defecto.** Auditoría de las secciones 1 a 8 contra el código y la configuración. La sección 9 se entrega como comandos con `TU-DOMINIO` para que los corra el usuario |
-| `<dominio>` | Igual, y además la sección 9 con ese dominio. Antes de correrla pregunta: «¿Corro yo las pruebas de la sección 9 contra `<dominio>`? Solo son peticiones de lectura». Si dice que no, se entregan los comandos ya rellenos. Se acepta con o sin `https://` |
+| *(empty)* | **Default.** Audit of sections 1 to 8 against the code and the configuration. Section 9 is delivered as commands with `YOUR-DOMAIN` for the user to run |
+| `<domain>` | Same, plus section 9 with that domain. Before running it ask: «Shall I run the section 9 tests against `<domain>` myself? They are read-only requests». If they say no, deliver the commands already filled in. Accepted with or without `https://` |
 
-## Reglas de esta skill
-- Las claves, tokens, contraseñas y variables de producción los maneja **solo el usuario**. Tú nunca las lees, creas, copias ni escribes. Dices qué falta y dónde va.
-- No ejecutes nada contra el servidor de producción ni publiques. Las pruebas de la sección 9 se las pasas al usuario como comandos, o las corres solo si él te da la dirección y lo autoriza.
-- Primero entiende el stack (lenguaje, framework, hosting). Adapta los puntos; marca «no aplica» lo que no corresponda.
+## Rules of this skill
+- Keys, tokens, passwords and production variables are handled **only by the user**. You never read, create, copy or write them. You say what is missing and where it goes.
+- Do not run anything against the production server and do not publish. The section 9 tests are handed to the user as commands, or you run them only if they give you the address and authorize it.
+- First understand the stack (language, framework, hosting). Adapt the points; mark «not applicable» whatever does not apply.
 
 ## Scripts
-Están en `<SKILL_DIR>/scripts/` (`SKILL_DIR` es el directorio base de esta skill, que Claude Code muestra al cargarla). Necesitan Node 18 o más (`node --version`); si no hay Node, esos puntos se revisan a mano y el informe lo dice.
+They are in `<SKILL_DIR>/scripts/` (`SKILL_DIR` is the base directory of this skill, which Claude Code shows when loading it). They need Node 18 or newer (`node --version`); if there is no Node, those points are reviewed by hand and the report says so.
 
-| Script | Qué mide | Salida |
+| Script | What it measures | Output |
 |---|---|---|
-| `scan-git-secrets.mjs [<repo>]` | Secretos en **todo** el historial de git y en los archivos versionados hoy; si `.env` está en `.gitignore` | Tabla con commit, archivo y tipo; el valor siempre enmascarado. Código 1 si hay hallazgos |
-| `check-deploy.mjs <dominio> [--out <json>]` | HTTPS, redirección, certificado, encabezados, cookies, 24 rutas que deben dar 404/403 y página de error. Solo peticiones GET, de a una | Tabla `bien / falla / revisar / no aplica`. Código 1 si hay alguna falla |
+| `scan-git-secrets.mjs [<repo>]` | Secrets in the **whole** git history and in the files tracked today; whether `.env` is in `.gitignore` | Table with commit, file and type; the value is always masked. Exit code 1 if there are findings |
+| `check-deploy.mjs <domain> [--headers-only] [--out <json>]` | HTTPS, redirect, certificate, headers, cookies, 24 paths that must return 404/403 and the error page. GET requests only, one at a time | Table `ok / fail / review / n/a`. Exit code 1 if anything fails |
 
-## Cómo trabajas
-1. Pregunta (una sola vez, corto): framework, dónde se publica, si hay base de datos, si hay correo, si hay subida de archivos, si hay login.
-2. Corre `node "<SKILL_DIR>/scripts/scan-git-secrets.mjs" .` en la raíz del proyecto. Lo que encuentre va a la sección 2 como `Medido`. Un secreto real en el historial es **Falta** y **Necesita al usuario**: rotarlo (borrarlo del historial no basta).
-3. Recorre la lista de abajo contra el código y la configuración del proyecto (sin abrir archivos de secretos reales: mira solo plantillas como `.env.example`).
-4. Si hay dominio y el usuario lo autorizó, corre la sección 9 con el script.
-5. Entrega un informe: **Bien**, **Falta** (con qué hacer), **No aplica** y **Necesita al usuario** (lo que solo él puede hacer).
+## How you work
+1. Ask (once, short): framework, where it is published, whether there is a database, email, file uploads, login.
+2. Run `node "<SKILL_DIR>/scripts/scan-git-secrets.mjs" .` at the project root. What it finds goes to section 2 as `Measured`. A real secret in the history is **Missing** and **Needs the user**: rotating it (deleting it from the history is not enough).
+3. Go through the list below against the project's code and configuration (without opening real secret files: look only at templates such as `.env.example`).
+4. If there is a domain and the user authorized it, run section 9 with the script.
+5. Deliver a report: **Good**, **Missing** (with what to do), **Not applicable** and **Needs the user** (what only they can do).
 
-## 1. Entorno
-- Modo debug apagado y entorno en «production». Un error con debug encendido muestra claves y rutas.
-- Páginas de error genéricas, sin trazas ni rutas internas.
-- Todo en HTTPS, con redirección de http a https y HSTS.
-- Claves nuevas para producción: nunca reutilices las de desarrollo.
+## 1. Environment
+- Debug mode off and environment set to «production». An error with debug on shows keys and paths.
+- Generic error pages, without traces or internal paths.
+- Everything on HTTPS, with http-to-https redirect and HSTS.
+- New keys for production: never reuse the development ones.
 
-## 2. Secretos
-- Los secretos viven en variables de entorno, no en el repositorio ni en el código.
-- El archivo de entorno real (`.env` o similar) está en `.gitignore` y nunca se subió. Si alguna vez se subió: considéralo comprometido y pide al usuario rotar las claves.
-- Revisa el historial de Git por claves subidas por error.
-- Los registros (logs) no guardan contraseñas, tokens ni datos personales innecesarios.
+## 2. Secrets
+- Secrets live in environment variables, not in the repository or the code.
+- The real environment file (`.env` or similar) is in `.gitignore` and was never committed. If it ever was: consider it compromised and ask the user to rotate the keys.
+- Check the Git history for keys committed by mistake.
+- Logs do not store passwords, tokens or unnecessary personal data.
 
-## 3. Cuentas y datos de prueba
-- Sin cuentas ni contraseñas de prueba en producción. Sin datos de demostración.
-- Contraseñas iniciales cambiadas, y con caducidad si el sistema las genera.
-- Base de datos con un usuario de permisos mínimos (no administrador) y sin acceso desde internet.
+## 3. Test accounts and data
+- No test accounts or passwords in production. No demo data.
+- Initial passwords changed, and expiring if the system generates them.
+- Database with a minimum-permission user (not administrator) and no access from the internet.
 
-## 4. Lo que nunca debe ser accesible desde la web (debe dar 404 o 403)
-`/.env`, `/.git`, carpetas de respaldos, archivos `.sql`, `/storage` o carpetas privadas, `phpinfo`, paneles de depuración, `/node_modules`, archivos de configuración y de código fuente que no sean públicos.
+## 4. What must never be reachable from the web (must return 404 or 403)
+`/.env`, `/.git`, backup folders, `.sql` files, `/storage` or private folders, `phpinfo`, debug panels, `/node_modules`, configuration files and source code that is not public.
 
-## 5. Servidor
-- Firewall abierto solo en 80 y 443 (y SSH con llave, no con contraseña).
-- Sistema operativo, runtime (PHP, Node…) y dependencias al día. Corre la auditoría de dependencias del proyecto (`npm audit`, `composer audit`, `pip-audit`…) y reporta; no actualices sin permiso.
-- Ocultar la versión del servidor y del lenguaje en los encabezados.
+## 5. Server
+- Firewall open only on 80 and 443 (and SSH with a key, not a password).
+- Operating system, runtime (PHP, Node…) and dependencies up to date. Run the project's dependency audit (`npm audit`, `composer audit`, `pip-audit`…) and report; do not update without permission.
+- Hide the server and language versions in the headers.
 
-## 6. Respaldos
-- Respaldo automático de la base y de los archivos subidos, con fecha.
-- Una prueba de restauración hecha al menos una vez.
+## 6. Backups
+- Automatic backup of the database and of uploaded files, dated.
+- A restore test done at least once.
 
-## 7. Tareas programadas y correo
-- El cron o los trabajos programados están configurados y hay una señal de que siguen vivos (por ejemplo un «latido»).
-- Correo real configurado, con SPF, DKIM y DMARC si se envían correos desde el dominio.
+## 7. Scheduled tasks and email
+- Cron or scheduled jobs are configured and there is a sign they are still alive (for example a «heartbeat»).
+- Real email configured, with SPF, DKIM and DMARC if emails are sent from the domain.
 
-## 8. Encabezados y límites
-Esto se detalla en `jayka-security-web`. Aquí solo confirma que existe un middleware de encabezados y límites de peticiones en login y formularios públicos.
+## 8. Headers and limits
+This is detailed in `jayka-security-web`. Here only confirm that a headers middleware exists and request limits on login and public forms.
 
-## 9. Prueba final (el día de publicar)
-**Medida por el script** (con el permiso del argumento `<dominio>`):
-`node "<SKILL_DIR>/scripts/check-deploy.mjs" <dominio> --out docs/seguridad/AAAA-MM-DD-deploy-red.json`
-Cubre: HTTPS y redirección, certificado, encabezados, cookies, rutas sensibles (`/.env`, `/.git/config`, logs, respaldos `.sql`, `phpinfo`, paneles de depuración, listados de carpetas…) y página de error sin trazas. Cada fila `falla` es **Falta**; cada `revisar` se mira a mano y se clasifica.
-Si el usuario prefiere correrlo él, dale el mismo comando, o como mínimo `curl -I https://SU-DOMINIO/.env` y `curl -I https://SU-DOMINIO/.git/config` (deben dar 404).
+## 9. Final test (the day of publishing)
+**Measured by the script** (with permission, through the `<domain>` argument):
+`node "<SKILL_DIR>/scripts/check-deploy.mjs" <domain> --out docs/security/YYYY-MM-DD-deploy-network.json`
+It covers: HTTPS and redirect, certificate, headers, cookies, sensitive paths (`/.env`, `/.git/config`, logs, `.sql` backups, `phpinfo`, debug panels, folder listings…) and an error page without traces. Each `fail` row is **Missing**; each `review` is looked at by hand and classified.
+If the user prefers to run it themselves, give them the same command, or at least `curl -I https://THEIR-DOMAIN/.env` and `curl -I https://THEIR-DOMAIN/.git/config` (both must return 404).
 
-**Solo a mano** (el script no inicia sesión ni envía formularios). Son pasos para el usuario, con una cuenta de prueba suya:
-- Abrir un recurso de otro usuario cambiando el número en la dirección: debe negarlo.
-- Diez intentos de login fallidos seguidos: debe bloquear o frenar.
+**By hand only** (the script does not log in or submit forms). Steps for the user, with a test account of their own:
+- Open another user's resource by changing the number in the address: it must be denied.
+- Ten failed logins in a row: it must block or slow down.
 
-## Si algo falla
-| Situación | Qué hacer |
+## If something fails
+| Situation | What to do |
 |---|---|
-| `check-deploy` sale con código 2 (no conecta) | Comprueba el dominio con el usuario; si el sitio aún no está publicado, la sección 9 queda «pendiente» |
-| Una ruta da 200 con la página principal | Es la respuesta genérica de la app (`bien`); confirma que no sirve el archivo real |
-| `scan-git-secrets` encuentra un secreto que el usuario dice que es falso | Anótalo como «confirmado falso por el usuario»; no lo borres del informe |
-| No es un repositorio git | El punto del historial queda «no aplica» y se dice |
+| `check-deploy` exits with code 2 (cannot connect) | Check the domain with the user; if the site is not published yet, section 9 stays «pending» |
+| A path returns 200 with the home page | It is the app's generic response (`ok`); confirm it does not serve the real file |
+| `scan-git-secrets` finds a secret that the user says is fake | Note it as «confirmed fake by the user»; do not delete it from the report |
+| It is not a git repository | The history point is «not applicable» and that is stated |
 
-## Informe final
-Guárdalo en `docs/seguridad/AAAA-MM-DD-deploy.md` y muéstralo resumido. Termina con: qué quedó listo, qué falta, qué necesita hacer el usuario, y un veredicto claro: **listo para publicar** o **no publicar todavía** y por qué.
+## Final report
+Save it to `docs/security/YYYY-MM-DD-deploy.md` and show it summarized. End with: what is ready, what is missing, what the user needs to do, and a clear verdict: **ready to publish** or **do not publish yet** and why.
 
-## Terminado cuando
-- Cada punto de las secciones 1 a 9 está como **Bien**, **Falta**, **No aplica** o **Necesita al usuario**, con su origen (`Medido`, `Código` o `Inferido`, según las convenciones).
-- Ningún archivo de secretos real fue abierto.
-- El informe está guardado y tiene veredicto. Si hay algún **Falta** de las secciones 1, 2 o 4, el veredicto es «no publicar todavía».
+## Done when
+- Every point of sections 1 to 9 is marked **Good**, **Missing**, **Not applicable** or **Needs the user**, with its origin (`Measured`, `Code` or `Inferred`, per the conventions).
+- No real secret file was opened.
+- The report is saved and has a verdict. If any point of sections 1, 2 or 4 is **Missing**, the verdict is «do not publish yet».
 
-## Mis ajustes
-<!-- Agrega o quita puntos según tu hosting y tu stack. -->
+## My settings
+<!-- Add or remove points depending on your hosting and your stack. -->

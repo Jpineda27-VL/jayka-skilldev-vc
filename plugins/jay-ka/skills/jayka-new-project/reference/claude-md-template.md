@@ -1,36 +1,36 @@
-# {{nombre del proyecto}}
+# {{project name}}
 
-{{Qué es, en una frase (`proyecto.frase`).}}
+{{What it is, in one sentence (`project.sentence`).}}
 
-## Leer primero
-1. `.claude/estado/CONTINUAR.md`: dónde quedó el trabajo.
-2. `docs/proyecto/informe-inicial.md`: qué está definido y qué falta.
-3. {{documento de reglas de negocio, si existe}}
+## Read first
+1. `.claude/state/CONTINUE.md`: where the work stands.
+2. `docs/project/initial-report.md`: what is defined and what is missing.
+3. {{business rules document, if there is one}}
 
 ## Stack
-- Frontend: {{`tecnologia.frontend` o «por definir»}}
-- Backend: {{`tecnologia.backend` o «por definir»}}
-- Base de datos: {{`tecnologia.base-de-datos` o «por definir»}}
-- Plataforma principal: {{`tecnologia.plataforma`}}
+- Frontend: {{`tech.frontend` or «to be defined»}}
+- Backend: {{`tech.backend` or «to be defined»}}
+- Database: {{`tech.database` or «to be defined»}}
+- Main platform: {{`tech.platform`}}
 
-## Comandos
+## Commands
 ```text
-{{instalar}}
-{{levantar}}
-{{pruebas}}
+{{install}}
+{{run}}
+{{tests}}
 ```
 
-## Reglas del proyecto
-- Idioma del código y de los textos: {{…}} (`alcance.idiomas`)
-- Lo que falta decidir del negocio está en «Falta para arrancar bien» del informe inicial.
-- Rutas de documentos según `jayka-working-rules/reference/convenciones.md`.
-- {{Reglas propias que el usuario haya pedido (`calidad.forma-de-trabajo`).}}
+## Project rules
+- Language of the code and the texts: {{…}} (`scope.languages`)
+- What is still to be decided about the business is under «Missing to start well» in the initial report.
+- Document paths follow `jayka-working-rules/reference/conventions.md`.
+- {{Own rules the user asked for (`quality.working-style`).}}
 
-## Dónde está cada cosa
-- Estructura aprobada: `.claude/estructura/arbol.md`
-- Estilo aprobado: `docs/proyecto/estilo.md` {{cuando exista}}
-- Planes: `docs/planes/`
+## Where things are
+- Approved structure: `.claude/structure/tree.md`
+- Approved style: `docs/project/style.md` {{once it exists}}
+- Plans: `docs/plans/`
 
-{{Si el usuario lo aprueba: aquí va el bloque de reglas base, con sus marcas, tal como lo pone `/jayka-menu instalar-reglas proyecto`.}}
+{{If the user approves: the base rules block goes here, with its marks, exactly as `/jayka-menu install-rules project` puts it.}}
 
-<!-- Mantén este archivo corto (menos de 40 líneas): es lo primero que se lee en cada sesión. El detalle va en docs/. -->
+<!-- Keep this file short (under 40 lines): it is the first thing read in every session. Detail goes in docs/. -->

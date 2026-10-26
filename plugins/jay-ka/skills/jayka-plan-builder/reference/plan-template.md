@@ -1,57 +1,57 @@
-# Plan: {{título}}
+# Plan: {{title}}
 
-- **Fecha:** {{AAAA-MM-DD}}
-- **Estado:** {{borrador | aprobado el AAAA-MM-DD | en curso | terminado}}
-- **Hecho con:** {{Superpowers (brainstorming + writing-plans) | versión reducida (sin Superpowers)}}
+- **Date:** {{YYYY-MM-DD}}
+- **Status:** {{draft | approved on YYYY-MM-DD | in progress | finished}}
+- **Made with:** {{Superpowers (brainstorming + writing-plans) | reduced version (without Superpowers)}}
 
-## Contexto (5 líneas)
-{{Qué es el proyecto, dónde está este trabajo, decisiones ya tomadas que lo afectan.}}
+## Context (5 lines)
+{{What the project is, where this work sits, decisions already made that affect it.}}
 
-## Objetivo
-{{Una frase.}}
+## Goal
+{{One sentence.}}
 
-## Alcance
-- **Entra:** …
-- **No entra:** …
+## Scope
+- **In:** …
+- **Out:** …
 
-## Criterios de aceptación
+## Acceptance criteria
 - [ ] …
 - [ ] …
 
-## Riesgos
-| Riesgo | Qué pasa si ocurre | Cómo se reduce |
+## Risks
+| Risk | What happens if it occurs | How it is reduced |
 |---|---|---|
 | | | |
 
-## Decisiones pendientes (del usuario)
-- [ ] {{Pregunta}} — afecta al bloque {{n}}
+## Pending decisions (the user's)
+- [ ] {{Question}} — affects block {{n}}
 
-## Bloques
-Orden recomendado: lo incierto primero.
+## Blocks
+Recommended order: the uncertain first.
 
-### Bloque 1 · {{nombre}}  (tamaño: S | M | L)
-- **Objetivo:** …
-- **Alcance:** archivos o módulos
-- **Depende de:** ninguno | bloque n
-- **Pasos:**
+### Block 1 · {{name}}  (size: S | M | L)
+- **Goal:** …
+- **Scope:** files or modules
+- **Depends on:** none | block n
+- **Steps:**
   - [ ] …
   - [ ] …
-- **Verificación:**
-  - [ ] Pruebas: …
-  - [ ] Navegador (si es visual): 375 px y 1280 px
-- **Se hace:** aquí | con Codex (low) | con Codex (high)
-- **Commit local:** [ ]
+- **Verification:**
+  - [ ] Tests: …
+  - [ ] Browser (if visual): 375 px and 1280 px
+- **Done:** here | with Codex (low) | with Codex (high)
+- **Local commit:** [ ]
 
-### Bloque 2 · {{nombre}}
+### Block 2 · {{name}}
 …
 
-## Registro de cambios del plan
-| Fecha | Cambio | Motivo |
+## Change log of the plan
+| Date | Change | Reason |
 |---|---|---|
 | | | |
 
-## Cierre
-- **Hecho:** …
-- **No hecho:** …
-- **Resultado de pruebas:** …
-- **Siguiente paso:** …
+## Closing
+- **Done:** …
+- **Not done:** …
+- **Test result:** …
+- **Next step:** …

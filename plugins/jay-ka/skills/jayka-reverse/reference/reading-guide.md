@@ -1,72 +1,72 @@
-# Guía de lectura: de la señal al mecanismo
+# Reading guide: from signal to mechanism
 
-Cómo convertir lo que sale de `scan-repo.mjs`, `capture-live.mjs` y la sonda en un mecanismo concreto con valores. Si una señal no aparece en esta guía, descríbela tal cual y márcala como `Inferido`.
+How to turn what comes out of `scan-repo.mjs`, `capture-live.mjs` and the probe into a concrete mechanism with values. If a signal is not in this guide, describe it as it is and mark it `Inferred`.
 
-## 1. ¿Quién mueve el elemento?
+## 1. Who moves the element?
 
-| Señal | Mecanismo | Dónde están los valores |
+| Signal | Mechanism | Where the values are |
 |---|---|---|
-| Aparece en `animaciones-vistas.json` con `tipo: CSSTransition` | Transición CSS | `duracionMs`, `curva`, `nombre` (la propiedad) |
-| `tipo: CSSAnimation` | `@keyframes` | `nombre` = nombre del keyframe; búscalo en el CSS para ver los fotogramas |
-| `tipo: Animation` con `linea: DocumentTimeline` | Web Animations API: `el.animate()`, Motion (`motion` / `framer-motion` usan WAAPI cuando pueden) | `duracionMs`, `curva`, `propiedades`, `fotogramas` |
-| `linea: ScrollTimeline` o `ViewTimeline` | Animación CSS ligada al scroll (`animation-timeline`) | El CSS: `animation-timeline`, `animation-range` |
-| Se ve en capturas, **no** en `animaciones-vistas.json`, `sonda.gsap.tweens` tiene entradas | GSAP expuesto en `window` | `sonda.gsap.tweens` (duración en **segundos**), `sonda.gsap.scrollTriggers` |
-| Se ve, no está en ninguna de las dos, `red.json` → `firmasEnCodigo` incluye GSAP | GSAP empaquetado | Pistas (`--track`) |
-| Se ve, nada de lo anterior | `requestAnimationFrame` propio, canvas o WebGL | Pistas si es DOM; si es `canvas`, solo `Inferido` desde capturas o video |
+| Appears in `animations-seen.json` with `type: CSSTransition` | CSS transition | `durationMs`, `easing`, `name` (the property) |
+| `type: CSSAnimation` | `@keyframes` | `name` = name of the keyframes; look it up in the CSS to see the frames |
+| `type: Animation` with `timeline: DocumentTimeline` | Web Animations API: `el.animate()`, Motion (`motion` / `framer-motion` use WAAPI when they can) | `durationMs`, `easing`, `properties`, `keyframes` |
+| `timeline: ScrollTimeline` or `ViewTimeline` | CSS animation linked to scroll (`animation-timeline`) | The CSS: `animation-timeline`, `animation-range` |
+| Seen in screenshots, **not** in `animations-seen.json`, `probe.gsap.tweens` has entries | GSAP exposed on `window` | `probe.gsap.tweens` (duration in **seconds**), `probe.gsap.scrollTriggers` |
+| Seen, in neither of the two, `network.json` → `codeSignatures` includes GSAP | Bundled GSAP | Tracks (`--track`) |
+| Seen, none of the above | Own `requestAnimationFrame`, canvas or WebGL | Tracks if it is DOM; if it is `canvas`, only `Inferred` from screenshots or video |
 
 ## 2. Scroll
 
-| Señal | Significado |
+| Signal | Meaning |
 |---|---|
-| `html.lenis`, `window.Lenis` o `lenis` en `red.json` | Scroll suave con Lenis: el scroll de la ventana se interpola. `sonda.scroll.lenisInstancia` trae sus opciones si la instancia está en `window.lenis` |
-| `[data-scroll-container]`, `html.has-scroll-smooth` | Locomotive Scroll: en la v4 la página se mueve con `transform` y `scrollY` se queda en 0 |
+| `html.lenis`, `window.Lenis` or `lenis` in `network.json` | Smooth scroll with Lenis: the window scroll is interpolated. `probe.scroll.lenisInstance` carries its options if the instance is at `window.lenis` |
+| `[data-scroll-container]`, `html.has-scroll-smooth` | Locomotive Scroll: in v4 the page moves with `transform` and `scrollY` stays at 0 |
 | `#smooth-wrapper` + `#smooth-content` | GSAP ScrollSmoother |
-| `scrollTriggers[].pin: true` | Sección fijada mientras avanza el scroll. `inicioPx`/`finPx` dicen cuánto dura en píxeles |
-| `scrollTriggers[].scrub` | `true` = sigue al scroll exacto; un número = sigue con ese retraso en segundos |
-| Tramo con `ligadoAlScroll: true` | Efecto scrub; su «curva» depende de cómo se hizo scroll, no del tiempo |
-| `scroll-snap-type` en CSS | Secciones que encajan solas |
-| `[data-aos]` | AOS: el tipo de efecto está en el valor del atributo (`fade-up`, `zoom-in`…), duración en `data-aos-duration` |
+| `scrollTriggers[].pin: true` | Section pinned while scroll advances. `startPx`/`endPx` say how long it lasts in pixels |
+| `scrollTriggers[].scrub` | `true` = follows the scroll exactly; a number = follows with that delay in seconds |
+| Segment with `scrollLinked: true` | Scrub effect; its «curve» depends on how the scrolling was done, not on time |
+| `scroll-snap-type` in CSS | Sections that snap into place |
+| `[data-aos]` | AOS: the effect type is in the attribute value (`fade-up`, `zoom-in`…), duration in `data-aos-duration` |
 
-## 3. Transición entre páginas
+## 3. Page transition
 
-| Señal | Mecanismo |
+| Signal | Mechanism |
 |---|---|
-| `navegacion.tipo` = recarga completa y hay `@view-transition { navigation: auto }` | View Transitions entre documentos (MPA) |
-| Sin recarga y `startViewTransition` en el código | View Transitions en SPA |
-| Sin recarga y Barba, Swup, Highway o Taxi detectados | Librería de transición: las animaciones de salida y entrada suelen ser GSAP o CSS dentro de sus *hooks* |
-| Sin recarga, Next/Nuxt/Astro, y `AnimatePresence` o `<ViewTransitions />` en código | Transición del framework |
-| Capturas `03-nav-*` iguales salvo la última | No hay transición: corte directo |
+| `navigation.type` = full reload and there is `@view-transition { navigation: auto }` | View Transitions between documents (MPA) |
+| No reload and `startViewTransition` in the code | View Transitions in an SPA |
+| No reload and Barba, Swup, Highway or Taxi detected | Transition library: the exit and enter animations are usually GSAP or CSS inside its *hooks* |
+| No reload, Next/Nuxt/Astro, and `AnimatePresence` or `<ViewTransitions />` in code | Framework transition |
+| `03-nav-*` screenshots the same except the last | No transition: a direct cut |
 
-## 4. Texto
+## 4. Text
 
-| Señal | Mecanismo |
+| Signal | Mechanism |
 |---|---|
-| SplitText, SplitType o Splitting.js detectados; muchos `span` / `div` por palabra o letra | Texto dividido y animado por partes con `stagger` |
-| `clip-path: inset(...)` animado (`recorte0..3` en las pistas) | Revelado con máscara |
-| `ty` de 100 % de la línea a 0 dentro de un contenedor con `overflow: hidden` | Texto que «sube» desde debajo de una máscara |
+| SplitText, SplitType or Splitting.js detected; many `span` / `div` per word or letter | Text split and animated by parts with `stagger` |
+| Animated `clip-path: inset(...)` (`clip0..3` in the tracks) | Reveal with a mask |
+| `ty` from 100 % of the line to 0 inside a container with `overflow: hidden` | Text that «rises» from below a mask |
 
-## 5. Curvas: equivalencias
-GSAP llama `power1` a quad, `power2` a cubic, `power3` a quart y `power4` a quint. La columna `css` de `lib/curves.mjs` da la aproximación con `cubic-bezier` que se usa habitualmente. Las curvas exactas de GSAP no son Bézier, así que la aproximación CSS coincide a la vista pero no punto por punto.
+## 5. Curves: equivalences
+GSAP calls `power1` quad, `power2` cubic, `power3` quart and `power4` quint. The `css` column of `lib/curves.mjs` gives the usual `cubic-bezier` approximation. GSAP's exact curves are not Bézier, so the CSS approximation matches by eye but not point by point.
 
-Palabras clave de CSS:
+CSS keywords:
 
-| Palabra | Equivale a |
+| Keyword | Equals |
 |---|---|
 | `ease` | `cubic-bezier(0.25, 0.1, 0.25, 1)` |
 | `ease-in` | `cubic-bezier(0.42, 0, 1, 1)` |
 | `ease-out` | `cubic-bezier(0, 0, 0.58, 1)` |
 | `ease-in-out` | `cubic-bezier(0.42, 0, 0.58, 1)` |
 
-Spring (Motion, react-spring): no tiene duración fija. Informa `stiffness`, `damping` y `mass` del código; la pista dará una duración aproximada y una curva con error alto, lo cual es normal.
+Spring (Motion, react-spring): it has no fixed duration. Report `stiffness`, `damping` and `mass` from the code; the track will give an approximate duration and a curve with a high error, which is normal.
 
-## 6. Unidades
-- GSAP y Motion: duración en **segundos** en el código.
-- react-spring: milisegundos.
-- `animaciones-vistas.json`, pistas y CSS normalizado: **milisegundos**.
-Convierte todo a milisegundos en el informe y anota la unidad original junto a la evidencia de código.
+## 6. Units
+- GSAP and Motion: duration in **seconds** in the code.
+- react-spring: milliseconds.
+- `animations-seen.json`, tracks and normalized CSS: **milliseconds**.
+Convert everything to milliseconds in the report and note the original unit next to the code evidence.
 
-## 7. Calidad de la medición
-- Las pistas muestrean a la frecuencia de fotogramas (unos 16 ms): la duración tiene ±20 ms de margen.
-- El retraso real de una animación disparada por scroll depende de cuándo cruzó el umbral; usa `start`/`end` de ScrollTrigger o el código, no el tiempo medido.
-- Una curva con error ≤ 0.02 se nombra; entre 0.02 y 0.05 se nombra como «probable»; por encima, no se nombra.
-- En celular (375 px) no hay hover ni rueda: el scroll se hace con `scrollTo` y las librerías de scroll suave pueden comportarse distinto. Dilo si los resultados difieren entre ventanas.
+## 7. Quality of the measurement
+- Tracks sample at the frame rate (about 16 ms): the duration has a ±20 ms margin.
+- The real delay of a scroll-triggered animation depends on when it crossed the threshold; use ScrollTrigger's `start`/`end` or the code, not the measured time.
+- A curve with error ≤ 0.02 is named; between 0.02 and 0.05 it is named as «probable»; above that, it is not named.
+- On mobile (375 px) there is no hover or wheel: scrolling is done with `scrollTo` and smooth-scroll libraries may behave differently. Say so if results differ between windows.

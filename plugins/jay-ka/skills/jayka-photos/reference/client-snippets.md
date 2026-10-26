@@ -1,109 +1,109 @@
-# Interfaz y pruebas de la subida de fotos
+# Interface and tests for photo upload
 
-## 1. Comprobar el peso y enviar solo (JavaScript puro, sin dependencias)
+## 1. Check the size and submit by itself (plain JavaScript, no dependencies)
 ```html
-<label class="btn" for="foto-archivo">Cambiar foto</label>
-<input type="file" id="foto-archivo" name="foto" form="foto-form"
-       accept="image/jpeg,image/png,image/webp" data-subir-auto class="sr-only">
-<small>JPG, PNG o WebP, hasta 5 MB. Se comprime sola.</small>
+<label class="btn" for="photo-file">Change photo</label>
+<input type="file" id="photo-file" name="photo" form="photo-form"
+       accept="image/jpeg,image/png,image/webp" data-auto-upload class="sr-only">
+<small>JPG, PNG or WebP, up to 5 MB. It is compressed automatically.</small>
 <small class="error" role="alert" hidden></small>
 
-<!-- El formulario va FUERA del formulario principal (no se pueden anidar); el campo se une con form="foto-form". -->
-<form id="foto-form" method="post" action="/ruta/subir-foto" enctype="multipart/form-data" hidden>
+<!-- The form goes OUTSIDE the main form (they cannot be nested); the field is tied to it with form="photo-form". -->
+<form id="photo-form" method="post" action="/path/upload-photo" enctype="multipart/form-data" hidden>
   <input type="hidden" name="_token" value="{{ csrf_token() }}">
 </form>
 
 <script>
-  document.querySelectorAll('input[data-subir-auto]').forEach(function (campo) {
-    campo.addEventListener('change', function () {
-      var archivo = campo.files && campo.files[0];
-      var aviso = campo.parentNode.querySelector('.error');
-      aviso.hidden = true;
-      if (!archivo) return;
-      if (archivo.size > 5 * 1024 * 1024) {
-        aviso.textContent = 'La foto pesa más de 5 MB. Elige una más liviana.';
-        aviso.hidden = false;
-        campo.value = '';
+  document.querySelectorAll('input[data-auto-upload]').forEach(function (field) {
+    field.addEventListener('change', function () {
+      var file = field.files && field.files[0];
+      var notice = field.parentNode.querySelector('.error');
+      notice.hidden = true;
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        notice.textContent = 'The photo is over 5 MB. Choose a lighter one.';
+        notice.hidden = false;
+        field.value = '';
         return;
       }
-      document.getElementById(campo.getAttribute('form')).submit();
+      document.getElementById(field.getAttribute('form')).submit();
     });
   });
 </script>
 ```
 
-## 2. Subida desde una app web con `fetch`
+## 2. Upload from a web app with `fetch`
 ```js
-async function subirFoto(ruta, campos, archivo) {
-  const cuerpo = new FormData();
-  Object.entries(campos).forEach(([k, v]) => cuerpo.append(k, v));
-  cuerpo.append('foto', archivo);
-  const r = await fetch(ruta, {
+async function uploadPhoto(path, fields, file) {
+  const body = new FormData();
+  Object.entries(fields).forEach(([k, v]) => body.append(k, v));
+  body.append('photo', file);
+  const r = await fetch(path, {
     method: 'POST', credentials: 'same-origin',
-    headers: { Accept: 'application/json', 'X-XSRF-TOKEN': leerCookie('XSRF-TOKEN') },
-    body: cuerpo,   // sin Content-Type: el navegador pone el límite (boundary)
+    headers: { Accept: 'application/json', 'X-XSRF-TOKEN': readCookie('XSRF-TOKEN') },
+    body,   // no Content-Type: the browser sets the boundary
   });
-  const datos = await r.json().catch(() => ({}));
-  return { ok: r.ok && datos.ok !== false, ...datos };
+  const data = await r.json().catch(() => ({}));
+  return { ok: r.ok && data.ok !== false, ...data };
 }
 ```
 
-## 3. Límites de PHP en local (servidor integrado)
-Archivo `limites.ini`:
+## 3. PHP limits locally (built-in server)
+File `limits.ini`:
 ```ini
 upload_max_filesize=6M
 post_max_size=8M
 ```
-Arranque (la variable hace que PHP lea ese archivo además de su `php.ini`):
+Start (the variable makes PHP read that file in addition to its `php.ini`):
 ```bash
-PHP_INI_SCAN_DIR=/ruta/a/la/carpeta/con/limites.ini php artisan serve
+PHP_INI_SCAN_DIR=/path/to/the/folder/with/limits.ini php artisan serve
 ```
-En producción: `php.ini` (o el panel del hosting) y, si hay proxy, su propio límite (`client_max_body_size 8M;` en Nginx).
+In production: `php.ini` (or the hosting panel) and, if there is a proxy, its own limit (`client_max_body_size 8M;` in Nginx).
 
-## 4. Pruebas (PHPUnit)
+## 4. Tests (PHPUnit)
 ```php
-public function test_la_portada_se_guarda_como_webp_de_1200_px(): void
+public function test_the_cover_is_saved_as_a_1200_px_webp(): void
 {
     Storage::fake('public');
-    $this->subir(['foto' => UploadedFile::fake()->image('x.jpg', 3000, 2000)])->assertOk();
-    [$ancho, $alto, $tipo] = getimagesize(Storage::disk('public')->path($rutaEsperada));
-    $this->assertSame(IMAGETYPE_WEBP, $tipo);
-    $this->assertSame(1200, max($ancho, $alto));
-    $this->assertSame(800, min($ancho, $alto));          // mantiene la proporción 3:2
+    $this->upload(['photo' => UploadedFile::fake()->image('x.jpg', 3000, 2000)])->assertOk();
+    [$width, $height, $type] = getimagesize(Storage::disk('public')->path($expectedPath));
+    $this->assertSame(IMAGETYPE_WEBP, $type);
+    $this->assertSame(1200, max($width, $height));
+    $this->assertSame(800, min($width, $height));          // keeps the 3:2 proportion
 }
 
-public function test_una_foto_chica_no_se_agranda(): void
+public function test_a_small_photo_is_not_enlarged(): void
 {
-    $this->subir(['foto' => UploadedFile::fake()->image('logo.png', 300, 300)])->assertOk();
-    $this->assertSame([300, 300], array_slice(getimagesize(Storage::disk('public')->path($ruta)), 0, 2));
+    $this->upload(['photo' => UploadedFile::fake()->image('logo.png', 300, 300)])->assertOk();
+    $this->assertSame([300, 300], array_slice(getimagesize(Storage::disk('public')->path($path)), 0, 2));
 }
 
-public function test_se_rechazan_fotos_pesadas_y_otros_tipos(): void
+public function test_heavy_photos_and_other_types_are_rejected(): void
 {
-    $this->subir(['foto' => UploadedFile::fake()->image('x.jpg', 800, 600)->size(6000)])->assertStatus(422)->assertJsonPath('codigo', 'foto_grande');
-    $this->subir(['foto' => UploadedFile::fake()->create('doc.pdf', 100, 'application/pdf')])->assertStatus(422)->assertJsonPath('codigo', 'foto_formato');
-    $this->subir([])->assertStatus(422)->assertJsonPath('codigo', 'foto_falta');
+    $this->upload(['photo' => UploadedFile::fake()->image('x.jpg', 800, 600)->size(6000)])->assertStatus(422)->assertJsonPath('code', 'photo_too_large');
+    $this->upload(['photo' => UploadedFile::fake()->create('doc.pdf', 100, 'application/pdf')])->assertStatus(422)->assertJsonPath('code', 'photo_format');
+    $this->upload([])->assertStatus(422)->assertJsonPath('code', 'photo_missing');
 }
 
-public function test_reemplazar_borra_la_foto_anterior(): void { /* sube dos veces con nombres distintos y comprueba assertMissing */ }
-public function test_un_dueno_no_puede_subir_a_otro(): void { /* assertStatus(404) */ }
-public function test_sin_sesion_no_se_puede_subir(): void { /* assertStatus(401) */ }
+public function test_replacing_deletes_the_previous_photo(): void { /* uploads twice with different names and checks assertMissing */ }
+public function test_an_owner_cannot_upload_to_another(): void { /* assertStatus(404) */ }
+public function test_without_a_session_it_cannot_upload(): void { /* assertStatus(401) */ }
 ```
 
-## 5. Variante para Node (requiere permiso para instalar `sharp`)
+## 5. Node variant (requires permission to install `sharp`)
 ```js
 import sharp from 'sharp';
-await sharp(entrada).rotate()                       // endereza por EXIF
+await sharp(input).rotate()                         // straightens by EXIF
   .resize({ width: 1200, height: 1200, fit: 'inside', withoutEnlargement: true })
   .webp({ quality: 82 })
-  .toFile(destino);
+  .toFile(target);
 ```
-Valida el tipo real con una librería de «magic bytes» (por ejemplo `file-type`) antes de procesar.
+Validate the real type with a «magic bytes» library (for example `file-type`) before processing.
 
-## 6. Variante para Python (requiere permiso para instalar `Pillow`)
+## 6. Python variant (requires permission to install `Pillow`)
 ```python
 from PIL import Image, ImageOps
-img = ImageOps.exif_transpose(Image.open(entrada))
-img.thumbnail((1200, 1200))                          # no agranda
-img.save(destino, 'WEBP', quality=82, method=6)
+img = ImageOps.exif_transpose(Image.open(source))
+img.thumbnail((1200, 1200))                          # does not enlarge
+img.save(target, 'WEBP', quality=82, method=6)
 ```

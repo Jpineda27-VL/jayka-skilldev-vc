@@ -1,34 +1,34 @@
-# Resultado {{NNN}} · {{título}}
+# Result {{NNN}} · {{title}}
 
-## Estado
-{{hecho | hecho con observaciones | no pude terminar}}
+## Status
+{{done | done with remarks | could not finish}}
 
-## Qué cambié
-- `{{archivo}}`: {{una línea}}
+## What I changed
+- `{{file}}`: {{one line}}
 - …
 
-## Pruebas
-- Comando: `{{comando}}`
-- Resultado real: {{pasaron X de Y | fallaron: …}}
+## Tests
+- Command: `{{command}}`
+- Real result: {{X of Y passed | failed: …}}
 
-## Revisión visual
-- Estado: {{hecha con Playwright | NO HECHA}}
-- Si se hizo:
-  - 375 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
-  - 1280 px: {{qué vi}} — captura: `docs/codex/capturas/{{NNN}}/…`
-- Si NO se hizo: motivo ({{sin Playwright | no pude levantar la app: error}}) y lo que falta mirar:
-  - [ ] {{ruta}} a 375 px: {{qué revisar}}
-  - [ ] {{ruta}} a 1280 px: {{qué revisar}}
+## Visual check
+- Status: {{done with Playwright | NOT DONE}}
+- If done:
+  - 375 px: {{what I saw}} — screenshot: `docs/codex/screenshots/{{NNN}}/…`
+  - 1280 px: {{what I saw}} — screenshot: `docs/codex/screenshots/{{NNN}}/…`
+- If NOT done: reason ({{no Playwright | could not start the app: error}}) and what is left to look at:
+  - [ ] {{path}} at 375 px: {{what to check}}
+  - [ ] {{path}} at 1280 px: {{what to check}}
 
-## Dudas o decisiones que necesito
+## Doubts or decisions I need
 - …
 
-## Lo que NO hice y por qué
+## What I did NOT do and why
 - …
 
 ---
-*Revisión de quien pidió la tarea (se llena después):*
-- Diff revisado: sí / no
-- Pruebas corridas de nuevo: sí / no
-- Revisión visual hecha por quien revisa (si Codex no la hizo): sí / no
-- Veredicto: cumple / cumple con observaciones / no cumple
+*Review by whoever requested the task (filled in afterwards):*
+- Diff reviewed: yes / no
+- Tests run again: yes / no
+- Visual check done by the reviewer (if Codex did not do it): yes / no
+- Verdict: meets / meets with remarks / does not meet

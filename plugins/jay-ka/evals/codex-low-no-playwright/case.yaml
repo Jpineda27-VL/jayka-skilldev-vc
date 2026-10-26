@@ -1,0 +1,34 @@
+schema_version: "1.0"
+name: codex-low-no-playwright
+description: The task for Codex notes that there is no Playwright, is numbered 001, closes the scope to the requested file and does not make the change itself.
+tags: [codex, no-shell]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: |
+    /jay-ka:jayka-codex-low Change the text of the «Save» button to «Send» in src/form.html
+
+    The Codex I will use has no Playwright. The app is static HTML (the file is opened directly). The repository is clean. Short title of the task: «Send button». You have permission to create docs/codex.
+  max_turns: 20
+  timeout_seconds: 420
+  allowed_tools: [Read, Glob, Grep, Write, Edit]
+runs: 1
+graders:
+  - type: file_exists
+    name: creates-task-001
+    path: "docs/codex/tasks/001-send-button.md"
+  - type: regex
+    name: notes-no-playwright
+    target: { source: file, path: "docs/codex/tasks/001-send-button.md" }
+    pattern: "Playwright in your environment:\\s*\\**\\s*no\\b"
+    flags: i
+  - type: regex
+    name: closed-scope
+    target: { source: file, path: "docs/codex/tasks/001-send-button.md" }
+    pattern: "src/form\\.html"
+  - type: tool_used
+    name: does-not-make-the-change
+    tool: Edit
+    input_match: "form.html"
+    min: 0
+    max: 0

@@ -1,51 +1,51 @@
-# Tarea {{NNN}} · {{título corto}}
+# Task {{NNN}} · {{short title}}
 
-> Para Codex. Lee todo antes de empezar. Esta tarea es pequeña y de alcance cerrado.
+> For Codex. Read everything before starting. This task is small and has a closed scope.
 
-## Qué hay que hacer
-{{Una o dos frases claras.}}
+## What has to be done
+{{One or two clear sentences.}}
 
-## Contexto mínimo
-- Proyecto: {{nombre y tecnología}}
-- Pantalla o módulo afectado: {{ruta o archivo}}
-- Estilo: se mantiene el existente; **no cambies colores, fuentes ni espaciados** fuera de lo pedido.
-- Playwright en tu entorno: {{sí | no | no se sabe}}. Cómo levantar la app: `{{comando}}` en {{http://localhost:…}}.
+## Minimum context
+- Project: {{name and technology}}
+- Affected screen or module: {{path or file}}
+- Style: the existing one stays; **do not change colors, fonts or spacing** beyond what is asked.
+- Playwright in your environment: {{yes | no | unknown}}. How to start the app: `{{command}}` at {{http://localhost:…}}.
 
-## Archivos que puedes tocar
-- {{ruta/archivo-1}}
-- {{ruta/archivo-2}}
+## Files you may touch
+- {{path/file-1}}
+- {{path/file-2}}
 
-**No toques nada fuera de esta lista.** Si crees que hace falta, **detente** y dilo en el informe como «Necesito permiso para…».
+**Do not touch anything outside this list.** If you think it is needed, **stop** and say so in the report as «I need permission to…».
 
-## Criterios de aceptación
-- [ ] {{Comprobable 1}}
-- [ ] {{Comprobable 2}}
+## Acceptance criteria
+- [ ] {{Checkable 1}}
+- [ ] {{Checkable 2}}
 
-## Prohibido
-- Instalar o actualizar dependencias.
-- Tocar secretos, claves, `.env` o variables de entorno.
-- Hacer `git push`, abrir PR o cambiar de rama.
-- Cambiar reglas de negocio, datos de la base o migraciones ya aplicadas.
-- Borrar archivos fuera de la lista.
+## Forbidden
+- Installing or updating dependencies.
+- Touching secrets, keys, `.env` or environment variables.
+- Running `git push`, opening a PR or switching branch.
+- Changing business rules, database data or migrations already applied.
+- Deleting files outside the list.
 
-## Verificación obligatoria
-1. **Pruebas:** corre {{comando de pruebas del área}} y anota el resultado real, aunque falle.
-2. **Revisión visual de** {{ruta de la pantalla}} a **375 px** y a **1280 px**:
-   - **Si tienes Playwright:** ábrela a los dos tamaños, revisa que se vea bien (sin textos cortados ni desbordes) y guarda capturas en `docs/codex/capturas/{{NNN}}/`.
-   - **Si no tienes Playwright:** **no lo instales** (instalar está prohibido) y **no describas pantallas que no viste**. En el informe escribe «Revisión visual: NO HECHA», el motivo, y la lista exacta de lo que hay que mirar (ruta, tamaño y qué revisar). Quien pidió la tarea hará esa revisión.
-   - **Si no puedes levantar la app** (falta base de datos, variables o un servicio): escribe «No pude levantar la app» con las líneas clave del error. No intentes arreglarlo fuera de los archivos permitidos.
-3. Revisa el diff antes de terminar: solo deben aparecer los archivos permitidos.
+## Mandatory verification
+1. **Tests:** run {{test command of the area}} and note the real result, even if it fails.
+2. **Visual review of** {{screen path}} at **375 px** and at **1280 px**:
+   - **If you have Playwright:** open it at both sizes, check that it looks right (no cut-off text or overflow) and save screenshots in `docs/codex/screenshots/{{NNN}}/`.
+   - **If you do not have Playwright:** **do not install it** (installing is forbidden) and **do not describe screens you did not see**. In the report write «Visual check: NOT DONE», the reason, and the exact list of what needs to be looked at (path, size and what to check). Whoever requested the task will do that review.
+   - **If you cannot start the app** (missing database, variables or a service): write «I could not start the app» with the key lines of the error. Do not try to fix it outside the allowed files.
+3. Review the diff before finishing: only the allowed files must appear.
 
-## Qué debes devolver
-Un informe en `docs/codex/resultados/{{NNN}}-{{slug}}.md` con el formato de abajo. No hagas commit.
+## What you must return
+A report at `docs/codex/results/{{NNN}}-{{slug}}.md` in the format below. Do not commit.
 
-### Formato del informe
+### Report format
 ```md
-# Resultado {{NNN}} · {{título}}
-## Estado: hecho | hecho con observaciones | no pude terminar
-## Qué cambié (archivo por archivo, una línea cada uno)
-## Pruebas (comando y resultado real)
-## Revisión visual: hecha con Playwright | NO HECHA (motivo) — y, si no se hizo, la lista de lo que hay que mirar
-## Dudas o cosas que necesito que decidas
-## Lo que NO hice y por qué
+# Result {{NNN}} · {{title}}
+## Status: done | done with remarks | could not finish
+## What I changed (file by file, one line each)
+## Tests (command and real result)
+## Visual check: done with Playwright | NOT DONE (reason) — and, if not done, the list of what needs to be looked at
+## Doubts or things you need me to decide
+## What I did NOT do and why
 ```

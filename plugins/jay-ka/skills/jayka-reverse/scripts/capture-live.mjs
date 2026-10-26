@@ -1,27 +1,27 @@
 #!/usr/bin/env node
-// Captura de UN sitio en vivo con Playwright, en solo lectura: carga, scroll, hover, movimiento del ratón y
-// (opcional) una navegación interna. No envía formularios, no inicia sesión, no evade bloqueos.
+// Captures ONE live site with Playwright, read-only: load, scroll, hover, mouse movement and
+// (optionally) an internal navigation. It does not submit forms, log in or evade blocks.
 //
-// Uso:
-//   node capture-live.mjs <url> --out <carpeta> [opciones]
-//   node capture-live.mjs --check                  sale con 0 si Playwright y Chromium están listos, 3 si faltan
-//   node capture-live.mjs --print-probe            imprime la sonda lista para pegar en otra herramienta de navegador
+// Usage:
+//   node capture-live.mjs <url> --out <folder> [options]
+//   node capture-live.mjs --check                  exits 0 if Playwright and Chromium are ready, 3 if missing
+//   node capture-live.mjs --print-probe            prints the probe ready to paste into another browser tool
 //
-// Opciones:
-//   --viewports 1280x800,375x812   tamaños de ventana (por defecto ambos)
-//   --steps 8                      pasos de scroll hasta el final (0 = sin scroll)
-//   --hover 6                      elementos interactivos a los que pasar el ratón (0 = ninguno; nunca en celular)
-//   --track "<sel>,<sel>"          muestrea cada fotograma transform/opacity/clip-path/filter de esos selectores
-//                                  y deduce duración y easing (sirve para animaciones hechas con JS)
-//   --nav                          hace clic en el primer enlace interno y graba la transición de página
-//   --video                        graba video .webm de cada ventana
-//   --no-reduced                   no hace la pasada con prefers-reduced-motion: reduce
-//   --wait 1500                    espera tras cargar (ms)
-//   --timeout 45000                tiempo máximo de carga (ms)
-//   --headed                       muestra el navegador
-//   --sin-capturas                 no guarda capturas de pantalla (solo los JSON)
-//   --eval <archivo.js>            evalúa además esa sonda propia al cargar (una expresión) y guarda
-//                                  eval-<nombre>.json en cada ventana (lo usan otras skills JayKA)
+// Options:
+//   --viewports 1280x800,375x812   window sizes (both by default)
+//   --steps 8                      scroll steps down to the end (0 = no scroll)
+//   --hover 6                      interactive elements to move the mouse over (0 = none; never on mobile)
+//   --track "<sel>,<sel>"          samples every frame the transform/opacity/clip-path/filter of those selectors
+//                                  and deduces duration and easing (works for JS-made animations)
+//   --nav                          clicks the first internal link and records the page transition
+//   --video                        records a .webm video of each window
+//   --no-reduced                   skips the pass with prefers-reduced-motion: reduce
+//   --wait 1500                    wait after load (ms)
+//   --timeout 45000                maximum load time (ms)
+//   --headed                       shows the browser
+//   --no-screenshots               does not save screenshots (only the JSON files)
+//   --eval <file.js>               also evaluates that own probe on load (one expression) and saves
+//                                  eval-<name>.json in each window (used by other JayKA skills)
 import { readFileSync, writeFileSync, mkdirSync, renameSync, existsSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
 import { homedir } from 'node:os';
@@ -41,8 +41,8 @@ if (argv.includes('--print-probe')) { console.log(probeExpr); process.exit(0); }
 const opt = (name, def) => { const i = argv.indexOf(name); return i >= 0 && argv[i + 1] && !argv[i + 1].startsWith('--') ? argv[i + 1] : def; };
 const flag = (name) => argv.includes(name);
 const url = argv.find((a) => /^(https?|file):\/\//i.test(a));
-if (!url && !flag('--check')) { console.error('Uso: node capture-live.mjs <url> --out <carpeta> [opciones]   (la URL debe empezar con http://, https:// o file://)'); process.exit(2); }
-const OUT = resolve(opt('--out', 'captura-inversa'));
+if (!url && !flag('--check')) { console.error('Usage: node capture-live.mjs <url> --out <folder> [options]   (the URL must start with http://, https:// or file://)'); process.exit(2); }
+const OUT = resolve(opt('--out', 'reverse-capture'));
 const viewports = opt('--viewports', '1280x800,375x812').split(',').map((v) => { const [w, h] = v.split('x').map(Number); return { width: w, height: h }; });
 const STEPS = Number(opt('--steps', '8'));
 const HOVER = Number(opt('--hover', '6'));
@@ -52,31 +52,31 @@ const TIMEOUT = Number(opt('--timeout', '45000'));
 const EVAL_FILE = opt('--eval', null);
 const evalExpr = EVAL_FILE ? readFileSync(resolve(EVAL_FILE), 'utf8') : null;
 const evalName = EVAL_FILE ? `eval-${EVAL_FILE.replace(/\\/g, '/').split('/').pop().replace(/\.[^.]+$/, '')}.json` : null;
-const BLOCK_TITLE =/just a moment|attention required|access denied|verify you are human|captcha|are you a robot/i;
+const BLOCK_TITLE = /just a moment|attention required|access denied|verify you are human|captcha|are you a robot/i;
+const TOOLS_DIR = join(homedir(), '.claude', 'jayka', 'tools');
 
 async function loadPlaywright() {
-  const bases = [process.env.JAYKA_TOOLS, join(homedir(), '.claude', 'jay-k-a', 'tools'), process.cwd()].filter(Boolean);
+  const bases = [process.env.JAYKA_TOOLS, TOOLS_DIR, process.cwd()].filter(Boolean);
   for (const base of bases) {
-    try { return createRequire(join(base, 'package.json'))('playwright'); } catch { /* siguiente */ }
+    try { return createRequire(join(base, 'package.json'))('playwright'); } catch { /* next */ }
   }
   try { return await import('playwright'); } catch { return null; }
 }
 
 const pw = await loadPlaywright();
 if (!pw) {
-  const tools = join(homedir(), '.claude', 'jay-k-a', 'tools');
-  console.error(`Playwright no está instalado. Instálalo (con permiso del usuario) en la carpeta de herramientas, fuera de cualquier proyecto:\n  npm install --prefix "${tools}" playwright\n  npx --prefix "${tools}" playwright install chromium`);
+  console.error(`Playwright is not installed. Install it (with the user's permission) in the tools folder, outside any project:\n  npm install --prefix "${TOOLS_DIR}" playwright\n  npx --prefix "${TOOLS_DIR}" playwright install chromium`);
   process.exit(3);
 }
 if (flag('--check')) {
-  // Comprueba también que el navegador Chromium de Playwright esté descargado.
+  // Also checks that Playwright's Chromium browser is downloaded.
   const exe = pw.chromium.executablePath();
-  if (!existsSync(exe)) { console.error(`Playwright está, pero falta Chromium. Instálalo con:\n  npx --prefix "${join(homedir(), '.claude', 'jay-k-a', 'tools')}" playwright install chromium`); process.exit(3); }
-  console.log(`OK · Playwright listo · Chromium: ${exe}`);
+  if (!existsSync(exe)) { console.error(`Playwright is there, but Chromium is missing. Install it with:\n  npx --prefix "${TOOLS_DIR}" playwright install chromium`); process.exit(3); }
+  console.log(`OK · Playwright ready · Chromium: ${exe}`);
   process.exit(0);
 }
 
-// Colector que corre dentro de la página desde antes que sus scripts.
+// Collector that runs inside the page from before its scripts.
 const initCollector = ({ track }) => {
   const describe = (el) => {
     if (!el || !el.tagName) return el ? String(el) : null;
@@ -86,7 +86,7 @@ const initCollector = ({ track }) => {
     if (cls.length) s += '.' + cls.join('.');
     return s.slice(0, 90);
   };
-  window.__jka = { fase: 'carga', vistas: [], muestras: {} };
+  window.__jka = { phase: 'load', seen: [], samples: {} };
   const seen = new WeakSet();
   setInterval(() => {
     let list;
@@ -94,20 +94,20 @@ const initCollector = ({ track }) => {
     for (const a of list) {
       if (seen.has(a)) continue;
       seen.add(a);
-      if (window.__jka.vistas.length >= 3000) return;
+      if (window.__jka.seen.length >= 3000) return;
       const eff = a.effect;
       const t = (eff && eff.getTiming && eff.getTiming()) || {};
       let props = [];
       let kf = [];
-      try { kf = eff.getKeyframes(); props = [...new Set(kf.flatMap((k) => Object.keys(k)))].filter((p) => !['offset', 'easing', 'composite', 'computedOffset'].includes(p)); } catch { /* sin fotogramas */ }
-      // En @keyframes la curva vive en cada fotograma; el tiempo general queda en linear.
-      const curva = t.easing && t.easing !== 'linear' ? t.easing : (kf[0] && kf[0].easing) || t.easing;
-      window.__jka.vistas.push({
-        ms: Math.round(performance.now()), scrollY: Math.round(scrollY), fase: window.__jka.fase,
-        tipo: a.constructor.name, nombre: a.animationName || a.transitionProperty || a.id || null,
-        objetivo: describe(eff && eff.target), pseudo: (eff && eff.pseudoElement) || null,
-        duracionMs: typeof t.duration === 'number' ? Math.round(t.duration) : String(t.duration), retrasoMs: Math.round(t.delay || 0),
-        curva, iteraciones: t.iterations, linea: a.timeline ? a.timeline.constructor.name : 'ninguna', propiedades: props,
+      try { kf = eff.getKeyframes(); props = [...new Set(kf.flatMap((k) => Object.keys(k)))].filter((p) => !['offset', 'easing', 'composite', 'computedOffset'].includes(p)); } catch { /* no keyframes */ }
+      // In @keyframes the curve lives in each frame; the overall timing stays linear.
+      const easing = t.easing && t.easing !== 'linear' ? t.easing : (kf[0] && kf[0].easing) || t.easing;
+      window.__jka.seen.push({
+        ms: Math.round(performance.now()), scrollY: Math.round(scrollY), phase: window.__jka.phase,
+        type: a.constructor.name, name: a.animationName || a.transitionProperty || a.id || null,
+        target: describe(eff && eff.target), pseudo: (eff && eff.pseudoElement) || null,
+        durationMs: typeof t.duration === 'number' ? Math.round(t.duration) : String(t.duration), delayMs: Math.round(t.delay || 0),
+        easing, iterations: t.iterations, timeline: a.timeline ? a.timeline.constructor.name : 'none', properties: props,
       });
     }
   }, 50);
@@ -121,11 +121,11 @@ const initCollector = ({ track }) => {
           const key = els.length > 1 ? `${sel} [${i}]` : sel;
           const cs = getComputedStyle(el);
           const m = new DOMMatrixReadOnly(cs.transform === 'none' ? undefined : cs.transform);
-          const v = { opacity: +cs.opacity, tx: +m.m41.toFixed(3), ty: +m.m42.toFixed(3), escala: +Math.hypot(m.a, m.b).toFixed(4), rotacion: +(Math.atan2(m.b, m.a) * 180 / Math.PI).toFixed(2), recorte: cs.clipPath, filtro: cs.filter };
-          const arr = (window.__jka.muestras[key] ||= []);
+          const v = { opacity: +cs.opacity, tx: +m.m41.toFixed(3), ty: +m.m42.toFixed(3), scale: +Math.hypot(m.a, m.b).toFixed(4), rotation: +(Math.atan2(m.b, m.a) * 180 / Math.PI).toFixed(2), clip: cs.clipPath, filter: cs.filter };
+          const arr = (window.__jka.samples[key] ||= []);
           const last = arr[arr.length - 1];
-          const same = last && ['opacity', 'tx', 'ty', 'escala', 'rotacion', 'recorte', 'filtro'].every((k) => last[k] === v[k]);
-          if (!same && arr.length < 8000) arr.push({ t: +performance.now().toFixed(1), scrollY: Math.round(scrollY), fase: window.__jka.fase, ...v });
+          const same = last && ['opacity', 'tx', 'ty', 'scale', 'rotation', 'clip', 'filter'].every((k) => last[k] === v[k]);
+          if (!same && arr.length < 8000) arr.push({ t: +performance.now().toFixed(1), scrollY: Math.round(scrollY), phase: window.__jka.phase, ...v });
         });
       }
       requestAnimationFrame(sample);
@@ -134,19 +134,19 @@ const initCollector = ({ track }) => {
   }
 };
 
-// Separa las muestras de un elemento en tramos de movimiento y ajusta la curva de cada uno.
+// Splits the samples of an element into motion segments and fits the curve of each one.
 function analyzeTrack(key, samples) {
   const nums = (s) => (String(s).match(/-?\d*\.?\d+/g) || []).map(Number);
   const channelsOf = (s) => {
-    const c = { opacity: s.opacity, tx: s.tx, ty: s.ty, escala: s.escala, rotacion: s.rotacion };
-    nums(s.recorte === 'none' ? '' : s.recorte).slice(0, 4).forEach((n, i) => { c[`recorte${i}`] = n; });
-    nums(s.filtro === 'none' ? '' : s.filtro).slice(0, 2).forEach((n, i) => { c[`filtro${i}`] = n; });
+    const c = { opacity: s.opacity, tx: s.tx, ty: s.ty, scale: s.scale, rotation: s.rotation };
+    nums(s.clip === 'none' ? '' : s.clip).slice(0, 4).forEach((n, i) => { c[`clip${i}`] = n; });
+    nums(s.filter === 'none' ? '' : s.filter).slice(0, 2).forEach((n, i) => { c[`filter${i}`] = n; });
     return c;
   };
-  const rows = samples.map((s) => ({ t: s.t, scrollY: s.scrollY, fase: s.fase, ch: channelsOf(s) }));
+  const rows = samples.map((s) => ({ t: s.t, scrollY: s.scrollY, phase: s.phase, ch: channelsOf(s) }));
   const channels = [...new Set(rows.flatMap((r) => Object.keys(r.ch)))];
-  // Parte un tramo donde cambia de sentido. Un salto inicial (gsap.from coloca el punto de partida de golpe)
-  // queda como parte corta y se descarta; un rebote pequeño (overshoot) se une al tramo anterior.
+  // Splits a run where it changes direction. An initial jump (gsap.from sets the starting point at once)
+  // stays as a short part and is discarded; a small bounce (overshoot) is joined to the previous part.
   const splitMonotonic = (run, ch) => {
     const parts = [];
     let cur = [run[0]], dir = 0;
@@ -182,10 +182,10 @@ function analyzeTrack(key, samples) {
           const corr = pearson(run.map((r) => r.scrollY), run.map((r) => r.ch[ch]));
           const scrollRange = Math.max(...run.map((r) => r.scrollY)) - Math.min(...run.map((r) => r.scrollY));
           segs.push({
-            objetivo: key, canal: ch, fase: run[1].fase, inicioMs: Math.round(run[0].t), duracionMs: Math.round(run[run.length - 1].t - run[0].t),
-            desde: series[0].v, hasta: series[series.length - 1].v, muestras: run.length,
-            ligadoAlScroll: Math.abs(corr) > 0.95 && scrollRange > 50,
-            ajuste: fitCurve(curve), curva: curve,
+            target: key, channel: ch, phase: run[1].phase, startMs: Math.round(run[0].t), durationMs: Math.round(run[run.length - 1].t - run[0].t),
+            from: series[0].v, to: series[series.length - 1].v, samples: run.length,
+            scrollLinked: Math.abs(corr) > 0.95 && scrollRange > 50,
+            fit: fitCurve(curve), curve,
           });
         }
       }
@@ -195,7 +195,7 @@ function analyzeTrack(key, samples) {
       if (prev.ch[ch] === undefined || cur.ch[ch] === undefined) { flush(); continue; }
       if (Math.abs(cur.ch[ch] - prev.ch[ch]) < 1e-6) continue;
       if (run.length && cur.t - run[run.length - 1].t > 200) flush();
-      // el tramo arranca en el último valor quieto, un fotograma antes del primer cambio
+      // the segment starts at the last still value, one frame before the first change
       if (!run.length) run.push({ ...prev, t: cur.t - 16.7 });
       run.push(cur);
     }
@@ -207,9 +207,9 @@ function analyzeTrack(key, samples) {
 const signatures = loadSignatures();
 mkdirSync(OUT, { recursive: true });
 const browser = await pw.chromium.launch({ headless: !flag('--headed') });
-const network = { recursos: [], hosts: {}, tipos: {}, banners: [], firmasEnCodigo: [], sourcemaps: [], errores: 0 };
+const network = { resources: [], hosts: {}, types: {}, banners: [], codeSignatures: [], sourcemaps: [], errors: 0 };
 const cssNet = emptyCssMotion();
-const resumen = { url, fecha: new Date().toISOString(), ventanas: [], bloqueado: null };
+const summary = { url, date: new Date().toISOString(), windows: [], blocked: null };
 const seenBodies = new Set();
 
 function watchNetwork(page, pending) {
@@ -218,35 +218,35 @@ function watchNetwork(page, pending) {
     const type = req.resourceType();
     const u = resp.url();
     if (u.startsWith('data:')) return;
-    bump(network.tipos, type);
-    try { bump(network.hosts, new URL(u).host); } catch { /* url rara */ }
-    if (resp.status() >= 400) network.errores++;
-    if (network.recursos.length < 400) network.recursos.push({ tipo: type, estado: resp.status(), url: u.slice(0, 200), bytes: Number(resp.headers()['content-length'] || 0) || null });
+    bump(network.types, type);
+    try { bump(network.hosts, new URL(u).host); } catch { /* odd url */ }
+    if (resp.status() >= 400) network.errors++;
+    if (network.resources.length < 400) network.resources.push({ type, status: resp.status(), url: u.slice(0, 200), bytes: Number(resp.headers()['content-length'] || 0) || null });
     const sm = resp.headers()['sourcemap'] || resp.headers()['x-sourcemap'];
-    if (sm) network.sourcemaps.push({ archivo: u.slice(0, 200), mapa: sm });
+    if (sm) network.sourcemaps.push({ file: u.slice(0, 200), map: sm });
     if ((type === 'script' || type === 'stylesheet') && resp.status() < 400 && !seenBodies.has(u)) {
       seenBodies.add(u);
       pending.push(resp.text().then((text) => {
         if (text.length > 4_000_000) return;
         if (type === 'stylesheet') { analyzeCss(text, cssNet, u.slice(0, 160)); return; }
         const tail = text.slice(-400).match(/[#@]\s*sourceMappingURL=(\S+)\s*$/);
-        if (tail && !tail[1].startsWith('data:')) network.sourcemaps.push({ archivo: u.slice(0, 200), mapa: tail[1].slice(0, 200) });
+        if (tail && !tail[1].startsWith('data:')) network.sourcemaps.push({ file: u.slice(0, 200), map: tail[1].slice(0, 200) });
         for (const sig of signatures) {
           for (const re of sig.bannerRe) {
             const m = re.exec(text);
-            if (m) { network.firmasEnCodigo.push({ id: sig.id, nombre: sig.name, version: m[1] || null, archivo: u.slice(0, 160) }); break; }
+            if (m) { network.codeSignatures.push({ id: sig.id, name: sig.name, version: m[1] || null, file: u.slice(0, 160) }); break; }
           }
         }
         for (const c of text.slice(0, 3000).matchAll(/\/\*![\s\S]{0,400}?\*\//g)) {
           const b = c[0].replace(/\s+/g, ' ').slice(0, 140);
-          if (/\d+\.\d+\.\d+/.test(b) && network.banners.length < 40) network.banners.push({ archivo: u.slice(0, 160), banner: b });
+          if (/\d+\.\d+\.\d+/.test(b) && network.banners.length < 40) network.banners.push({ file: u.slice(0, 160), banner: b });
         }
       }).catch(() => {}));
     }
   });
 }
 
-async function setFase(page, fase) { await page.evaluate((f) => { if (window.__jka) window.__jka.fase = f; }, fase).catch(() => {}); }
+async function setPhase(page, phase) { await page.evaluate((f) => { if (window.__jka) window.__jka.phase = f; }, phase).catch(() => {}); }
 const pause = (ms) => new Promise((r) => setTimeout(r, ms));
 
 for (const vp of viewports) {
@@ -262,44 +262,44 @@ for (const vp of viewports) {
   const page = await context.newPage();
   const pending = [];
   watchNetwork(page, pending);
-  const info = { ventana: tag, archivos: [] };
-  resumen.ventanas.push(info);
+  const info = { window: tag, files: [] };
+  summary.windows.push(info);
 
   let resp;
   try {
     resp = await page.goto(url, { waitUntil: 'load', timeout: TIMEOUT });
     await page.waitForLoadState('networkidle', { timeout: 10000 }).catch(() => {});
   } catch (e) {
-    info.error = `No cargó: ${String(e.message).split('\n')[0]}`;
+    info.error = `Did not load: ${String(e.message).split('\n')[0]}`;
     await context.close();
     continue;
   }
   const status = resp ? resp.status() : 0;
   const title = await page.title().catch(() => '');
   if (status >= 400 || BLOCK_TITLE.test(title)) {
-    resumen.bloqueado = { estado: status, titulo: title.slice(0, 80) };
-    info.error = 'El sitio bloqueó o pidió verificación. Se detiene: no se intenta evadir.';
-    await page.screenshot({ path: join(dir, 'bloqueo.png') }).catch(() => {});
+    summary.blocked = { status, title: title.slice(0, 80) };
+    info.error = 'The site blocked or asked for verification. Stopping: no attempt is made to evade it.';
+    await page.screenshot({ path: join(dir, 'blocked.png') }).catch(() => {});
     await context.close();
     break;
   }
   await pause(WAIT);
 
-  const save = (name, data) => { writeFileSync(join(dir, name), JSON.stringify(data, null, 2)); info.archivos.push(name); };
+  const save = (name, data) => { writeFileSync(join(dir, name), JSON.stringify(data, null, 2)); info.files.push(name); };
   const shot = async (name) => {
-    if (flag('--sin-capturas')) return;
+    if (flag('--no-screenshots')) return;
     await page.screenshot({ path: join(dir, name) }).catch(() => {});
-    info.archivos.push(name);
+    info.files.push(name);
   };
 
   const probeLoad = await page.evaluate(probeExpr).catch((e) => ({ error: String(e) }));
-  save('sonda-carga.json', probeLoad);
+  save('probe-load.json', probeLoad);
   if (evalExpr) save(evalName, await page.evaluate(evalExpr).catch((e) => ({ error: String(e).slice(0, 300) })));
-  await shot('00-carga.png');
+  await shot('00-load.png');
 
-  // Movimiento del ratón y hover (solo escritorio)
+  // Mouse movement and hover (desktop only)
   if (!mobile) {
-    await setFase(page, 'raton');
+    await setPhase(page, 'mouse');
     for (let i = 0; i <= 30; i++) { await page.mouse.move((vp.width * i) / 30, vp.height * (0.3 + 0.4 * (i / 30))); await pause(40); }
     if (HOVER > 0) {
       const targets = await page.evaluate((n) => {
@@ -313,7 +313,7 @@ for (const vp of viewports) {
         return out;
       }, HOVER).catch(() => []);
       for (const [i, t] of targets.entries()) {
-        await setFase(page, `hover:${t.d}`);
+        await setPhase(page, `hover:${t.d}`);
         await page.mouse.move(t.x, t.y, { steps: 4 });
         await pause(700);
         if (i < 3) await shot(`01-hover-${i + 1}.png`);
@@ -323,12 +323,12 @@ for (const vp of viewports) {
     }
   }
 
-  // Scroll por pasos, como una persona (rueda del ratón en escritorio)
+  // Scroll in steps, like a person (mouse wheel on desktop)
   if (STEPS > 0) {
     const total = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight).catch(() => 0);
     let current = 0;
     for (let i = 1; i <= STEPS; i++) {
-      await setFase(page, `scroll-${i}`);
+      await setPhase(page, `scroll-${i}`);
       const target = Math.round((total * i) / STEPS);
       if (!mobile) {
         await page.mouse.move(vp.width / 2, vp.height / 2);
@@ -343,7 +343,7 @@ for (const vp of viewports) {
     }
   }
 
-  // Transición entre páginas
+  // Transition between pages
   if (flag('--nav')) {
     const link = await page.evaluate(() => {
       const here = location.origin + location.pathname;
@@ -360,7 +360,7 @@ for (const vp of viewports) {
       return null;
     }).catch(() => null);
     if (link) {
-      const before = await page.evaluate(() => { window.__jkaMarca = 1; window.__jka.fase = 'nav'; return window.__jka; }).catch(() => null);
+      const before = await page.evaluate(() => { window.__jkaMark = 1; window.__jka.phase = 'nav'; return window.__jka; }).catch(() => null);
       const el = await page.$('[data-jka-nav="1"]');
       await el?.scrollIntoViewIfNeeded().catch(() => {});
       await el?.click({ noWaitAfter: true }).catch(() => {});
@@ -371,38 +371,38 @@ for (const vp of viewports) {
         await shot(`03-nav-${String(ms).padStart(4, '0')}ms.png`);
       }
       await page.waitForLoadState('load', { timeout: 15000 }).catch(() => {});
-      const spa = await page.evaluate(() => window.__jkaMarca === 1).catch(() => false);
-      info.navegacion = { destino: link, tipo: spa ? 'sin recarga (SPA / librería de transición / View Transitions)' : 'recarga completa del documento' };
-      // Con recarga completa el colector empieza de cero: se guarda lo recogido antes del clic.
-      if (!spa && before) info.antesDeNavegar = before;
+      const spa = await page.evaluate(() => window.__jkaMark === 1).catch(() => false);
+      info.navigation = { destination: link, type: spa ? 'no reload (SPA / transition library / View Transitions)' : 'full document reload' };
+      // With a full reload the collector starts from zero: what was collected before the click is kept.
+      if (!spa && before) info.beforeNavigating = before;
     } else {
-      info.navegacion = { destino: null, nota: 'No se encontró un enlace interno visible.' };
+      info.navigation = { destination: null, note: 'No visible internal link was found.' };
     }
   }
 
   const probeEnd = await page.evaluate(probeExpr).catch((e) => ({ error: String(e) }));
-  save('sonda-final.json', probeEnd);
+  save('probe-final.json', probeEnd);
   const collected = await page.evaluate(() => window.__jka).catch(() => null);
-  const before = info.antesDeNavegar;
-  delete info.antesDeNavegar;
-  const vistas = [...((before && before.vistas) || []), ...((collected && collected.vistas) || [])];
-  save('animaciones-vistas.json', vistas);
+  const before = info.beforeNavigating;
+  delete info.beforeNavigating;
+  const seenAnims = [...((before && before.seen) || []), ...((collected && collected.seen) || [])];
+  save('animations-seen.json', seenAnims);
   if (TRACK.length) {
-    const muestras = [
-      ...Object.entries((before && before.muestras) || {}),
-      ...Object.entries((collected && collected.muestras) || {}).map(([k, s]) => [before ? `${k} (página de destino)` : k, s]),
+    const samples = [
+      ...Object.entries((before && before.samples) || {}),
+      ...Object.entries((collected && collected.samples) || {}).map(([k, s]) => [before ? `${k} (destination page)` : k, s]),
     ];
-    const segs = muestras.flatMap(([k, s]) => analyzeTrack(k, s));
-    // muestrasPorSelector sirve para diagnosticar: 0 = el selector no existe; 1 = existe pero no se movió.
-    save('pistas.json', { selectores: TRACK, muestrasPorSelector: Object.fromEntries(muestras.map(([k, s]) => [k, s.length])), tramos: segs });
-    info.pistas = segs.map((s) => ({ objetivo: s.objetivo, canal: s.canal, fase: s.fase, duracionMs: s.duracionMs, desde: s.desde, hasta: s.hasta, scrub: s.ligadoAlScroll, mejorCurva: s.ajuste[0] }));
+    const segs = samples.flatMap(([k, s]) => analyzeTrack(k, s));
+    // samplesPerSelector helps to diagnose: 0 = the selector does not exist; 1 = it exists but did not move.
+    save('tracks.json', { selectors: TRACK, samplesPerSelector: Object.fromEntries(samples.map(([k, s]) => [k, s.length])), segments: segs });
+    info.tracks = segs.map((s) => ({ target: s.target, channel: s.channel, phase: s.phase, durationMs: s.durationMs, from: s.from, to: s.to, scrub: s.scrollLinked, bestCurve: s.fit[0] }));
   }
 
-  // Resumen de lo visto en esta ventana
-  const porFase = {}, dur = {}, curvas = {}, props = {};
-  for (const v of vistas) { bump(porFase, v.fase.split(':')[0]); bump(dur, `${v.duracionMs}ms`); if (v.curva) bump(curvas, v.curva); for (const p of v.propiedades) bump(props, p); }
-  info.animacionesVistas = { total: vistas.length, porFase, duraciones: top(dur, 8), curvas: top(curvas, 8), propiedades: top(props, 10) };
-  info.detecciones = (probeEnd.detecciones || probeLoad.detecciones || []).map((d) => `${d.nombre}${d.version ? ' ' + d.version : ''}`);
+  // Summary of what was seen in this window
+  const byPhase = {}, dur = {}, easings = {}, props = {};
+  for (const v of seenAnims) { bump(byPhase, v.phase.split(':')[0]); bump(dur, `${v.durationMs}ms`); if (v.easing) bump(easings, v.easing); for (const p of v.properties) bump(props, p); }
+  info.animationsSeen = { total: seenAnims.length, byPhase, durations: top(dur, 8), easings: top(easings, 8), properties: top(props, 10) };
+  info.detections = (probeEnd.detections || probeLoad.detections || []).map((d) => `${d.name}${d.version ? ' ' + d.version : ''}`);
   info.gsap = probeEnd.gsap ? { version: probeEnd.gsap.version, tweens: probeEnd.gsap.tweens?.length ?? 0, scrollTriggers: probeEnd.gsap.scrollTriggers?.length ?? 0 } : null;
 
   await Promise.all(pending);
@@ -410,12 +410,12 @@ for (const vp of viewports) {
   await context.close();
   if (video) {
     const p = await video.path().catch(() => null);
-    if (p && existsSync(p)) { renameSync(p, join(dir, 'video.webm')); info.archivos.push('video.webm'); }
+    if (p && existsSync(p)) { renameSync(p, join(dir, 'video.webm')); info.files.push('video.webm'); }
   }
 }
 
-// Pasada con movimiento reducido (primera ventana)
-if (!flag('--no-reduced') && !resumen.bloqueado) {
+// Pass with reduced motion (first window)
+if (!flag('--no-reduced') && !summary.blocked) {
   const vp = viewports[0];
   const context = await browser.newContext({ viewport: vp, reducedMotion: 'reduce' });
   const page = await context.newPage();
@@ -423,18 +423,18 @@ if (!flag('--no-reduced') && !resumen.bloqueado) {
     await page.goto(url, { waitUntil: 'load', timeout: TIMEOUT });
     await pause(WAIT);
     const p = await page.evaluate(probeExpr);
-    const normal = resumen.ventanas[0] && JSON.parse(readFileSync(join(OUT, resumen.ventanas[0].ventana, 'sonda-carga.json'), 'utf8'));
+    const normal = summary.windows[0] && JSON.parse(readFileSync(join(OUT, summary.windows[0].window, 'probe-load.json'), 'utf8'));
     const cmp = {
-      animacionesAlCargar: { normal: normal?.totalAnimaciones ?? null, reducido: p.totalAnimaciones },
-      tweensGsap: { normal: normal?.gsap?.tweens?.length ?? null, reducido: p.gsap?.tweens?.length ?? null },
-      reglasCssReducedMotion: p.css.movimientoReducido,
+      animationsOnLoad: { normal: normal?.totalAnimations ?? null, reduced: p.totalAnimations },
+      gsapTweens: { normal: normal?.gsap?.tweens?.length ?? null, reduced: p.gsap?.tweens?.length ?? null },
+      reducedMotionCssRules: p.css.reducedMotion,
     };
-    const menos = (cmp.animacionesAlCargar.normal ?? 0) > cmp.animacionesAlCargar.reducido || (cmp.tweensGsap.normal ?? 0) > (cmp.tweensGsap.reducido ?? 0);
-    cmp.veredicto = menos ? 'reduce el movimiento' : cmp.reglasCssReducedMotion > 0 ? 'tiene reglas pero no se notó diferencia al cargar' : 'no lo respeta (no hay reglas ni diferencia)';
-    writeFileSync(join(OUT, 'movimiento-reducido.json'), JSON.stringify({ ...cmp, sonda: p }, null, 2));
-    resumen.movimientoReducido = cmp;
+    const less = (cmp.animationsOnLoad.normal ?? 0) > cmp.animationsOnLoad.reduced || (cmp.gsapTweens.normal ?? 0) > (cmp.gsapTweens.reduced ?? 0);
+    cmp.verdict = less ? 'reduces motion' : cmp.reducedMotionCssRules > 0 ? 'has rules but no difference was noticed on load' : 'does not respect it (no rules and no difference)';
+    writeFileSync(join(OUT, 'reduced-motion.json'), JSON.stringify({ ...cmp, probe: p }, null, 2));
+    summary.reducedMotion = cmp;
   } catch (e) {
-    resumen.movimientoReducido = { error: String(e.message).split('\n')[0] };
+    summary.reducedMotion = { error: String(e.message).split('\n')[0] };
   }
   await context.close();
 }
@@ -443,29 +443,29 @@ await browser.close();
 
 network.hosts = top(network.hosts, 20);
 network.css = summarizeCss(cssNet);
-writeFileSync(join(OUT, 'red.json'), JSON.stringify(network, null, 2));
-resumen.red = { tipos: network.tipos, hosts: network.hosts.slice(0, 10), firmasEnCodigo: network.firmasEnCodigo, sourcemaps: network.sourcemaps.length, banners: network.banners.length };
-writeFileSync(join(OUT, 'resumen.json'), JSON.stringify(resumen, null, 2));
+writeFileSync(join(OUT, 'network.json'), JSON.stringify(network, null, 2));
+summary.network = { types: network.types, hosts: network.hosts.slice(0, 10), codeSignatures: network.codeSignatures, sourcemaps: network.sourcemaps.length, banners: network.banners.length };
+writeFileSync(join(OUT, 'summary.json'), JSON.stringify(summary, null, 2));
 
-// Resumen legible
+// Readable summary
 const L = [`URL: ${url}`];
-if (resumen.bloqueado) L.push(`⛔ BLOQUEADO (estado ${resumen.bloqueado.estado}, «${resumen.bloqueado.titulo}»). No se continuó.`);
-for (const v of resumen.ventanas) {
-  L.push(`— ${v.ventana}${v.error ? ' · ' + v.error : ''}`);
+if (summary.blocked) L.push(`⛔ BLOCKED (status ${summary.blocked.status}, «${summary.blocked.title}»). Not continued.`);
+for (const v of summary.windows) {
+  L.push(`— ${v.window}${v.error ? ' · ' + v.error : ''}`);
   if (v.error) continue;
-  L.push(`  Detectado: ${v.detecciones.join(', ') || 'nada por firmas'}`);
+  L.push(`  Detected: ${v.detections.join(', ') || 'nothing by signatures'}`);
   if (v.gsap) L.push(`  GSAP ${v.gsap.version}: ${v.gsap.tweens} tweens, ${v.gsap.scrollTriggers} ScrollTriggers`);
-  L.push(`  Animaciones vistas: ${v.animacionesVistas.total} · por fase ${JSON.stringify(v.animacionesVistas.porFase)}`);
-  L.push(`  Duraciones: ${v.animacionesVistas.duraciones.map((d) => `${d.valor}×${d.veces}`).join(', ') || '—'}`);
-  L.push(`  Curvas: ${v.animacionesVistas.curvas.map((d) => `${d.valor}×${d.veces}`).join(', ') || '—'}`);
-  if (v.navegacion) L.push(`  Navegación: ${v.navegacion.destino || '—'} → ${v.navegacion.tipo || v.navegacion.nota}`);
-  for (const p of v.pistas || []) {
-    const tail = p.scrub ? ' · LIGADO AL SCROLL (la curva depende del scroll: usa start/end/scrub, no un easing)' : ` · curva ≈ ${p.mejorCurva.nombre} (error ${p.mejorCurva.error})`;
-    L.push(`  Pista ${p.objetivo} ${p.canal} (${p.fase}): ${p.desde}→${p.hasta} en ${p.duracionMs}ms${tail}`);
+  L.push(`  Animations seen: ${v.animationsSeen.total} · by phase ${JSON.stringify(v.animationsSeen.byPhase)}`);
+  L.push(`  Durations: ${v.animationsSeen.durations.map((d) => `${d.value}×${d.count}`).join(', ') || '—'}`);
+  L.push(`  Easings: ${v.animationsSeen.easings.map((d) => `${d.value}×${d.count}`).join(', ') || '—'}`);
+  if (v.navigation) L.push(`  Navigation: ${v.navigation.destination || '—'} → ${v.navigation.type || v.navigation.note}`);
+  for (const p of v.tracks || []) {
+    const tail = p.scrub ? ' · LINKED TO SCROLL (the curve depends on the scroll: use start/end/scrub, not an easing)' : ` · curve ≈ ${p.bestCurve.name} (error ${p.bestCurve.error})`;
+    L.push(`  Track ${p.target} ${p.channel} (${p.phase}): ${p.from}→${p.to} in ${p.durationMs}ms${tail}`);
   }
 }
-if (resumen.movimientoReducido) L.push(`Movimiento reducido: ${resumen.movimientoReducido.veredicto || resumen.movimientoReducido.error}`);
-L.push(`Red: ${JSON.stringify(network.tipos)} · firmas en JS: ${network.firmasEnCodigo.map((f) => `${f.nombre}${f.version ? ' ' + f.version : ''}`).join(', ') || '—'} · source maps: ${network.sourcemaps.length}`);
-L.push(`CSS descargado: ${network.css.totalKeyframes} @keyframes · duraciones ${network.css.duraciones.slice(0, 5).map((d) => d.valor).join(', ') || '—'} · curvas ${network.css.curvas.slice(0, 4).map((d) => d.valor).join(', ') || '—'}`);
-L.push(`Carpeta: ${OUT}`);
+if (summary.reducedMotion) L.push(`Reduced motion: ${summary.reducedMotion.verdict || summary.reducedMotion.error}`);
+L.push(`Network: ${JSON.stringify(network.types)} · signatures in JS: ${network.codeSignatures.map((f) => `${f.name}${f.version ? ' ' + f.version : ''}`).join(', ') || '—'} · source maps: ${network.sourcemaps.length}`);
+L.push(`CSS downloaded: ${network.css.totalKeyframes} @keyframes · durations ${network.css.durations.slice(0, 5).map((d) => d.value).join(', ') || '—'} · easings ${network.css.easings.slice(0, 4).map((d) => d.value).join(', ') || '—'}`);
+L.push(`Folder: ${OUT}`);
 console.log(L.join('\n'));

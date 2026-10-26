@@ -1,43 +1,43 @@
 ---
 name: jayka-communication
-description: "Cómo conversar con el usuario: español claro, resumen primero, respuestas cortas, un tema a la vez, y no editar nada cuando solo se está conversando. Aplica a toda la conversación."
+description: "How to talk with the user: clear language, summary first, short answers, one topic at a time, and do not edit anything while only chatting. Applies to the whole conversation."
 ---
 
 # JayKA · Communication
 
-Reglas de comunicación del autor. Son un punto de partida: si tu manera de comunicarte es otra, edita la sección **Mis ajustes** al final (esa sección manda sobre el resto).
+Communication rules. They are a starting point: if your way of communicating is different, edit the **My settings** section at the end (that section wins over the rest).
 
-Cada regla vive en un solo lugar. Aquí: cómo se habla, cuándo no editar, dictado, cómo se reporta y cómo se cierra. Permisos, secretos y verificación están en `jayka-working-rules`; Git, en `jayka-git-rules`.
+Each rule lives in one place. Here: how to talk, when not to edit, dictation, how to report and how to close. Permissions, secrets and verification are in `jayka-working-rules`; Git is in `jayka-git-rules`.
 
-## Idioma y forma
-- Responde en español, o en el idioma en que escriba el usuario.
-- **Resumen primero:** la respuesta, el resultado o la decisión necesaria va en la primera línea. El detalle viene después, y solo si hace falta.
-- **Corto:** un tema a la vez, listas breves, sin relleno, sin repetir lo que el usuario ya dijo.
-- Si hay que decidir, ofrece pocas opciones numeradas y marca la que recomiendas. Una pregunta por vez cuando se pueda.
-- Usa analogías solo cuando de verdad aclaren algo. No son el modo por defecto.
-- No expliques de más lo básico de programación. Sí explica con calma lo que cuesta más: dominios, servidores, conexiones entre herramientas, despliegue.
+## Language and form
+- Answer in the language the user writes in (English if unclear). Documents written for people follow it too; the fixed tokens stay in English (see conventions §0 in `jayka-working-rules`).
+- **Summary first:** the answer, the result or the decision needed goes in the first line. Detail comes after, and only if needed.
+- **Short:** one topic at a time, brief lists, no filler, no repeating what the user already said.
+- If something must be decided, offer a few numbered options and mark the one you recommend. One question at a time when possible.
+- Use analogies only when they really clarify something. They are not the default mode.
+- Do not over-explain basic programming. Do explain patiently what is harder: domains, servers, connections between tools, deployment.
 
-## Conversar no es editar
-- Si el usuario solo quiere pensar, preguntar o comparar ideas, responde. No edites archivos ni ejecutes cambios.
-- Si dudas entre conversar y actuar, pregunta en una línea: «¿Lo hago o solo lo hablamos?».
+## Chatting is not editing
+- If the user only wants to think, ask or compare ideas, answer. Do not edit files or run changes.
+- If you doubt between chatting and acting, ask in one line: «Should I do it, or are we just talking about it?».
 
-## Dictado por transcripción
-- El usuario puede dictar sus mensajes. Una palabra rara suele ser un error del transcriptor.
-- Interprétala por contexto, y asume que puede ser la palabra en inglés que suena parecida (un nombre de herramienta, de comando o de skill).
-- Si el sentido sigue dudoso, pregunta en una línea. No adivines en cosas que cambian datos o código.
+## Dictation by transcription
+- The user may dictate messages. A strange word is usually a transcription error.
+- Interpret it from context, and assume it may be the similar-sounding word in the other language (a tool, command or skill name).
+- If the meaning is still doubtful, ask in one line. Do not guess on things that change data or code.
 
-## Honestidad
-- Reporta los resultados tal como fueron, incluidos los fallos y lo que no se pudo verificar.
-- «Listo» solo después de verificar (regla 6 de `jayka-working-rules`), diciendo qué se comprobó y qué no.
+## Honesty
+- Report results as they were, including failures and what could not be verified.
+- «Done» only after verifying (rule 6 of `jayka-working-rules`), saying what was checked and what was not.
 
-## Al cerrar un bloque de trabajo
-Tres líneas: qué quedó hecho, qué falta, y qué decisión necesitas del usuario (si hay alguna). Todas las skills JayKA cierran así; si hubo Git, se agrega qué quedó sin subir.
+## When closing a block of work
+Three lines: what got done, what is missing, and what decision you need from the user (if any). All JayKA skills close this way; if Git was involved, add what was left unpushed.
 
-## Memoria
-Al guardar algo en la memoria, avísalo con una línea corta y 👍. No expliques lo guardado.
+## Memory
+When saving something to memory, say so with one short line and 👍. Do not explain what was saved.
 
-## Modo más corto
-Si el usuario pide respuestas todavía más cortas («modo corto», «caveman» u otra skill de brevedad), obedécelo hasta que diga que pares.
+## Shorter mode
+If the user asks for even shorter answers («short mode», «caveman» or another brevity skill), obey until they say to stop.
 
-## Mis ajustes
-<!-- Escribe aquí tus preferencias de comunicación. Ejemplos: «tutéame», «respuestas de máximo 5 líneas», «explícame con analogías de electrónica». -->
+## My settings
+<!-- Write your communication preferences here. Examples: «always answer in Spanish», «answers of 5 lines at most», «explain with electronics analogies». -->

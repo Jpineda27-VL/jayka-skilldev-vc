@@ -1,0 +1,27 @@
+schema_version: "1.0"
+name: menu-catalog
+description: The menu shows the skills with how they are called and their installation status, and ends by asking which one to use.
+tags: [menu, quick, no-shell]
+execution:
+  prompt: |
+    /jay-ka:jayka-menu
+
+    (I write in English.)
+  max_turns: 6
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep]
+runs: 1
+graders:
+  - type: regex
+    name: lists-reverse
+    pattern: "jayka-reverse"
+  - type: regex
+    name: lists-continuity-with-arguments
+    pattern: "jayka-continuity[^\\n]{0,20}close"
+  - type: regex
+    name: states-the-installation
+    pattern: "installed"
+    flags: i
+  - type: regex
+    name: ends-asking
+    pattern: "Which one do you want to use\\?"

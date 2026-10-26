@@ -1,82 +1,82 @@
 ---
 name: jayka-views-parity
-description: "Mantiene la paridad cuando un producto tiene dos frontends que deben mostrar las mismas pantallas (por ejemplo web renderizada en el servidor y app móvil, o web y app nativa): inventario de pantallas, fuente única de datos, checklist de paridad y verificación en ambos. Invócala con /jayka-views-parity inventario, cambio <pantalla> o verificar."
-argument-hint: "inventario | cambio <pantalla> | verificar [<pantalla> | todo]"
+description: "Keeps parity when a product has two frontends that must show the same screens (for example a server-rendered web and a mobile app, or web and native app): screen inventory, single source of data, parity checklist and verification in both. Invoke it with /jayka-views-parity inventory, change <screen> or verify."
+argument-hint: "inventory | change <screen> | verify [<screen> | all]"
 disable-model-invocation: true
 ---
 
-# JayKA · Tech · Views Parity
+# JayKA · Views Parity
 
-Cuando el mismo producto se ve en **dos frontends** (por ejemplo vistas del servidor para escritorio y una app para el celular), cada cambio de una pantalla debe llegar **a los dos**. Esta skill evita que se desfasen.
+When the same product shows in **two frontends** (for example server views for desktop and an app for the phone), every change to a screen must reach **both**. This skill prevents them from drifting apart.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| `inventario` | `inventory` | Paso 0: crea o actualiza el inventario |
-| `cambio <pantalla>` | `change` | Pasos 1 a 4 para esa pantalla (por id o ruta del inventario) |
-| `verificar [<pantalla> \| todo]` | `check` | Solo los pasos 3 y 4. Sin pantalla: las que el inventario no marca como `igual` |
-| *(vacío)* | | Si no existe `.claude/estructura/pantallas.md` → `inventario`. Si existe → pregunta: «¿Cambio en una pantalla, o verificar?» |
+| `inventory` | `inventario` | Step 0: creates or updates the inventory |
+| `change <screen>` | `cambio` | Steps 1 to 4 for that screen (by id or route of the inventory) |
+| `verify [<screen> \| all]` | `check`, `verificar`, `todo` | Only steps 3 and 4. Without a screen: those the inventory does not mark as `same` |
+| *(empty)* | | If `.claude/structure/screens.md` does not exist → `inventory`. If it exists → ask: «A change on a screen, or verify?» |
 
-Una pantalla que no está en el inventario → «`<pantalla>` no está en el inventario. ¿La agrego?».
+A screen that is not in the inventory → «`<screen>` is not in the inventory. Shall I add it?».
 
-## Regla central
-**Cambiar una pantalla = cambiar las dos versiones en el mismo trabajo**, o dejar anotado explícitamente cuál queda pendiente y por qué. Nunca «después lo igualamos» sin registro.
+## Central rule
+**Changing a screen = changing both versions in the same piece of work**, or explicitly noting which one is left pending and why. Never «we will match it later» without a record.
 
-## Principios
-1. **Una sola fuente de verdad.** Los datos y las reglas viven en el **servidor** (servicios/API). Los dos frontends solo muestran y envían. Si una regla aparece duplicada en un frontend, es un defecto: muévela al servidor.
-2. **Mismos datos, misma forma.** Los dos frontends leen de los mismos servicios o de una API con la misma forma. No crees una versión de los datos para cada uno.
-3. **Mismo sistema de diseño.** Los mismos tokens (colores, tipografía, espaciados, radios) y los mismos nombres de rol. Un cambio de token se aplica a ambos.
-4. **Mismos textos.** Títulos, botones y mensajes iguales. Idealmente salen de un solo lugar; si no, se actualizan juntos.
-5. **Misma navegación y misma lógica de estados:** vacío, cargando, error, éxito y desactivado se comportan igual.
-6. **Lo que sí puede diferir:** la distribución (columnas vs una columna), los gestos del celular y las pantallas que solo tienen sentido en un dispositivo (se anotan como «solo web» o «solo app» en el inventario, con motivo).
+## Principles
+1. **A single source of truth.** Data and rules live on the **server** (services/API). Both frontends only show and send. If a rule appears duplicated in a frontend, it is a defect: move it to the server.
+2. **Same data, same shape.** Both frontends read from the same services or from an API with the same shape. Do not create one version of the data for each.
+3. **Same design system.** The same tokens (colors, typography, spacing, radii) and the same role names. A token change applies to both.
+4. **Same texts.** Titles, buttons and messages the same. Ideally they come from one place; if not, they are updated together.
+5. **Same navigation and same state logic:** empty, loading, error, success and disabled behave the same.
+6. **What may differ:** the layout (columns vs one column), phone gestures and screens that only make sense on one device (noted as «web only» or «app only» in the inventory, with a reason).
 
-## Paso 0 · Inventario de pantallas
-Mantén `.claude/estructura/pantallas.md` con una fila por pantalla. Plantilla en `reference/screen-inventory.md`. Si no existe, **créalo** (según las convenciones), recorriendo rutas y vistas.
-Columnas mínimas: **id** · **ruta** · **frontend A (archivo)** · **frontend B (archivo)** · **datos (servicio o API)** · **estado de paridad** (`igual`, `A adelantado`, `B adelantado`, `solo A`, `solo B`) · **notas**.
+## Step 0 · Screen inventory
+Keep `.claude/structure/screens.md` with one row per screen. Template in `reference/screen-inventory.md`. If it does not exist, **create it** (following the conventions), going through routes and views.
+Minimum columns: **id** · **route** · **frontend A (file)** · **frontend B (file)** · **data (service or API)** · **parity status** (`same`, `A ahead`, `B ahead`, `A only`, `B only`) · **notes**.
 
-## Paso 1 · Antes de tocar una pantalla
-1. Búscala en el inventario. ¿Existe en los dos? ¿Está en paridad ahora?
-2. Si no está en paridad, **díselo al usuario** antes de añadir más cambios: «Esta pantalla ya estaba desfasada en B; ¿la igualamos también?».
-3. Revisa de dónde sale el dato. Si cambia, cambia en el servicio, no en un frontend.
+## Step 1 · Before touching a screen
+1. Find it in the inventory. Does it exist in both? Is it in parity now?
+2. If it is not in parity, **tell the user** before adding more changes: «This screen was already out of sync in B; do we match it too?».
+3. Check where the data comes from. If it changes, it changes in the service, not in a frontend.
 
-## Paso 2 · Hacer el cambio en los dos
-Orden recomendado: **servidor (datos y reglas)** → **frontend A** → **frontend B** → pruebas.
-Usa el **checklist de paridad** (`reference/parity-checklist.md`) para no olvidar estados, textos ni tamaños.
+## Step 2 · Make the change in both
+Recommended order: **server (data and rules)** → **frontend A** → **frontend B** → tests.
+Use the **parity checklist** (`reference/parity-checklist.md`) so states, texts and sizes are not forgotten.
 
-## Paso 3 · Verificar los dos (obligatorio)
-1. **Comparación medida.** Con los dos frontends corriendo (local o publicados), escribe un archivo de rutas con una línea por pantalla, `id | urlA | urlB`, sacado del inventario, y corre:
-   `node "<SKILL_DIR>/scripts/capture-pair.mjs" --rutas <archivo> --out <carpeta> [--ua-b movil]`
-   (`SKILL_DIR` es el directorio base de esta skill. Hace falta Node 18 o más y Playwright: si falta, el script sale con código 3 y explica cómo instalarlo; se instala solo con permiso. Para una sola pantalla: `--a <urlA> --b <urlB>`).
-   - Usa `--ua-a` / `--ua-b` (`movil`, `escritorio` o un texto) cuando el servidor elige el frontend según el dispositivo.
-   - Por pantalla y tamaño (1280 y 375 px) devuelve: `igual` o `difiere`, títulos, acciones y campos que están solo en A o solo en B, y la similitud del texto (0 a 1; `igual` exige 0.9 o más). `paridad.html` muestra las capturas de página completa lado a lado con esas diferencias. **Mira `paridad.html`**: el script no ve colores, orden ni espaciados.
-2. **A mano, lo que el script no recorre:** estado vacío, error de validación y carga en cada frontend (el script no hace clics ni envía formularios).
-3. Compara lado a lado: títulos, orden, textos, colores, estados, enlaces.
-- Si cambió algo del servidor: corre las pruebas.
-- Si el frontend B es una app que se exporta o compila, **vuelve a exportarla** y verifica la versión nueva (no la anterior en caché).
+## Step 3 · Verify both (mandatory)
+1. **Measured comparison.** With both frontends running (local or published), write a routes file with one line per screen, `id | urlA | urlB`, taken from the inventory, and run:
+   `node "<SKILL_DIR>/scripts/capture-pair.mjs" --routes <file> --out <folder> [--ua-b mobile]`
+   (`SKILL_DIR` is the base directory of this skill. It needs Node 18 or newer and Playwright: if missing, the script exits with code 3 and explains how to install it; it is installed only with permission. For a single screen: `--a <urlA> --b <urlB>`).
+   - Use `--ua-a` / `--ua-b` (`mobile`, `desktop` or a text) when the server picks the frontend depending on the device.
+   - Per screen and size (1280 and 375 px) it returns: `same` or `differs`, titles, actions and fields that are only in A or only in B, and the text similarity (0 to 1; `same` requires 0.9 or more). `parity.html` shows the full-page screenshots side by side with those differences. **Look at `parity.html`**: the script does not see colors, order or spacing.
+2. **By hand, what the script does not cover:** empty state, validation error and loading in each frontend (the script does not click or submit forms).
+3. Compare side by side: titles, order, texts, colors, states, links.
+- If something on the server changed: run the tests.
+- If frontend B is an app that is exported or compiled, **export it again** and verify the new version (not the cached old one).
 
-## Paso 4 · Actualizar el inventario
-Marca el estado de paridad, la fecha y el commit. Si algo quedó pendiente, anótalo con el motivo y quién decide.
+## Step 4 · Update the inventory
+Mark the parity status, the date and the commit. If something stayed pending, note it with the reason and who decides.
 
-## Trampas frecuentes
-- **Datos de ejemplo escritos a mano** en uno de los frontends: la pantalla «funciona» pero no lee el servidor. Detéctalo con `find-demo-data.mjs` de `jayka-real-data`.
-- **Recargas completas** en un frontend (parpadeo, esqueleto) y actualización en vivo en el otro: unifica el comportamiento (refrescar sin vaciar la pantalla).
-- **Rutas distintas** para la misma pantalla: documéntalas en el inventario.
-- **Fotos y rutas de archivos** que solo resuelve uno de los frontends: usa la misma función o regla para construir la dirección.
-- **Estados vacíos** olvidados en uno de los dos.
-- **Textos copiados a mano** que se desactualizan: centralízalos si el proyecto crece.
+## Frequent traps
+- **Sample data written by hand** in one of the frontends: the screen «works» but does not read the server. Detect it with `find-demo-data.mjs` of `jayka-real-data`.
+- **Full reloads** in one frontend (flicker, skeleton) and live updating in the other: unify the behavior (refresh without emptying the screen).
+- **Different routes** for the same screen: document them in the inventory.
+- **Photos and file paths** that only one of the frontends resolves: use the same function or rule to build the address.
+- **Empty states** forgotten in one of the two.
+- **Texts copied by hand** that go stale: centralize them if the project grows.
 
-## Qué NO hacer
-- No duplicar lógica de negocio en el frontend para «ir más rápido».
-- No dar por buena una pantalla porque se ve bien en un solo frontend.
-- No cambiar el diseño de una versión sin avisar y registrar.
+## What NOT to do
+- Do not duplicate business logic in the frontend to «go faster».
+- Do not call a screen good because it looks fine in only one frontend.
+- Do not change the design of one version without warning and recording it.
 
-## Terminado cuando
-- **`inventario`:** cada ruta y vista de los dos frontends tiene su fila, con estado de paridad.
-- **`cambio`:** la pantalla quedó cambiada en los dos frontends (o lo pendiente está anotado con motivo), `capture-pair.mjs` da `igual` (o cada diferencia está explicada), el checklist de paridad está recorrido, las pruebas del servidor pasan si se tocó, y el inventario tiene estado, fecha y commit.
-- **`verificar`:** `capture-pair.mjs` se corrió para cada pantalla revisada; cada `difiere` está explicado (corregido, o anotado como diferencia permitida con motivo); los estados que el script no recorre se revisaron a mano; y el estado en el inventario refleja lo que se vio.
+## Done when
+- **`inventory`:** every route and view of both frontends has its row, with a parity status.
+- **`change`:** the screen was changed in both frontends (or what is pending is noted with a reason), `capture-pair.mjs` gives `same` (or each difference is explained), the parity checklist is gone through, the server tests pass if it was touched, and the inventory has status, date and commit.
+- **`verify`:** `capture-pair.mjs` was run for each screen reviewed; each `differs` is explained (fixed, or noted as an allowed difference with a reason); the states the script does not cover were reviewed by hand; and the status in the inventory reflects what was seen.
 
-## Mis ajustes
-<!-- Nombra tus dos frontends (por ejemplo «Blade» y «app Expo»), la ubicación del inventario y las diferencias permitidas. -->
+## My settings
+<!-- Name your two frontends (for example «Blade» and «Expo app»), the location of the inventory and the allowed differences. -->

@@ -1,72 +1,71 @@
 ---
 name: jayka-codex-low
-description: "Prepara una tarea SIMPLE para Codex como archivo .md (alcance cerrado, criterios, pruebas básicas y revisión con Playwright) y define el informe .md que debe devolver. Para cambios pequeños y manuales, sin plan grande. Invócala con /jayka-codex-low <tarea>, o «revisar NNN» cuando Codex devuelva el resultado."
-argument-hint: "<tarea en una frase> | revisar <NNN>"
+description: "Prepares a SIMPLE task for Codex as an .md file (closed scope, criteria, basic tests and visual review) and defines the .md report it must return. For small, manual changes, without a big plan. Invoke it with /jayka-codex-low <task>, or «review NNN» when Codex returns the result."
+argument-hint: "<task in one sentence> | review <NNN>"
 disable-model-invocation: true
 ---
 
-# JayKA · Tech · Codex Plan Low
+# JayKA · Codex Low
 
-Para **tareas simples** que se le piden a Codex: cambiar tarjetas, ajustar una pantalla, corregir un detalle, mover un componente. **Sin plan grande**: una instrucción corta en `.md`, y Codex devuelve un informe corto en `.md`. Para una vista o flujo completo usa `jayka-codex-high`.
+For **simple tasks** asked of Codex: change cards, adjust a screen, fix a detail, move a component. **No big plan**: a short instruction in `.md`, and Codex returns a short report in `.md`. For a complete view or flow use `jayka-codex-high`.
 
-## Argumentos
-Recibidos: `$ARGUMENTS` · Convenciones: `../jayka-working-rules/reference/convenciones.md` (ruta relativa a esta skill).
-Cualquier otro argumento: responde solo «No reconozco `<argumento>`. Opciones: …» con las opciones de esta tabla, y no hagas nada más.
+## Arguments
+Received: `$ARGUMENTS` · Conventions: `../jayka-working-rules/reference/conventions.md` (path relative to this skill).
+Any other argument: answer only «Unknown argument `<argument>`. Options: …» with the options of this table, and do nothing else.
 
-| Argumento | Alias | Qué hace |
+| Argument | Aliases | What it does |
 |---|---|---|
-| `<tarea en una frase>` | | Pasos 1 a 3: prepara la tarea |
-| `revisar <NNN>` | `review` | Paso 4: revisa lo que devolvió Codex para la tarea `NNN`. Si no existe `docs/codex/resultados/NNN-*.md`, lo dice y se detiene |
-| *(vacío)* | | Pregunta: «¿Qué tarea le pasamos a Codex? (una frase)» |
+| `<task in one sentence>` | | Steps 1 to 3: prepares the task |
+| `review <NNN>` | `revisar` | Step 4: reviews what Codex returned for task `NNN`. If `docs/codex/results/NNN-*.md` does not exist, say so and stop |
+| *(empty)* | | Ask: «What task do we give Codex? (one sentence)» |
 
-## Cuándo sí y cuándo no
-- **Sí:** el cambio cabe en pocos archivos, el resultado es fácil de comprobar, no hay decisiones de negocio nuevas.
-- **No:** hay que diseñar una vista nueva, un formulario completo, datos nuevos o reglas nuevas, o el alcance no está claro. Entonces: `jayka-codex-high` (o `jayka-plan-builder` primero).
-- Codex solo se usa **si el usuario lo pide**. Esta skill prepara la tarea; **el usuario decide cuándo y cómo se la pasa a Codex** (la pega en Codex, o pide delegarla si tiene el plugin de Codex).
+## When yes and when no
+- **Yes:** the change fits in a few files, the result is easy to check, there are no new business decisions.
+- **No:** a new view must be designed, a complete form, new data or new rules, or the scope is unclear. Then: `jayka-codex-high` (or `jayka-plan-builder` first).
+- Codex is used **only if the user asks**. This skill prepares the task; **the user decides when and how to hand it to Codex** (pastes it into Codex, or asks to delegate it if they have the Codex plugin).
 
-## Paso 1 · Antes de escribir la tarea
-1. **Aclara la tarea en una frase** y confirma el alcance con el usuario (qué sí, qué no). Si faltan datos, pregunta lo mínimo.
-2. **Estado limpio:** revisa `git status`. Si hay cambios sin commitear, propón un **commit local** antes de pasarle la tarea a Codex (con `jayka-git-rules`), para poder revisar después solo lo que cambie Codex. No lo hagas sin que el usuario lo apruebe.
-3. **Una tarea a la vez.** Si el usuario pide varias, haz varias tareas separadas y en orden.
-4. **Entorno de Codex:** ¿tiene Playwright y puede levantar la app? Si no consta en **Mis ajustes**, pregunta una vez: «¿El Codex que vas a usar tiene Playwright y puede levantar la app?». La respuesta (sí / no / no sé) va en el campo «Playwright en tu entorno» de la tarea, junto con el comando para levantar la app. Ofrece guardar la respuesta en **Mis ajustes** para no volver a preguntar.
+## Step 1 · Before writing the task
+1. **Clarify the task in one sentence** and confirm the scope with the user (what yes, what no). If data is missing, ask the minimum.
+2. **Clean state:** check `git status`. If there are uncommitted changes, propose a **local commit** before handing the task to Codex (with `jayka-git-rules`), so that afterwards only what Codex changes can be reviewed. Do not do it without the user's approval.
+3. **One task at a time.** If the user asks for several, make several separate tasks, in order.
+4. **Codex environment:** does it have Playwright and can it start the app? If it is not recorded in **My settings**, ask once: «Does the Codex you will use have Playwright and can it start the app?». The answer (yes / no / unknown) goes into the «Playwright in your environment» field of the task, together with the command to start the app. Offer to save the answer in **My settings** so as not to ask again.
 
-## Paso 2 · Escribir la tarea
-Archivo: `docs/codex/tareas/NNN-<slug>.md` (NNN, slug y carpeta según las convenciones). Usa `reference/task-template.md`. Reglas de contenido:
-- **Corta:** una página como máximo.
-- **Alcance cerrado:** lista de archivos que puede tocar y la orden «no toques nada fuera de esa lista; si hace falta, detente y pregunta en el informe».
-- **Criterios de aceptación** comprobables.
-- **Verificación obligatoria:** las pruebas básicas necesarias (las del área, no toda la suite si es muy larga) y revisión visual de la pantalla afectada en **375 px y 1280 px**: con Playwright si lo tiene; si no, Codex lo declara «NO HECHA» y deja la lista de lo que hay que mirar (la plantilla ya trae las tres situaciones).
-- **Prohibiciones fijas:** no instalar dependencias, no tocar secretos ni variables de entorno, no hacer push, no cambiar reglas de negocio, no cambiar el estilo aprobado.
-- **Formato de respuesta:** el informe en `docs/codex/resultados/NNN-<slug>.md`, con `reference/report-template.md`.
-- Sin secretos ni datos personales.
+## Step 2 · Write the task
+File: `docs/codex/tasks/NNN-<slug>.md` (NNN, slug and folder following the conventions). Use `reference/task-template.md`. Content rules:
+- **Short:** one page at most.
+- **Closed scope:** list of files it may touch and the order «do not touch anything outside that list; if needed, stop and ask in the report».
+- Checkable **acceptance criteria**.
+- **Mandatory verification:** the basic tests needed (those of the area, not the whole suite if it is long) and visual review of the affected screen at **375 px and 1280 px**: with Playwright if it has it; if not, Codex declares it «NOT DONE» and leaves the list of what to look at (the template already carries the three situations).
+- **Fixed prohibitions:** do not install dependencies, do not touch secrets or environment variables, do not push, do not change business rules, do not change the approved style.
+- **Response format:** the report at `docs/codex/results/NNN-<slug>.md`, with `reference/report-template.md`.
+- No secrets or personal data.
 
-## Paso 3 · Entregar al usuario
-Muestra la tarea resumida y di dónde quedó el archivo. Pregunta: «¿Se la paso a Codex o prefieres pegarla tú?». Si el usuario pide delegarla y el plugin de Codex está instalado, usa esa vía; si no, indica que debe pegar el contenido del archivo.
+## Step 3 · Hand over to the user
+Show the task summarized and say where the file is. Ask: «Do I hand it to Codex or do you prefer to paste it yourself?». If the user asks to delegate it and the Codex plugin is installed, use that route; if not, say they must paste the content of the file.
 
-## Paso 4 · Cuando Codex devuelva el resultado
-No confíes en el informe: **revísalo**.
-1. Lee `docs/codex/resultados/NNN-<slug>.md`.
-2. Revisa el **diff real** (`git diff`): ¿tocó solo lo permitido? ¿Hay cambios inesperados, dependencias, secretos?
-3. Corre las pruebas tú.
-4. **Revisión visual**, si el cambio se ve en pantalla. Hazla **siempre**; y si el informe dice «NO HECHA», recorre además su lista punto por punto. Con la herramienta de navegador disponible, o con capturas a los dos tamaños:
-   `node "<SKILL_DIR>/../jayka-reverse/scripts/capture-live.mjs" <url> --out docs/codex/capturas/NNN/revision --steps 0 --hover 0 --no-reduced`
-   (`SKILL_DIR` es el directorio base de esta skill). Mira las capturas que genera (`00-carga.png` en cada tamaño).
-   Si un informe describe pantallas pero dice que no tenía Playwright, trátalo como **no cumple**: describió lo que no vio.
-5. Compara con los criterios de aceptación.
-6. Reporta al usuario: **cumple / cumple con observaciones / no cumple**, y qué falló. No lo des por bueno sin comprobarlo. **Sin revisión visual hecha por alguien, el veredicto no puede ser «cumple».**
-7. Si hay que corregir, redacta una tarea de seguimiento corta (otra `NNN`), no edites la anterior.
-8. Commit local del resultado aprobado (ver `jayka-git-rules`).
+## Step 4 · When Codex returns the result
+Do not trust the report: **review it**.
+1. Read `docs/codex/results/NNN-<slug>.md`.
+2. Review the **real diff** (`git diff`): did it touch only what was allowed? Are there unexpected changes, dependencies, secrets?
+3. Run the tests yourself.
+4. **Visual review**, if the change shows on screen. Do it **always**; and if the report says «NOT DONE», also go through its list point by point. With the available browser tool, or with screenshots at both sizes:
+   `node "<SKILL_DIR>/../jayka-reverse/scripts/capture-live.mjs" <url> --out docs/codex/screenshots/NNN/review --steps 0 --hover 0 --no-reduced`
+   (`SKILL_DIR` is the base directory of this skill). Look at the screenshots it generates (`00-load.png` in each size).
+   If a report describes screens but says it had no Playwright, treat it as **does not meet**: it described what it did not see.
+5. Compare with the acceptance criteria.
+6. Report to the user: **meets / meets with remarks / does not meet**, and what failed. Do not call it good without checking. **Without a visual review done by someone, the verdict cannot be «meets».**
+7. If something must be fixed, write a short follow-up task (another `NNN`), do not edit the previous one.
+8. Local commit of the approved result (see `jayka-git-rules`).
 
-## Qué NO hace
-- No ejecuta Codex por su cuenta.
-- No amplía el alcance.
-- No escribe planes grandes (eso es `plan-high`).
+## What it does NOT do
+- It does not run Codex on its own.
+- It does not widen the scope.
+- It does not write big plans (that is `codex-high`).
 
-## Terminado cuando
-- **Preparar:** `docs/codex/tareas/NNN-<slug>.md` existe, ocupa una página o menos y tiene lista de archivos permitidos, criterios de aceptación, verificación, prohibiciones y formato de respuesta; el usuario sabe dónde está y cómo pasarlo.
-- **Revisar:** el veredicto (cumple / cumple con observaciones / no cumple) se basa en el diff, las pruebas y el navegador revisados por ti, no en el informe de Codex; lo aprobado tiene commit local.
+## Done when
+- **Prepare:** `docs/codex/tasks/NNN-<slug>.md` exists, takes one page or less and has the list of allowed files, acceptance criteria, verification, prohibitions and response format; the user knows where it is and how to hand it over.
+- **Review:** the verdict (meets / meets with remarks / does not meet) is based on the diff, the tests and the browser reviewed by you, not on Codex's report; what was approved has a local commit.
 
-## Mis ajustes
-<!-- Cambia la carpeta de tareas, las pruebas por defecto, el tamaño de pantalla de Playwright o las prohibiciones.
-Entorno de Codex (para no preguntarlo cada vez): Playwright = sí | no · comando para levantar la app = … -->
-
+## My settings
+<!-- Change the tasks folder, the default tests, the Playwright screen size or the prohibitions.
+Codex environment (so it is not asked every time): Playwright = yes | no · command to start the app = … -->

@@ -1,84 +1,84 @@
-# Tarea {{NNN}} · {{título}}  (bloque {{n}} del plan {{ruta del plan}})
+# Task {{NNN}} · {{title}}  (block {{n}} of plan {{plan path}})
 
-> Para Codex. Lee todo antes de empezar. Es una tarea grande con alcance cerrado. Si algo es ambiguo, **no inventes**: anótalo en «Dudas» y sigue con lo demás.
+> For Codex. Read everything before starting. This is a big task with a closed scope. If something is ambiguous, **do not invent**: note it under «Doubts» and go on with the rest.
 
-## 1. Objetivo y resultado esperado
-{{Qué debe existir al terminar, descrito de arriba abajo, en lenguaje claro.}}
+## 1. Goal and expected result
+{{What must exist when finished, described from top to bottom, in clear language.}}
 
-## 2. Contexto
-- Proyecto y tecnología: {{…}}
-- Documentos que debes leer primero: {{CLAUDE.md, estado, reglas de negocio, plan}}
-- Decisiones ya tomadas (no las cambies): {{lista}}
-- Estilo: usar los tokens y componentes existentes ({{ruta del briefing o del sistema de diseño}}). **Sin colores, tamaños ni radios sueltos.**
-- Playwright en tu entorno: {{sí | no | no se sabe}}. Cómo levantar la app: `{{comando}}` en {{http://localhost:…}}.
+## 2. Context
+- Project and technology: {{…}}
+- Documents you must read first: {{CLAUDE.md, state, business rules, plan}}
+- Decisions already made (do not change them): {{list}}
+- Style: use the existing tokens and components ({{path of the brief or of the design system}}). **No loose colors, sizes or radii.**
+- Playwright in your environment: {{yes | no | unknown}}. How to start the app: `{{command}}` at {{http://localhost:…}}.
 
-## 3. Especificación
-### Pantalla / vista
-- Ruta: {{…}}
-- Secciones (de arriba abajo): {{…}}
+## 3. Specification
+### Screen / view
+- Route: {{…}}
+- Sections (top to bottom): {{…}}
 
-### Campos (si hay formulario)
-| Campo | Tipo | Obligatorio | Validación (en el servidor) | Mensaje de error |
+### Fields (if there is a form)
+| Field | Type | Required | Validation (on the server) | Error message |
 |---|---|---|---|---|
 | | | | | |
 
-### Estados
-- Vacío: …
-- Cargando: …
+### States
+- Empty: …
+- Loading: …
 - Error: …
-- Éxito: …
+- Success: …
 
-### Acciones
-| Acción | Qué hace | A dónde lleva |
+### Actions
+| Action | What it does | Where it leads |
 |---|---|---|
 | | | |
 
-### Textos
-{{Títulos, botones y mensajes exactos, o el tono a seguir.}}
+### Texts
+{{Exact titles, buttons and messages, or the tone to follow.}}
 
-## 4. Reglas
-- La **validación y la lógica van en el servidor**; la pantalla solo muestra y envía.
-- Reglas de negocio vigentes: {{documento}}. **No inventes reglas nuevas.**
-- Pendiente de decisión (déjalo marcado, no lo resuelvas): {{lista}}
+## 4. Rules
+- **Validation and logic go on the server**; the screen only shows and sends.
+- Business rules in force: {{document}}. **Do not invent new rules.**
+- Pending decision (leave it marked, do not resolve it): {{list}}
 
-## 5. Datos
-- Modelos o tablas que usa: {{…}}
-- Migraciones nuevas: {{solo agregar; nunca editar las ya aplicadas}}
-- Datos de ejemplo: por seeder repetible, no escritos a mano en la pantalla.
+## 5. Data
+- Models or tables it uses: {{…}}
+- New migrations: {{only add; never edit those already applied}}
+- Sample data: by repeatable seeder, not written by hand in the screen.
 
-## 6. Archivos
-**Puedes crear:** {{lista}}
-**Puedes modificar:** {{lista}}
-**No toques nada más.** Si hace falta, detente y pide permiso en el informe.
+## 6. Files
+**You may create:** {{list}}
+**You may modify:** {{list}}
+**Do not touch anything else.** If needed, stop and ask for permission in the report.
 
-## 7. Criterios de aceptación
-- [ ] {{Comprobable 1}}
-- [ ] {{Comprobable 2}}
-- [ ] Una prueba por cada regla importante.
+## 7. Acceptance criteria
+- [ ] {{Checkable 1}}
+- [ ] {{Checkable 2}}
+- [ ] One test per important rule.
 
-## 8. Prohibido
-Instalar o actualizar dependencias · tocar secretos, `.env` o variables de entorno · `git push`, PR o cambiar de rama · cambiar reglas de negocio · cambiar el estilo aprobado · editar migraciones aplicadas.
+## 8. Forbidden
+Installing or updating dependencies · touching secrets, `.env` or environment variables · `git push`, PR or switching branch · changing business rules · changing the approved style · editing applied migrations.
 
-## 9. Verificación obligatoria
-1. **Pruebas:** `{{comando}}`. Anota el resultado real, aunque falle.
-2. **Revisión visual** de cada pantalla nueva a **375 px** y **1280 px**, recorriendo el flujo completo: éxito, errores de validación y estado vacío.
-   - **Si tienes Playwright:** hazla y guarda capturas en `docs/codex/capturas/{{NNN}}/`, una por pantalla, tamaño y estado.
-   - **Si no tienes Playwright:** **no lo instales** (instalar está prohibido) y **no describas pantallas que no viste**. En el informe escribe «Revisión visual: NO HECHA», el motivo, y la lista exacta de lo que hay que mirar: pantalla, tamaño, estado y qué revisar. Quien pidió la tarea hará esa revisión.
-   - **Si no puedes levantar la app** (falta base de datos, variables o un servicio): escribe «No pude levantar la app» con las líneas clave del error. No intentes arreglarlo fuera de los archivos permitidos.
-3. Revisa el diff antes de terminar.
+## 9. Mandatory verification
+1. **Tests:** `{{command}}`. Note the real result, even if it fails.
+2. **Visual review** of every new screen at **375 px** and **1280 px**, going through the complete flow: success, validation errors and empty state.
+   - **If you have Playwright:** do it and save screenshots in `docs/codex/screenshots/{{NNN}}/`, one per screen, size and state.
+   - **If you do not have Playwright:** **do not install it** (installing is forbidden) and **do not describe screens you did not see**. In the report write «Visual check: NOT DONE», the reason, and the exact list of what needs to be looked at: screen, size, state and what to check. Whoever requested the task will do that review.
+   - **If you cannot start the app** (missing database, variables or a service): write «I could not start the app» with the key lines of the error. Do not try to fix it outside the allowed files.
+3. Review the diff before finishing.
 
-## 10. Qué debes devolver
-El informe en `docs/codex/resultados/{{NNN}}-{{slug}}.md`, con el formato de abajo. **No hagas commit.**
+## 10. What you must return
+The report at `docs/codex/results/{{NNN}}-{{slug}}.md`, in the format below. **Do not commit.**
 
-### Formato del informe
+### Report format
 ```md
-# Resultado {{NNN}} · {{título}}
-## Estado: hecho | hecho con observaciones | no pude terminar
-## Qué construí (archivo por archivo, una línea cada uno)
-## Decisiones que tomé por mi cuenta (cada una, con motivo)
-## Pruebas (comando y resultado real)
-## Revisión visual: hecha con Playwright (375 y 1280, flujo recorrido, capturas, qué vi) | NO HECHA (motivo y lista de lo que hay que mirar)
-## Dudas y decisiones que necesito del usuario
-## Pendiente y lo que NO hice (con motivo)
-## Cómo probarlo (rutas y datos de ejemplo; sin claves reales)
+# Result {{NNN}} · {{title}}
+## Status: done | done with remarks | could not finish
+## What I built (file by file, one line each)
+## Decisions I made on my own (each one, with reason)
+## Tests (command and real result)
+## Visual check: done with Playwright (375 and 1280, flow covered, screenshots, what I saw) | NOT DONE (reason and list of what needs to be looked at)
+## Doubts and decisions I need from the user
+## Pending and what I did NOT do (with reason)
+## How to try it (routes and sample data; no real keys)
 ```

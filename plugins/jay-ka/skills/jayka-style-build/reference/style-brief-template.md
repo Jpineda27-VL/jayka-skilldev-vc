@@ -1,75 +1,75 @@
-# Briefing de estilo: {{proyecto}}
+# Style brief: {{project}}
 
-- **Fecha:** {{AAAA-MM-DD}}
-- **Estado:** {{borrador | aprobado por el usuario el AAAA-MM-DD}}
-- **Origen del estilo:** {{ficha X · mezcla de A y B · dirección nueva "nombre" · estilo existente del proyecto}}
-- **Entradas usadas:** {{entrevista · informe inicial · fichas · mini-cuestionario}}
+- **Date:** {{YYYY-MM-DD}}
+- **Status:** {{draft | approved by the user on YYYY-MM-DD}}
+- **Origin of the style:** {{profile X · mix of A and B · new direction "name" · existing style of the project}}
+- **Inputs used:** {{interview · initial report · profiles · mini-questionnaire}}
 
-## 1. Idea en una frase
-{{Qué sensación y qué idea defiende la interfaz.}}
+## 1. Idea in one sentence
+{{What feeling and what idea the interface defends.}}
 
-## 2. Sensación (5 palabras)
+## 2. Feeling (5 words)
 {{…}}
 
 ## 3. Color
-| Rol | Valor | Uso |
+| Role | Value | Use |
 |---|---|---|
-| Fondo | | |
-| Superficie | | |
-| Texto | | |
-| Texto suave | | |
-| Primario | | |
-| Acento | | |
-| Éxito | | |
-| Aviso | | |
-| Peligro | | |
-| Borde | | |
-| Enfoque | | |
-| Oscuro (si aplica) | | |
+| Background | | |
+| Surface | | |
+| Text | | |
+| Soft text | | |
+| Primary | | |
+| Accent | | |
+| Success | | |
+| Warning | | |
+| Danger | | |
+| Border | | |
+| Focus | | |
+| Dark (if it applies) | | |
 
-**Contraste medido:** texto/fondo …:1 · texto suave/fondo …:1 · texto sobre primario …:1 · texto sobre acento …:1
-**Por qué funciona:** …
+**Measured contrast:** text/background …:1 · soft text/background …:1 · text on primary …:1 · text on accent …:1
+**Why it works:** …
 
-## 4. Tipografía
-- **Familias y origen (¿autoalojada, del sistema, externa con permiso?):** …
-- **Escala:** nombre · tamaño · peso · interlineado · espaciado entre letras
-- **Unidades:** rem
+## 4. Typography
+- **Families and origin (self-hosted, system, external with permission?):** …
+- **Scale:** name · size · weight · line height · letter spacing
+- **Units:** rem
 
-## 5. Espaciado y forma
-- Escala de espaciado: …
-- Contenedores y márgenes: …
-- Radios · bordes · sombras · degradados: …
-- Puntos de corte: …
+## 5. Spacing and shape
+- Spacing scale: …
+- Containers and margins: …
+- Radii · borders · shadows · gradients: …
+- Breakpoints: …
 
-## 6. Movimiento
-- Qué se anima y por qué: …
-- Duraciones y curvas: …
-- Movimiento reducido: …
-- Librerías (solo con permiso): …
+## 6. Motion
+- What is animated and why: …
+- Durations and curves: …
+- Reduced motion: …
+- Libraries (only with permission): …
 
-## 7. Componentes del prototipo
-Lista de los componentes que se construirán, con variantes y estados.
+## 7. Prototype components
+List of the components that will be built, with variants and states.
 
-## 8. Motivo distintivo
-{{La forma, franja, recorte o patrón propio y dónde se usa.}}
+## 8. Distinctive motif
+{{The own shape, stripe, crop or pattern and where it is used.}}
 
-## 9. Imágenes e íconos
-{{Estilo, tratamiento, de dónde salen.}}
+## 9. Images and icons
+{{Style, treatment, where they come from.}}
 
-## 10. Voz de los textos
-{{Tono y 3 ejemplos de títulos o botones.}}
+## 10. Voice of the texts
+{{Tone and 3 examples of titles or buttons.}}
 
-## 11. Tokens (formato del proyecto)
+## 11. Tokens (project format)
 ```text
-{{variables CSS, tema de Tailwind o archivo de tema, según la tecnología elegida}}
+{{CSS variables, Tailwind theme or theme file, depending on the chosen technology}}
 ```
 
-## 12. Alcance del prototipo
-Pantallas que se construirán, por grupos.
+## 12. Prototype scope
+Screens that will be built, by groups.
 
-## 13. Lo que se evita (de las lecciones de las fichas y de anti-slop)
+## 13. What is avoided (from the profiles' lessons and from anti-slop)
 …
 
-## 14. Aprobación
-- [ ] El usuario aprobó este briefing.
-- Cambios pedidos: …
+## 14. Approval
+- [ ] The user approved this brief.
+- Changes requested: …

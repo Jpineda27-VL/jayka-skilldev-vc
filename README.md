@@ -1,26 +1,28 @@
 # jay-ka-skilldev-vc
 
-Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicación, reglas de trabajo, Git, seguridad, estructura de proyectos y estilo visual), hechas para servir en cualquier proyecto.
+*Español: [README.es.md](README.es.md)*
 
-*English: a personal skill pack for Claude Code covering working rules, Git, security, project structure and design-style learning. Generic, editable, opt-in.*
+**Optional helper skills for Claude Code**, for developers who build with AI («vibe coding») and want to keep order **through the chat**, without typing commands or remembering processes.
 
-> Estado: v0.9.0, catálogo de 21 skills, probado instalado como plugin y por copia. Mira `docs/PLAN.md`.
+You describe what you want; the skills take care of the order around it: a plan before building, permissions asked, secrets left to you, verification before «done», clean commits, state saved between sessions. They are **helpers, not a framework**: a project keeps its own skills and rules, and you use these only when they help.
 
-## Instalar
+> Status: v0.10.0 · 21 skills · tested installed as a plugin and by copy. The skills are written in English and **answer in your language** (English, Spanish…). See `docs/PLAN.md`.
 
-**Opción A: como plugin (recomendada).** Dentro de Claude Code:
+## Install
+
+**Option A: as a plugin (recommended).** Inside Claude Code:
 
 ```text
 /plugin marketplace add Jpineda27-VL/jay-ka-skilldev-vc
 /plugin install jay-ka@jay-ka-skilldev-vc
 ```
 
-Las skills de un plugin llevan el nombre del plugin delante, por ejemplo `/jay-ka:jayka-git-rules`.
+Skills of a plugin carry the plugin name first: `/jay-ka:jayka-menu`, `/jay-ka:jayka-continuity close`…
 
-**Opción B: copiando las skills a tu carpeta global** (se invocan solo como `/jayka-git-rules`).
+**Option B: copy the skills to your global folder** (then they are called without the prefix: `/jayka-menu`).
 
 ```bash
-# macOS, Linux o Git Bash
+# macOS, Linux or Git Bash
 ./scripts/install.sh
 ```
 
@@ -29,41 +31,58 @@ Las skills de un plugin llevan el nombre del plugin delante, por ejemplo `/jay-k
 ./scripts/install.ps1
 ```
 
-El script no pisa skills que ya existan; agrega `--force` (bash) o `-Force` (PowerShell) para reemplazarlas.
+The script does not overwrite existing skills; add `--force` (bash) or `-Force` (PowerShell) to replace them. Do not use both options at once: you would see every skill twice.
 
-## Qué trae
-Mira `docs/PLAN.md`. Resumen:
+## First steps
+```text
+/jay-ka:jayka-menu                      the catalog, one line per skill
+/jay-ka:jayka-menu search <need>        which skill fits what you need
+/jay-ka:jayka-menu install-rules        put the base rules in your CLAUDE.md (asks first)
+```
 
-- **Automáticas:** `jayka-communication`, `jayka-working-rules`, `jayka-git-rules`. Claude las carga cuando aplican. Para que las reglas que no pueden fallar valgan **siempre**, `/jayka-menu instalar-reglas` pone un bloque corto en tu `CLAUDE.md` (pide permiso y solo toca lo que está entre sus marcas). Si ya tienes reglas de Git en tu `CLAUDE.md`, mandan las tuyas.
-- **Manuales (solo cuando las escribes):** seguridad y publicación, estructura de proyectos, nuevo proyecto con entrevista, continuidad entre sesiones, aprendizaje y construcción de estilo, técnicas, planes para Codex y herramientas recomendadas.
-- Escribe `/jayka-menu` para ver el catálogo completo en una línea por skill.
+## What is inside
 
-`jayka-reverse` usa Node 18 o más y, para medir sitios, Playwright con Chromium. La skill pide permiso antes de instalarlo en `~/.claude/jay-k-a/tools/`, fuera de tus proyectos.
+| Group | Skills |
+|---|---|
+| **Automatic** (Claude loads them when they apply) | `jayka-communication`, `jayka-working-rules`, `jayka-git-rules` |
+| **Start and continue** | `jayka-new-project` (42-question interview), `jayka-project-structure`, `jayka-continuity` (`close` / `open`) |
+| **Security** | `jayka-security-web` (`build` / `audit`), `jayka-security-deploy` |
+| **Visual style** | `jayka-style-self-learning`, `jayka-style-build`, `jayka-style-library`, `jayka-companion-tools` |
+| **Plans and Codex** | `jayka-plan-builder`, `jayka-codex-low`, `jayka-codex-high` |
+| **Techniques** | `jayka-laravel-backend`, `jayka-photos`, `jayka-views-parity`, `jayka-real-data`, `jayka-reverse` |
 
-## Pruebas
-Dos capas:
+`jayka-reverse` studies a site or repository that is not yours (`live <url>` / `repo <path>`): stack, libraries and **measured** animations, transitions and scroll, plus a verified reproduction. It needs Node 18+ and, to measure sites, Playwright with Chromium; the skill asks permission before installing it in `~/.claude/jayka/tools/`, outside your projects.
+
+Several skills run **their own scripts** (security checks, contrast, parity, demo-data finder…) instead of only describing what to check. They need Node 18+.
+
+## Language
+The skills are written in English. Claude answers and writes documents (reports, state files, interviews) in **the language you write in**. Fixed tokens that other skills read back (statuses like `pending`, interview keys like `identity.tones`, file names) stay in English. Arguments are in English with common Spanish aliases (`close` = `cerrar`).
+
+## Make them yours
+Every skill ends with a **My settings** section. Change or add rules there; that section wins over the rest. If a skill does not fit how you work, simply do not use it.
+
+## What they do NOT do
+- They never touch your keys, tokens or external services: that is only yours.
+- They do not replace other tools (Impeccable, Superpowers…): they only suggest them.
+- They do not push, open pull requests or deploy unless you ask in the chat.
+
+## Tests
+Two layers:
 
 ```bash
-# 1. Deterministas: estructura de las 21 skills y comportamiento de cada script (no gastan tokens)
+# 1. Deterministic: structure of the 21 skills and behavior of every script (spends no tokens)
 node tests/run.mjs
 ```
 
-Las 3 pruebas con navegador corren solo si Playwright está en `~/.claude/jay-k-a/tools/` (o en la carpeta que indique la variable `JAYKA_TOOLS`); si no, se omiten.
+The 3 browser tests run only if Playwright is in `~/.claude/jayka/tools/` (or in the folder given by the `JAYKA_TOOLS` variable); otherwise they are skipped.
 
 ```bash
-# 2. Comportamiento con Claude: escenarios en plugins/jay-ka/evals/ (usan tu cuenta)
+# 2. Behavior with Claude: scenarios in plugins/jay-ka/evals/ (they use your account)
 cd plugins/jay-ka
-claude plugin eval . --tag sin-shell --scaffold --allow-tools Write Edit --trust-plugin --runs 1
+claude plugin eval . --tag no-shell --scaffold --allow-tools Write Edit --trust-plugin --runs 1
 ```
 
-Detalles, casos y limitaciones en `plugins/jay-ka/evals/README.md`.
+Details, cases and limits in `plugins/jay-ka/evals/README.md`.
 
-## Hazlas tuyas
-Cada skill termina con una sección **Mis ajustes**. Ahí cambias o agregas reglas a tu estilo; esa sección manda sobre el resto. Si una skill no va con tu forma de trabajar, simplemente no la uses.
-
-## Qué NO hace
-- No toca tus claves, tokens ni servicios externos: eso es solo tuyo.
-- No reemplaza otras herramientas (Impeccable, Superpowers…): solo las sugiere.
-
-## Licencia
-Por definir.
+## License
+To be defined.

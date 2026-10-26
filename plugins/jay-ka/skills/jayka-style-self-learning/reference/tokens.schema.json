@@ -1,63 +1,63 @@
 {
-  "$comment": "Formato de tokens.json de una ficha de estilo. Todos los campos son opcionales: si no se encontró, se omite o va null. Cada grupo puede traer 'fuente' (archivo:línea o 'medido'). La fecha va como AAAA-MM-DD. Valídalo con scripts/check-tokens.mjs.",
-  "proyecto": "slug-del-proyecto",
-  "fecha": "2026-01-15",
-  "sensacion": ["cálida", "festiva"],
+  "$comment": "Format of the tokens.json of a style profile. Every field is optional: if it was not found, omit it or use null. Each group may carry 'source' (file:line or 'measured'). The date is written as YYYY-MM-DD. Validate it with scripts/check-tokens.mjs.",
+  "project": "project-slug",
+  "date": "2026-01-15",
+  "feeling": ["warm", "festive"],
   "color": {
     "roles": {
-      "fondo": "#FFF8EF",
-      "superficie": "#FFFFFF",
-      "texto": "#26264F",
-      "textoSuave": "#4A4A73",
-      "primario": "#0F48A8",
-      "acento": "#FF1A6E",
-      "exito": "#1B6B42",
-      "aviso": "#A84A00",
-      "peligro": "#B3123F",
-      "borde": "#D9C9B3",
-      "enfoque": "rgba(15,72,168,.28)"
+      "background": "#FFF8EF",
+      "surface": "#FFFFFF",
+      "text": "#26264F",
+      "textSoft": "#4A4A73",
+      "primary": "#0F48A8",
+      "accent": "#FF1A6E",
+      "success": "#1B6B42",
+      "warning": "#A84A00",
+      "danger": "#B3123F",
+      "border": "#D9C9B3",
+      "focus": "rgba(15,72,168,.28)"
     },
-    "oscuro": null,
-    "otros": [{ "valor": "#FFC93C", "uso": "subrayado y detalles", "frecuencia": 12 }],
-    "contraste": [
-      { "par": "texto/fondo", "ratio": 13.53, "cumple": "AAA" },
-      { "par": "textoSuave/fondo", "ratio": 7.91, "cumple": "AAA" }
+    "dark": null,
+    "others": [{ "value": "#FFC93C", "use": "underline and details", "frequency": 12 }],
+    "contrast": [
+      { "pair": "text/background", "ratio": 13.53, "passes": "AAA" },
+      { "pair": "textSoft/background", "ratio": 7.91, "passes": "AAA" }
     ],
-    "fuente": "src/styles/tokens.css:1-40"
+    "source": "src/styles/tokens.css:1-40"
   },
-  "tipografia": {
-    "familias": [{ "rol": "base", "familia": "Nunito Sans", "origen": "autoalojada", "pesos": [400, 600, 700, 800] }],
-    "escala": [{ "nombre": "h1", "tamano": "1.625rem", "peso": 800, "interlineado": 1.15, "espaciadoLetras": "-0.03em" }],
-    "unidades": "rem",
-    "fuente": "medido"
+  "typography": {
+    "families": [{ "role": "base", "family": "Nunito Sans", "origin": "self-hosted", "weights": [400, 600, 700, 800] }],
+    "scale": [{ "name": "h1", "size": "1.625rem", "weight": 800, "lineHeight": 1.15, "letterSpacing": "-0.03em" }],
+    "units": "rem",
+    "source": "measured"
   },
-  "espaciado": {
-    "escala": ["4px", "8px", "12px", "16px", "22px", "28px", "40px", "64px"],
-    "contenedorMax": "1200px",
-    "fuente": "src/styles/tokens.css"
+  "spacing": {
+    "scale": ["4px", "8px", "12px", "16px", "22px", "28px", "40px", "64px"],
+    "containerMax": "1200px",
+    "source": "src/styles/tokens.css"
   },
-  "forma": {
-    "radios": { "sm": "10px", "md": "16px", "lg": "22px", "xl": "32px", "pildora": "999px" },
-    "bordes": ["1px solid #EBDDCB"],
-    "sombras": ["0 2px 14px rgba(38,38,79,.08)"],
-    "degradados": []
+  "shape": {
+    "radii": { "sm": "10px", "md": "16px", "lg": "22px", "xl": "32px", "pill": "999px" },
+    "borders": ["1px solid #EBDDCB"],
+    "shadows": ["0 2px 14px rgba(38,38,79,.08)"],
+    "gradients": []
   },
-  "movimiento": {
-    "duraciones": ["100ms", "240ms"],
-    "curvas": ["cubic-bezier(0.23, 1, 0.32, 1)"],
-    "librerias": [],
+  "motion": {
+    "durations": ["100ms", "240ms"],
+    "curves": ["cubic-bezier(0.23, 1, 0.32, 1)"],
+    "libraries": [],
     "scroll": null,
-    "movimientoReducido": true
+    "reducedMotion": true
   },
-  "puntosDeCorte": ["600px", "960px", "1100px"],
-  "tecnologia": {
+  "breakpoints": ["600px", "960px", "1100px"],
+  "technology": {
     "framework": "Blade + Expo",
-    "estilos": "CSS plano con variables",
-    "animacion": [],
-    "iconos": "SVG propio",
-    "graficas": null
+    "styles": "plain CSS with variables",
+    "animation": [],
+    "icons": "own SVG",
+    "charts": null
   },
-  "componentes": ["boton", "tarjeta", "campo", "barra-inferior", "hoja", "insignia"],
-  "motivosDistintivos": ["subrayado amarillo en títulos", "franja de bordado", "fotos en arco"],
-  "evitar": ["texto gris claro sobre crema"]
+  "components": ["button", "card", "field", "bottom-bar", "sheet", "badge"],
+  "distinctiveMotifs": ["yellow underline on titles", "embroidery stripe", "arched photos"],
+  "avoid": ["light gray text on cream"]
 }

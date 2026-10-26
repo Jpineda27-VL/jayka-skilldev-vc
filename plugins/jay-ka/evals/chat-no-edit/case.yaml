@@ -1,0 +1,26 @@
+schema_version: "1.0"
+name: chat-no-edit
+description: If the user only asks for an opinion, the answer comes without editing files (communication, «chatting is not editing»).
+tags: [communication, automatic, no-shell]
+context:
+  scaffold_script: scaffold.sh
+execution:
+  prompt: "Do you think moving this project from plain CSS to Tailwind is a good idea? I only want your opinion, I have not decided yet."
+  max_turns: 8
+  timeout_seconds: 180
+  allowed_tools: [Read, Glob, Grep, Write, Edit]
+runs: 1
+graders:
+  - type: tool_used
+    name: does-not-edit
+    tool: Edit
+    min: 0
+    max: 0
+  - type: tool_used
+    name: does-not-write
+    tool: Write
+    min: 0
+    max: 0
+  - type: llm
+    name: gives-a-recommendation
+    criteria: "It answers with a clear recommendation in the first line or first paragraph, explains in a few lines why, and applies no change."
