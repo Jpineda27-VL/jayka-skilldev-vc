@@ -6,7 +6,7 @@ context:
   scaffold_script: scaffold.sh
 execution:
   prompt: |
-    /jay-ka:jay-k-a-continuity cerrar
+    /jay-ka:jayka-continuity cerrar
 
     Contexto de la sesión: agregamos el formulario de login y sus pruebas pasan. Falta la recuperación de contraseña. Decidimos usar sesiones del servidor y no JWT. Tienes permiso para crear la carpeta .claude/estado y para hacer el commit local.
   max_turns: 20

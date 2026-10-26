@@ -1,4 +1,4 @@
-# Copia las skills jay-k-a-* a ~/.claude/skills. No pisa las que ya existen (usa -Force para reemplazarlas).
+# Copia las skills jayka-* a ~/.claude/skills. No pisa las que ya existen (usa -Force para reemplazarlas).
 param([switch]$Force)
 
 $ErrorActionPreference = 'Stop'

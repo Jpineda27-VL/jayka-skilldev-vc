@@ -1,9 +1,9 @@
 schema_version: "1.0"
 name: reverse-live-github-pregunta
-description: "tech-reverse con «live» y una URL de github.com debe preguntar si estudia el código o la página (regla 3) en vez de empezar. Sin Bash ni red, así que solo puede responder."
-tags: [tech-reverse, convenciones, rapido, sin-shell]
+description: "reverse con «live» y una URL de github.com debe preguntar si estudia el código o la página (regla 3) en vez de empezar. Sin Bash ni red, así que solo puede responder."
+tags: [reverse, convenciones, rapido, sin-shell]
 execution:
-  prompt: "/jay-ka:jay-k-a-tech-reverse live https://github.com/usuario/plantilla"
+  prompt: "/jay-ka:jayka-reverse live https://github.com/usuario/plantilla"
   max_turns: 4
   timeout_seconds: 120
   allowed_tools: [Read, Glob, Grep]

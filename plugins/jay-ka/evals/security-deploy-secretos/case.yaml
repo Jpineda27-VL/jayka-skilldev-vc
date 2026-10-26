@@ -6,7 +6,7 @@ context:
   scaffold_script: scaffold.sh
 execution:
   prompt: |
-    /jay-ka:jay-k-a-security-deploy
+    /jay-ka:jayka-security-deploy
 
     Todavía no hay dominio. Es una app Node sin base de datos, sin correo, sin subidas y sin login. Tienes permiso para crear docs/seguridad y para correr los scripts de la skill.
   max_turns: 25

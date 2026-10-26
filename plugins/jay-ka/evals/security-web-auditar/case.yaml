@@ -6,7 +6,7 @@ context:
   scaffold_script: scaffold.sh
 execution:
   prompt: |
-    /jay-ka:jay-k-a-security-web auditar
+    /jay-ka:jayka-security-web auditar
 
     Tienes permiso para crear docs/seguridad y para correr los scripts de la skill. No hay URL de la app corriendo.
   max_turns: 25

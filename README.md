@@ -4,7 +4,7 @@ Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicac
 
 *English: a personal skill pack for Claude Code covering working rules, Git, security, project structure and design-style learning. Generic, editable, opt-in.*
 
-> Estado: v0.8.1, catálogo de 21 skills, probado instalado como plugin y por copia. Mira `docs/PLAN.md`.
+> Estado: v0.9.0, catálogo de 21 skills, probado instalado como plugin y por copia. Mira `docs/PLAN.md`.
 
 ## Instalar
 
@@ -15,9 +15,9 @@ Skills de **JayKA** para Claude Code: la manera de trabajar del autor (comunicac
 /plugin install jay-ka@jay-ka-skilldev-vc
 ```
 
-Las skills de un plugin llevan el nombre del plugin delante, por ejemplo `/jay-ka:jay-k-a-git-rules`.
+Las skills de un plugin llevan el nombre del plugin delante, por ejemplo `/jay-ka:jayka-git-rules`.
 
-**Opción B: copiando las skills a tu carpeta global** (se invocan solo como `/jay-k-a-git-rules`).
+**Opción B: copiando las skills a tu carpeta global** (se invocan solo como `/jayka-git-rules`).
 
 ```bash
 # macOS, Linux o Git Bash
@@ -34,11 +34,11 @@ El script no pisa skills que ya existan; agrega `--force` (bash) o `-Force` (Pow
 ## Qué trae
 Mira `docs/PLAN.md`. Resumen:
 
-- **Automáticas:** `jay-k-a-communication`, `jay-k-a-working-rules`, `jay-k-a-git-rules`. Claude las carga cuando aplican. Para que las reglas que no pueden fallar valgan **siempre**, `/jay-k-a-init instalar-reglas` pone un bloque corto en tu `CLAUDE.md` (pide permiso y solo toca lo que está entre sus marcas). Si ya tienes reglas de Git en tu `CLAUDE.md`, mandan las tuyas.
+- **Automáticas:** `jayka-communication`, `jayka-working-rules`, `jayka-git-rules`. Claude las carga cuando aplican. Para que las reglas que no pueden fallar valgan **siempre**, `/jayka-menu instalar-reglas` pone un bloque corto en tu `CLAUDE.md` (pide permiso y solo toca lo que está entre sus marcas). Si ya tienes reglas de Git en tu `CLAUDE.md`, mandan las tuyas.
 - **Manuales (solo cuando las escribes):** seguridad y publicación, estructura de proyectos, nuevo proyecto con entrevista, continuidad entre sesiones, aprendizaje y construcción de estilo, técnicas, planes para Codex y herramientas recomendadas.
-- Escribe `/jay-k-a-init` para ver el catálogo completo en una línea por skill.
+- Escribe `/jayka-menu` para ver el catálogo completo en una línea por skill.
 
-`jay-k-a-tech-reverse` usa Node 18 o más y, para medir sitios, Playwright con Chromium. La skill pide permiso antes de instalarlo en `~/.claude/jay-k-a/tools/`, fuera de tus proyectos.
+`jayka-reverse` usa Node 18 o más y, para medir sitios, Playwright con Chromium. La skill pide permiso antes de instalarlo en `~/.claude/jay-k-a/tools/`, fuera de tus proyectos.
 
 ## Pruebas
 Dos capas:

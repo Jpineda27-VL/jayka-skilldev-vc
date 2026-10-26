@@ -6,7 +6,7 @@ context:
   scaffold_script: scaffold.sh
 execution:
   prompt: |
-    /jay-ka:jay-k-a-tech-real-data inventario
+    /jay-ka:jayka-real-data inventario
 
     Tienes permiso para crear docs/proyecto y para correr los scripts de la skill.
   max_turns: 20

@@ -24,7 +24,7 @@ claude plugin eval . --scaffold --allow-tools Bash Write Edit --trust-plugin --r
 |---|---|---|
 | `argumento-desconocido` | sin-shell | Un argumento inválido se rechaza con «No reconozco…» y las opciones |
 | `reverse-live-github-pregunta` | sin-shell | `live` con una URL de GitHub pregunta repo o live antes de empezar |
-| `init-catalogo` | sin-shell | El catálogo lista las skills con argumentos y estado de instalación |
+| `menu-catalogo` | sin-shell | El catálogo lista las skills con argumentos y estado de instalación |
 | `new-project-entrevista` | sin-shell | `entrevista.md` con 42 entradas pendientes y claves estables; no responde por el usuario |
 | `codex-low-sin-playwright` | sin-shell | La tarea anota «Playwright: no», numera 001, cierra el alcance y no hace el cambio |
 | `conversar-no-edita` | sin-shell | Pedir opinión no edita ni escribe archivos |

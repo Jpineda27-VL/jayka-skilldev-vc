@@ -6,7 +6,7 @@ context:
   scaffold_script: scaffold.sh
 execution:
   prompt: |
-    /jay-ka:jay-k-a-tech-codex-plan-low Cambiar el texto del botón «Guardar» por «Enviar» en src/form.html
+    /jay-ka:jayka-codex-low Cambiar el texto del botón «Guardar» por «Enviar» en src/form.html
 
     El Codex que voy a usar no tiene Playwright. La app es HTML estático (se abre el archivo directamente). El repositorio está limpio. Título corto de la tarea: «Botón Enviar». Tienes permiso para crear docs/codex.
   max_turns: 20

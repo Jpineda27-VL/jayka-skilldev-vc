@@ -4,7 +4,7 @@ description: Al empezar crea entrevista.md con las 42 entradas pendientes y sus 
 tags: [new-project, sin-shell]
 execution:
   prompt: |
-    /jay-ka:jay-k-a-new-project
+    /jay-ka:jayka-new-project
 
     Tienes permiso para crear la carpeta docs/proyecto.
   max_turns: 15

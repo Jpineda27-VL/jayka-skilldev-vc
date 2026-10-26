@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copia las skills jay-k-a-* a ~/.claude/skills. No pisa las que ya existen (usa --force para reemplazarlas).
+# Copia las skills jayka-* a ~/.claude/skills. No pisa las que ya existen (usa --force para reemplazarlas).
 set -euo pipefail
 
 origen="$(cd "$(dirname "$0")/.." && pwd)/plugins/jay-ka/skills"

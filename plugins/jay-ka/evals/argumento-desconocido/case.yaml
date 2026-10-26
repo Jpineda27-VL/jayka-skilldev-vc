@@ -3,7 +3,7 @@ name: argumento-desconocido
 description: Un argumento que la skill no acepta se rechaza mostrando las opciones válidas, sin hacer nada más (convenciones §1). Sin herramientas de escritura, así que solo puede responder.
 tags: [convenciones, rapido, sin-shell]
 execution:
-  prompt: "/jay-ka:jay-k-a-continuity bailar"
+  prompt: "/jay-ka:jayka-continuity bailar"
   max_turns: 4
   timeout_seconds: 120
   allowed_tools: [Read, Glob, Grep]
