@@ -22,9 +22,9 @@ Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripci
 | 1 | `jay-k-a-communication` | automática | ✅ |
 | 2 | `jay-k-a-working-rules` | automática | ✅ |
 | 3 | `jay-k-a-git-rules` | automática | ✅ |
-| 4 | `jay-k-a-security-deploy` | manual | 🔲 `.env`, claves, debug apagado, HTTPS, cron, respaldos, rutas que deben dar 404, checklist del día de subir |
-| 5 | `jay-k-a-security-web` | manual | 🔲 encabezados y CSP, CSRF, cookies, límites de peticiones y login, subidas, permisos entre usuarios, prueba final |
-| 6 | `jay-k-a-project-structure` | manual | 🔲 carpetas según haya solo frontend, solo backend o ambos |
+| 4 | `jay-k-a-security-deploy` | manual | ✅ `.env`, claves, debug apagado, HTTPS, cron, respaldos, rutas que deben dar 404, checklist del día de subir |
+| 5 | `jay-k-a-security-web` | manual | ✅ encabezados y CSP, CSRF, cookies, límites de peticiones y login, subidas, permisos entre usuarios, prueba final |
+| 6 | `jay-k-a-project-structure` | manual | ✅ carpetas según haya solo frontend, solo backend o ambos |
 | 7 | `jay-k-a-new-project` | manual | 🔲 entrevista de ~40 preguntas, cada una **obligatoriamente** respondida o saltada a mano (nunca automático); identidad con tonos de color solo para sondear; informe final de lo definido y lo que falta; crea CLAUDE.md, REGLAS.md, estructura, git init y memoria; puede generar un prompt para otro chat |
 | 8 | `jay-k-a-continuity` | manual | 🔲 al cerrar guarda estado, memoria, grafo y commit; al abrir lee el estado y dice dónde quedamos |
 | 9 | `jay-k-a-style-self-learning` | manual | 🔲 estudia un proyecto terminado (solo frontend: cliente y dashboard), guarda una ficha + `tokens.json` en `~/.claude/jay-k-a/estilos/` y mantiene `estilo-base.md` |
