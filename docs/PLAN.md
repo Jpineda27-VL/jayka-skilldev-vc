@@ -30,13 +30,13 @@ Estado: ✅ escrita · 🔲 pendiente. Automática = se carga siempre (descripci
 | 9 | `jay-k-a-style-self-learning` | manual | ✅ estudia un proyecto terminado (solo frontend: cliente y dashboard), guarda una ficha + `tokens.json` en `~/.claude/jay-k-a/estilos/` y mantiene `estilo-base.md` |
 | 10 | `jay-k-a-style-build` | manual | ✅ toma el informe de `new-project` y las fichas; sugiere paletas, fuentes y estilos; construye prototipos; termina sugiriendo `companion-tools` |
 | 11 | `jay-k-a-style-library` | manual | ✅ **solo informa**: lista y compara fichas, dice qué coincide o ya funcionó; no cambia nada |
-| 12 | `jay-k-a-tech-laravel-backend` | manual | 🔲 servicios, errores de negocio, acción única por POST, bitácora, validación y pruebas |
-| 13 | `jay-k-a-tech-photos` | manual | 🔲 subida: WebP, 1200 px, 5 MB, nombres claros |
-| 14 | `jay-k-a-tech-views-parity` | manual | 🔲 versión genérica: dos frontends (por ejemplo web y app) con las mismas pantallas |
+| 12 | `jay-k-a-tech-laravel-backend` | manual | ✅ servicios, errores de negocio, acción única por POST, bitácora, validación y pruebas |
+| 13 | `jay-k-a-tech-photos` | manual | ✅ subida: WebP, 1200 px, 5 MB, nombres claros |
+| 14 | `jay-k-a-tech-views-parity` | manual | ✅ versión genérica: dos frontends (por ejemplo web y app) con las mismas pantallas |
 | 15 | `jay-k-a-plan-builder` | manual | ✅ usa Superpowers (`brainstorming`) si está instalado; si no, avisa que no corre igual, ofrece una versión reducida y recomienda instalarlo; nunca lo instala; entrega el plan en `.md` |
 | 16 | `jay-k-a-tech-codex-plan-low` | manual | ✅ tareas simples: instrucción en `.md`, vuelve un plan básico en `.md`, pruebas básicas y revisión con Playwright |
 | 16 | `jay-k-a-tech-codex-plan-high` | manual | ✅ trabajo grande: pasa por `plan-builder`, pide el esquema de una vista completa (formulario, etc.), vuelve en `.md`; el usuario revisa |
-| 17 | `jay-k-a-tech-real-data` | manual | 🔲 seeders repetibles, sin datos de demostración, prueba de punta a punta |
+| 17 | `jay-k-a-tech-real-data` | manual | ✅ seeders repetibles, sin datos de demostración, prueba de punta a punta |
 | 18 | `jay-k-a-companion-tools` | manual | ✅ solo sugiere cuándo usar `impeccable` (audit, polish, critique), `ui-ux-pro-max`, `design-taste-frontend`, `emil-design-eng` y Superpowers (`brainstorming`, `writing-plans`) |
 
 ## Cómo trabajamos
