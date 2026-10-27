@@ -16,7 +16,7 @@ Check `git remote -v`.
 
 ## Branches
 - Normal work goes on a topic branch, almost never straight on `main`.
-- If the chat starts on `main`, after the user's first message and before continuing, ask: «Do we stay on `main` or use a branch?».
+- With a remote, when a session starts on `main`, ask: «Do we stay on `main` or use a branch?» and wait for the answer **before editing project files, staging, committing, creating or switching branches**. Read-only inspection is allowed. Skip this gate only if the user has already explicitly chosen the branch in this session; a request to add a file or commit does not itself choose a branch.
 - Do not create, switch or delete branches without asking. One branch per topic.
 
 ## Commits

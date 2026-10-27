@@ -38,6 +38,9 @@ The automatic skills are loaded when Codex thinks they are useful; `AGENTS.md` i
 ## Catalog (21 skills)
 Output format: group, and below it `name <arguments>: short description [installed / not installed]`. Arguments shown are the canonical English ones; each skill lists its Spanish aliases.
 
+### Catalog and help
+- `jayka-menu [<skill> | search <need> | install-rules [global | project]]`: show this catalog, explain a skill or install the base rules.
+
 ### Automatic (Codex loads them when they apply; the rules that must always hold go with `install-rules`)
 - `jayka-communication`: how to talk (clear language, summary first, no editing while chatting).
 - `jayka-working-rules`: working rules and the shared conventions of the skills.

@@ -134,6 +134,10 @@ await test('codex: generated package, marketplace and handoff references agree',
   assert(manifest.name === plugin.name && manifest.version === original.version, 'plugin identity or version mismatch');
   assert(existsSync(resolve(OUTPUT, manifest.skills, 'jayka-menu/SKILL.md')), 'manifest skills path is invalid');
   const skills = join(OUTPUT, 'skills');
+  const menu = readFileSync(join(skills, 'jayka-menu/SKILL.md'), 'utf8');
+  for (const name of readdirSync(skills)) {
+    assert(new RegExp('^- `' + name + '(?:[ `])', 'm').test(menu), `menu catalog omits ${name}`);
+  }
   for (const name of ['jayka-claude-low', 'jayka-claude-high']) {
     const text = readFileSync(join(skills, name, 'SKILL.md'), 'utf8');
     assert(text.includes('docs/claude/tasks/') && text.includes('docs/claude/results/'), `${name}: wrong handoff paths`);
@@ -156,6 +160,15 @@ await test('codex: generated package, marketplace and handoff references agree',
 });
 
 // ───────────────────────── reverse ─────────────────────────
+await test('codex: behavior grader requires completed scanner execution', async () => {
+  const { scriptWasExecuted } = await import('./codex-cases.mjs');
+  const script = 'scan-security.mjs';
+  assert(!scriptWasExecuted([{ command: "Get-Content 'scripts/scan-security.mjs'; node --version", exit_code: 0 }], script), 'reading scanner source counted as execution');
+  assert(scriptWasExecuted([{ command: "node 'scripts/scan-security.mjs' .; git status", exit_code: 0 }], script), 'completed scanner call not recognized');
+  assert(scriptWasExecuted([{ command: 'node scripts/scan-security.mjs .', exit_code: 1 }], script), 'finding exit code not recognized');
+  assert(!scriptWasExecuted([{ command: 'node scripts/scan-security.mjs .', exit_code: null }], script), 'unfinished invocation counted as completed');
+});
+
 await test('reverse · scan-repo detects the stack and skips secrets', () => {
   const dir = fixture('repo', {
     'package.json': JSON.stringify({ name: 'demo', license: 'MIT', scripts: { postinstall: 'node setup.js' }, dependencies: { gsap: '^3.12.5', lenis: '^1.1.0' } }),

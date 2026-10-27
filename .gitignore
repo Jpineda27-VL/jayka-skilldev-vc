@@ -6,3 +6,6 @@ node_modules/
 
 # Resultados de claude plugin eval
 plugins/jay-ka/evals/results/
+
+# Account-backed Codex behavior test artifacts
+tests/results/codex/

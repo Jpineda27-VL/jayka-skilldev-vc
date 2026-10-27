@@ -89,6 +89,9 @@ Two layers:
 ```bash
 # 1. Deterministic: structure of the 21 skills and behavior of every script (spends no tokens)
 node tests/run.mjs
+
+# The same suite for the Codex package
+node tests/run.mjs --edition codex
 ```
 
 The 3 browser tests run only if Playwright is in `~/.claude/jayka/tools/` (or in the folder given by the `JAYKA_TOOLS` variable); otherwise they are skipped.
@@ -100,6 +103,19 @@ claude plugin eval . --tag no-shell --scaffold --allow-tools Write Edit --trust-
 ```
 
 Details, cases and limits in `plugins/jay-ka/evals/README.md`.
+
+To test the Codex plugin's behavior, from the repository root:
+
+```bash
+# Uses your existing Codex login and consumes account tokens
+node tests/codex-evals.mjs
+
+# A single case or multiple repetitions
+node tests/codex-evals.mjs --only menu-catalog
+node tests/codex-evals.mjs --runs 3
+```
+
+Each case installs the plugin into a temporary profile and works in a disposable project. Results, responses, created files and token usage are saved under `tests/results/codex/` (ignored by Git). See [scenarios, requirements and limits](tests/CODEX-EVALS.md).
 
 ## License
 [MIT](LICENSE).

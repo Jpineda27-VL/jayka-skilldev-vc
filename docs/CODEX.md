@@ -65,6 +65,18 @@ Commit generated package changes together with the source changes when committin
 
 The deterministic suite checks the skill metadata, invocation policies, marketplace resolution, handoff paths, resource references, generated freshness, script syntax and script behavior. Browser checks are skipped when Playwright is unavailable. `JAYKA_TOOLS` can select an existing Playwright installation for either edition. The Codex scripts otherwise search `<CODEX_HOME>/jayka/tools/`, defaulting to `~/.codex/jayka/tools/`. Tests do not install browser dependencies.
 
+For repeatable behavior tests using real `codex exec` calls and your account tokens:
+
+```text
+node tests/codex-evals.mjs
+node tests/codex-evals.mjs --only menu-catalog
+node tests/codex-evals.mjs --runs 3
+```
+
+The runner installs the plugin separately for every case, uses disposable projects and profiles, and saves responses, actual file changes, tool events and token usage. See [behavior scenarios and isolation details](../tests/CODEX-EVALS.md). These runs are separate from the deterministic suite and are never started by it.
+
+See the [October 26, 2026 validation results](CODEX-EVAL-RESULTS.md) for the 13 scenarios, discovered issues, corrective reruns and remaining limits.
+
 The real CLI marketplace registration and plugin installation were also checked with an isolated temporary Codex profile. All 21 installed SKILL.md files matched the generated package, including both Claude task skills. This validates installation from the local repository; remote GitHub installation awaits publication of these changes.
 
 Claude eval cases remain specific to Claude. No Codex behavioral eval service or successful desktop UI session is claimed by the deterministic tests or CLI installation check. To validate behavior after installing it in a new Codex chat:

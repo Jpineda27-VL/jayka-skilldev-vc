@@ -5,3 +5,4 @@
 *.ps1 text eol=crlf
 *.mjs text eol=lf
 *.js text eol=lf
+plugins/jay-ka-codex/**/openai.yaml text eol=lf

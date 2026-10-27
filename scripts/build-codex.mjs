@@ -45,6 +45,8 @@ function adaptMarkdown(text, path) {
       '**Installed or not:** check whether `../<name>/SKILL.md` exists relative to this skill using the available file or shell tools. Check the files even if a skill is absent from the session list.');
     text = text.replace(/^\*\*How it is called:\*\*.*$/m,
       '**How it is called:** use `$<name>` in Codex, for example `$jayka-continuity close`, for plugin and standalone installations.');
+    text = text.replace('### Automatic (Codex loads them when they apply;',
+      '### Catalog and help\n- `jayka-menu [<skill> | search <need> | install-rules [global | project]]`: show this catalog, explain a skill or install the base rules.\n\n### Automatic (Codex loads them when they apply;');
   }
   if (path === 'jayka-working-rules/reference/conventions.md') {
     text = text.replace(/^.*Every manual skill receives its arguments.*$/m,
@@ -53,6 +55,10 @@ function adaptMarkdown(text, path) {
       '## 2b. How to name a skill when suggesting it\nUse `$<name>` for both plugin and standalone skills, for example `$jayka-continuity close`. Standalone user skills live in `~/.agents/skills/`; project skills live in `.agents/skills/`.\n\n' +
       'Personal JayKA data defaults to `~/.codex/jayka/`. If `CODEX_HOME` is set, use `<CODEX_HOME>/jayka/` instead. The global instructions file is `<CODEX_HOME>/AGENTS.md` (default `~/.codex/AGENTS.md`). Project state in `.codex/state/` and `.codex/structure/` is a JayKA convention, not built-in Codex memory. Respect existing project paths and record them in `AGENTS.md`.\n\n' +
       'Resolve `<SKILL_DIR>` from the loaded SKILL.md location. Read sibling skills with available file or shell tools; never assume a Claude-specific tool exists. Use the actual available browser tool or the bundled Node scripts for browser work.\n\n');
+  }
+  if (path === 'jayka-git-rules/SKILL.md') {
+    text = text.replace(/^- If the chat starts on `main`[^\n]*$/m,
+      '- With a remote, when a session starts on `main`, ask: «Do we stay on `main` or use a branch?» and wait for the answer **before editing project files, staging, committing, creating or switching branches**. Read-only inspection is allowed. Skip this gate only if the user has already explicitly chosen the branch in this session; a request to add a file or commit does not itself choose a branch.');
   }
   // There is no assumed Claude connector. Handoffs are always concrete files for the user.
   text = text.replace(/\(pastes it into Claude, or asks to delegate it if they have the Claude plugin\)/g,

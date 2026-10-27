@@ -104,5 +104,18 @@ claude plugin eval . --tag no-shell --scaffold --allow-tools Write Edit --trust-
 
 Detalles, casos y límites en `plugins/jay-ka/evals/README.md` (en inglés).
 
+Para probar el comportamiento del plugin Codex, desde la raíz del repositorio:
+
+```bash
+# Usa tu sesión de Codex y consume tokens de tu cuenta
+node tests/codex-evals.mjs
+
+# Un caso o varias repeticiones
+node tests/codex-evals.mjs --only menu-catalog
+node tests/codex-evals.mjs --runs 3
+```
+
+Cada caso instala el plugin en un perfil temporal y trabaja en un proyecto de prueba. Los resultados, respuestas, archivos creados y tokens quedan en `tests/results/codex/` (ignorado por Git). [Escenarios, requisitos y límites](tests/CODEX-EVALS.md).
+
 ## Licencia
 [MIT](LICENSE).
