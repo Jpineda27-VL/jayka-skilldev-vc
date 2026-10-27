@@ -1,0 +1,20 @@
+{
+  "name": "jayka-skilldev-codex",
+  "interface": {
+    "displayName": "JayKA for Codex"
+  },
+  "plugins": [
+    {
+      "name": "jay-ka-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/jay-ka-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

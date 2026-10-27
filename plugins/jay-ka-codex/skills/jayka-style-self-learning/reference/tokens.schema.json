@@ -1,0 +1,63 @@
+{
+  "$comment": "Format of the tokens.json of a style profile. Every field is optional: if it was not found, omit it or use null. Each group may carry 'source' (file:line or 'measured'). The date is written as YYYY-MM-DD. Validate it with scripts/check-tokens.mjs.",
+  "project": "project-slug",
+  "date": "2026-01-15",
+  "feeling": ["warm", "festive"],
+  "color": {
+    "roles": {
+      "background": "#FFF8EF",
+      "surface": "#FFFFFF",
+      "text": "#26264F",
+      "textSoft": "#4A4A73",
+      "primary": "#0F48A8",
+      "accent": "#FF1A6E",
+      "success": "#1B6B42",
+      "warning": "#A84A00",
+      "danger": "#B3123F",
+      "border": "#D9C9B3",
+      "focus": "rgba(15,72,168,.28)"
+    },
+    "dark": null,
+    "others": [{ "value": "#FFC93C", "use": "underline and details", "frequency": 12 }],
+    "contrast": [
+      { "pair": "text/background", "ratio": 13.53, "passes": "AAA" },
+      { "pair": "textSoft/background", "ratio": 7.91, "passes": "AAA" }
+    ],
+    "source": "src/styles/tokens.css:1-40"
+  },
+  "typography": {
+    "families": [{ "role": "base", "family": "Nunito Sans", "origin": "self-hosted", "weights": [400, 600, 700, 800] }],
+    "scale": [{ "name": "h1", "size": "1.625rem", "weight": 800, "lineHeight": 1.15, "letterSpacing": "-0.03em" }],
+    "units": "rem",
+    "source": "measured"
+  },
+  "spacing": {
+    "scale": ["4px", "8px", "12px", "16px", "22px", "28px", "40px", "64px"],
+    "containerMax": "1200px",
+    "source": "src/styles/tokens.css"
+  },
+  "shape": {
+    "radii": { "sm": "10px", "md": "16px", "lg": "22px", "xl": "32px", "pill": "999px" },
+    "borders": ["1px solid #EBDDCB"],
+    "shadows": ["0 2px 14px rgba(38,38,79,.08)"],
+    "gradients": []
+  },
+  "motion": {
+    "durations": ["100ms", "240ms"],
+    "curves": ["cubic-bezier(0.23, 1, 0.32, 1)"],
+    "libraries": [],
+    "scroll": null,
+    "reducedMotion": true
+  },
+  "breakpoints": ["600px", "960px", "1100px"],
+  "technology": {
+    "framework": "Blade + Expo",
+    "styles": "plain CSS with variables",
+    "animation": [],
+    "icons": "own SVG",
+    "charts": null
+  },
+  "components": ["button", "card", "field", "bottom-bar", "sheet", "badge"],
+  "distinctiveMotifs": ["yellow underline on titles", "embroidery stripe", "arched photos"],
+  "avoid": ["light gray text on cream"]
+}

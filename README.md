@@ -2,13 +2,30 @@
 
 *Español: [README.es.md](README.es.md)*
 
-**Optional helper skills for Claude Code**, for developers who build with AI («vibe coding») and want to keep order **through the chat**, without typing commands or remembering processes.
+**Optional helper skills for Claude Code and Codex**, for developers who build with AI («vibe coding») and want to keep order **through the chat**, without typing commands or remembering processes.
 
 You describe what you want; the skills take care of the order around it: a plan before building, permissions asked, secrets left to you, verification before «done», clean commits, state saved between sessions. They are **helpers, not a framework**: a project keeps its own skills and rules, and you use these only when they help.
 
-> Status: v0.10.0 · 21 skills · tested installed as a plugin and by copy. The skills are written in English and **answer in your language** (English, Spanish…). See `docs/PLAN.md`.
+> Status: v0.10.0 · 21 skills per edition · Claude tested as a plugin and by copy; Codex plugin installed and verified through the CLI with a temporary profile. The skills are written in English and **answer in your language** (English, Spanish…). See `docs/PLAN.md`.
 
 ## Install
+
+### Codex: plugin from this repository
+
+Add the marketplace from a terminal using a Codex CLI version that supports plugins:
+
+```text
+codex plugin marketplace add Jpineda27-VL/jayka-skilldev-vc
+codex plugin add jay-ka-codex@jayka-skilldev-codex
+```
+
+You can also install it from the desktop app's Plugins Directory: select **JayKA for Codex** and the **jay-ka-codex** plugin. Restart the app if the catalog does not appear. In a new chat, use `$jayka-menu`.
+
+While this compatibility exists only in your local checkout, run `codex plugin marketplace add .` from the repository root. The GitHub command requires the Codex files to have been published to the remote ref you install.
+
+Both editions live in this repository: `plugins/jay-ka` for Claude and `plugins/jay-ka-codex` for Codex, with separate catalogs. Codex's task skills are `$jayka-claude-low` and `$jayka-claude-high`: they prepare files for Claude. See [compatibility, maintenance and validation](docs/CODEX.md).
+
+### Claude Code
 
 **Option A: as a plugin (recommended).** Inside Claude Code:
 

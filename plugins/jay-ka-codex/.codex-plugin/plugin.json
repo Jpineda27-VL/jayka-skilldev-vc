@@ -1,0 +1,11 @@
+{
+  "name": "jay-ka-codex",
+  "version": "0.10.0",
+  "license": "MIT",
+  "description": "JayKA for Codex: planning, continuity, Git, security, style and task handoffs to Claude.",
+  "author": {
+    "name": "Jpineda27-VL"
+  },
+  "skills": "./skills/",
+  "requires_local_executor": true
+}

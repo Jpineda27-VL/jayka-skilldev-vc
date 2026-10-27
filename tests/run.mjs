@@ -2,7 +2,7 @@
 // Deterministic tests of the pack: structure of the skills and behavior of every script.
 // They spend no tokens and use no network; fixtures are created in a temporary folder and deleted at the end.
 // The browser tests run only if Playwright is installed (capture-live.mjs --check).
-// Usage: node tests/run.mjs [--only <text>] [--keep]
+// Usage: node tests/run.mjs [--edition claude|codex] [--only <text>] [--keep]
 import { spawn, spawnSync } from 'node:child_process';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, existsSync, rmSync } from 'node:fs';
 import { join, dirname, resolve } from 'node:path';
@@ -11,7 +11,10 @@ import { createServer } from 'node:http';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SK = join(ROOT, 'plugins', 'jay-ka', 'skills');
+const editionIndex = process.argv.indexOf('--edition');
+const EDITION = editionIndex < 0 ? 'claude' : process.argv[editionIndex + 1];
+if (!['claude', 'codex'].includes(EDITION)) throw new Error('--edition must be claude or codex');
+const SK = join(ROOT, 'plugins', EDITION === 'codex' ? 'jay-ka-codex' : 'jay-ka', 'skills');
 const S = (skill, script) => join(SK, skill, 'scripts', script);
 const TMP = mkdtempSync(join(tmpdir(), 'jayka-tests-'));
 const argv = process.argv.slice(2);
@@ -73,10 +76,17 @@ await test('structure: frontmatter, arguments, closing and references', () => {
     if (field('name') !== d) problems.push(`${d}: name does not match the folder`);
     if (!/^".*"$/.test(field('description') || '')) problems.push(`${d}: description without quotes`);
     const manual = !automatic.includes(d);
+    if (EDITION === 'codex') {
+      const policy = readFileSync(join(SK, d, 'agents/openai.yaml'), 'utf8');
+      if (!policy.includes(`allow_implicit_invocation: ${!manual}`)) problems.push(`${d}: incorrect invocation policy`);
+      if (/disable-model-invocation:|argument-hint:|\$ARGUMENTS/.test(text)) problems.push(`${d}: Claude-only metadata or arguments`);
+    }
     if (manual) {
+      if (EDITION === 'claude') {
       if (field('disable-model-invocation') !== 'true') problems.push(`${d}: missing disable-model-invocation`);
       if (!field('argument-hint')) problems.push(`${d}: missing argument-hint`);
       if (!text.includes('$ARGUMENTS')) problems.push(`${d}: missing $ARGUMENTS`);
+      }
       if (!/## Done when|\| 1 · Static/.test(text)) problems.push(`${d}: missing «Done when»`);
       if (!text.includes('../jayka-working-rules/reference/conventions.md')) problems.push(`${d}: does not point to the conventions`);
       if (!text.includes('Unknown argument')) problems.push(`${d}: missing the unknown-argument answer`);
@@ -111,6 +121,38 @@ await test('structure: the scripts pass node --check', () => {
     walk(join(SK, d, 'scripts'));
   }
   assert(!bad.length, `with syntax errors: ${bad.join(', ')}`);
+});
+
+await test('codex: generated package, marketplace and handoff references agree', async () => {
+  const { buildCodex, OUTPUT } = await import('../scripts/build-codex.mjs');
+  buildCodex({ check: true });
+  const marketplace = JSON.parse(readFileSync(join(ROOT, '.agents/plugins/marketplace.json'), 'utf8'));
+  const plugin = marketplace.plugins[0];
+  assert(resolve(ROOT, plugin.source.path) === OUTPUT, 'marketplace must resolve to the generated plugin');
+  const manifest = JSON.parse(readFileSync(join(OUTPUT, '.codex-plugin/plugin.json'), 'utf8'));
+  const original = JSON.parse(readFileSync(join(ROOT, 'plugins/jay-ka/.claude-plugin/plugin.json'), 'utf8'));
+  assert(manifest.name === plugin.name && manifest.version === original.version, 'plugin identity or version mismatch');
+  assert(existsSync(resolve(OUTPUT, manifest.skills, 'jayka-menu/SKILL.md')), 'manifest skills path is invalid');
+  const skills = join(OUTPUT, 'skills');
+  for (const name of ['jayka-claude-low', 'jayka-claude-high']) {
+    const text = readFileSync(join(skills, name, 'SKILL.md'), 'utf8');
+    assert(text.includes('docs/claude/tasks/') && text.includes('docs/claude/results/'), `${name}: wrong handoff paths`);
+  }
+  assert(!existsSync(join(skills, 'jayka-codex-low')), 'old handoff name remains');
+  const inspect = (dir) => {
+    for (const entry of readdirSync(dir, { withFileTypes: true })) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) { inspect(path); continue; }
+      if (!entry.name.endsWith('.md')) continue;
+      const text = readFileSync(path, 'utf8');
+      assert(!/\.claude|CLAUDE\.md|\$ARGUMENTS|\/jay-ka:|jayka-codex-(?:low|high)/.test(text), `${path}: obsolete host reference`);
+      for (const match of text.matchAll(/`((?:\.\.\/jayka-[\w-]+\/)?reference\/[\w.-]+\.md)`/g)) {
+        assert(existsSync(resolve(dirname(path), match[1])), `${path}: missing ${match[1]}`);
+      }
+    }
+  };
+  inspect(skills);
+  return '21 skills, native invocation policy, Claude handoffs and relative resources';
 });
 
 // ───────────────────────── reverse ─────────────────────────
@@ -172,7 +214,7 @@ await test('security-deploy · scan-git-secrets finds deleted secrets and masks 
   writeFileSync(join(dir, 'config.js'), 'const stripe = process.env.STRIPE;\n'); writeFileSync(join(dir, '.gitignore'), '.env\n');
   g('rm', '-q', '--cached', '.env'); g('add', '-A'); g('commit', '-qm', 'two');
   const r = run(S('jayka-security-deploy', 'scan-git-secrets.mjs'), [dir]);
-  assert(r.code === 1, `code ${r.code}`);
+  assert(r.code === 1, `code ${r.code}: ${r.out}`);
   has(r.out, 'stripe-live'); has(r.out, 'tracked-env-file');
   hasNot(r.out, FAKE_STRIPE, 'the full key'); hasNot(r.out, 'your-api-key-here');
 });
@@ -181,7 +223,7 @@ await test('security-deploy · check-deploy flags an exposed .env and respects 4
   const srv = await serve(null, { '/': [200, 'text/html', '<html>Home</html>'], '/.env': [200, 'text/plain', 'APP_KEY=base64:x\nDB_PASSWORD=y\n'] });
   try {
     const r = await runAsync(S('jayka-security-deploy', 'check-deploy.mjs'), [srv.url]);
-    assert(r.code === 1, `code ${r.code}`);
+    assert(r.code === 1, `code ${r.code}: ${r.out}`);
     assert(/\/\.env \| ✗ fail/.test(r.out), '/.env did not come out as a failure');
     assert(/\/\.git\/config \| ✓ ok/.test(r.out), '/.git/config did not come out as ok');
     assert(/Nonexistent path \| ✓ ok/.test(r.out), 'the error page did not come out ok');
